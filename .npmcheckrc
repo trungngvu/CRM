@@ -1,0 +1,18 @@
+{
+  "depcheck": {
+    "ignoreMatches": [
+      "@commitlint/cli",
+      "@commitlint/config-conventional",
+      "@trivago/prettier-plugin-sort-imports",
+      "autoprefixer",
+      "postcss",
+      "tailwindcss",
+      "eslint-config-react-app",
+      "craco",
+      "styles",
+      "events",
+      "mock-api",
+      "@src/i18n"
+    ]
+  }
+}

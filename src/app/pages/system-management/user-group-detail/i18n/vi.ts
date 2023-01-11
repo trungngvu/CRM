@@ -1,0 +1,25 @@
+const locale = {
+  USER_GROUP_DETAIL: 'Chi tiết nhóm người dùng',
+  EDIT: 'Chỉnh sửa',
+  DELETE: 'Xoá',
+  DELETE_USER_GROUP_DETAIL_CONFIRM: 'Xác nhận xóa nhóm người dùng',
+  DELETE_USER_GROUP_DETAIL_QUESTION: 'Bạn có chắc chắn muốn xóa.',
+  NUMBER: 'STT',
+  FULL_NAME: 'Họ tên',
+  EDIT_USER_GROUP: 'Chỉnh sửa nhóm người dùng',
+  DELETE_USER_GROUP: 'Xoá nhóm người dùng',
+  DESCRIPTION: 'Mô tả',
+  STATUS: 'Trạng thái',
+  GROUP_NAME: 'Tên nhóm',
+  ACTIVE: 'Đang hoạt động',
+  DEACTIVATE: 'Không hoạt động',
+  DELETE_USER_GROUP_TOASTIFY_SUCCESS: 'Xoá nhóm người dùng thành công',
+  DELETE_USER_GROUP_TOASTIFY_FAIL: 'Xoá nhóm người dùng thất bại',
+  USER_GROUP_NOT_EXIST: 'Nhóm người dùng không tồn tại',
+  PERMISSION_NAME: 'Tên quyền',
+  DECENTRALIZATION: 'Phân quyền',
+  MEMBER_LIST: 'Danh sách thành viên',
+  ACCESS_RIGHTS: 'Quyền truy cập',
+};
+
+export default locale;

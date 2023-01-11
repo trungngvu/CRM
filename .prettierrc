@@ -1,0 +1,21 @@
+{
+  "semi": true,
+  "tabWidth": 2,
+  "useTabs": false,
+  "printWidth": 120,
+  "endOfLine": "auto",
+  "singleQuote": true,
+  "arrowParens": "avoid",
+  "trailingComma": "es5",
+  "bracketSameLine": false,
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true,
+  "importOrderCaseInsensitive": true,
+  "importOrderParserPlugins": ["jsx", "typescript", "decorators-legacy"],
+  "importOrder": [
+    "^(mock-api|styles)",
+    "<THIRD_PARTY_MODULES>",
+    "^(@src|@app|@components|@configs|@core|@hoc|@hooks|@pages|@services|@store|@types|@utils|@history|app)",
+    "^[./]"
+  ]
+}

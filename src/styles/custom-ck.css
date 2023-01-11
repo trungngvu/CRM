@@ -1,0 +1,39 @@
+.ck .ck-editor__main {
+  margin-bottom: -2px;
+}
+
+.ck .ck-toolbar {
+  padding-left: 0;
+  padding-right: 0;
+}
+.ck .ck-toolbar__items {
+  background-color: #f2f5f9 !important;
+  justify-content: flex-end;
+}
+.ck .ck-sticky-panel__content {
+  border-bottom: 1px solid #c7cbd1;
+  border-top: none;
+  width: 100%;
+}
+
+.ck.ck-editor {
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.ck-editor__editable_inline {
+  min-height: 250px;
+}
+
+.ck-editor__editable {
+  max-height: 400px;
+}
+
+.ck.ck-editor__editable_inline {
+  border-bottom: none;
+}
+
+.ck-focused {
+  border: #ccced1 1px solid !important;
+  box-shadow: none !important;
+}

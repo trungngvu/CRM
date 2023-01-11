@@ -1,0 +1,26 @@
+const locale = {
+  ADD_USER_GROUP: 'Add users group',
+  SAVE: 'Save',
+  NAME_GROUP: 'Name group',
+  ENTER_GROUP_NAME: 'Enter group name',
+  STATUS: 'Status',
+  MEMBER: 'Member',
+  ADD_MEMBER: 'Add member',
+  DESCRIPTION: 'Description',
+  ENTER_DESCRIPTION: 'Enter description',
+  ROLE: 'Role',
+  DEACTIVATE: 'Deactivate',
+  ACTIVE: 'Active',
+  FULL_NAME: 'Full name',
+  DELETE: 'Delete',
+  NAME_ERROR: 'Invalid user group name',
+  STATUS_REQUIRE: 'Status is require',
+  NAME_GROUP_EXIST: 'Group name already exists',
+  POST_ERROR: 'Add group fail',
+  POST_SUCCESS: 'Add group success',
+  DESCRIPTION_REQUIRE: 'Description is require',
+  DECENTRALIZATION: 'Decentralization',
+  PERMISSION_NAME: 'Permission name',
+};
+
+export default locale;

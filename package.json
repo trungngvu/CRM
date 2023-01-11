@@ -1,0 +1,160 @@
+{
+  "name": "battech-crm",
+  "version": "1.0.0",
+  "private": true,
+  "description": "BATTECH CRM",
+  "license": "ISC",
+  "author": "Shion",
+  "scripts": {
+    "build": "craco build",
+    "eject": "react-scripts eject",
+    "lint": "eslint --max-warnings 0 ./src --ext .js,jsx,ts,tsx src",
+    "lint-prettier": "prettier --config .prettierrc \"**/*.{html,css,scss,js,jsx,ts,tsx,json,md}\" --list-different",
+    "lint-staged-husky": "pretty-quick --staged && lint-staged",
+    "lint:fix": "eslint --fix --ext .js,jsx,ts,tsx src",
+    "prepare": "husky install",
+    "prettier": "prettier --config .prettierrc \"**/*.{html,css,scss,js,jsx,ts,tsx,json,md,svg}\" --write",
+    "start": "craco start",
+    "test": "craco test",
+    "storybook": "start-storybook -p 6006 -s public",
+    "build-storybook": "build-storybook -s public"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "lint-staged": {
+    "src/*.{js,jsx,ts,tsx}": [
+      "yarn lint",
+      "yarn prettier"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "dependencies": {
+    "@ckeditor/ckeditor5-build-classic": "^35.3.2",
+    "@ckeditor/ckeditor5-react": "^5.0.3",
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
+    "@headlessui/react": "^1.7.4",
+    "@heroicons/react": "^2.0.13",
+    "@hookform/resolvers": "^2.9.10",
+    "@loadable/component": "^5.15.2",
+    "@lottiefiles/react-lottie-player": "^3.4.7",
+    "@mui/base": "^5.0.0-alpha.104",
+    "@mui/icons-material": "^5.10.9",
+    "@mui/lab": "^5.0.0-alpha.108",
+    "@mui/material": "^5.10.13",
+    "@mui/styles": "^5.10.14",
+    "@mui/system": "^5.10.14",
+    "@mui/utils": "^5.10.14",
+    "@mui/x-date-pickers": "^5.0.9",
+    "@react-18-pdf/renderer": "^2.3.4",
+    "@react-pdf/renderer": "^3.0.1",
+    "@reduxjs/toolkit": "^1.8.5",
+    "axios": "^0.27.2",
+    "axios-mock-adapter": "^1.21.2",
+    "chart.js": "^4.0.1",
+    "chartjs-plugin-datalabels": "^2.1.0",
+    "clsx": "^1.1.1",
+    "copy-to-clipboard": "^3.3.3",
+    "craco": "^0.0.3",
+    "crypto-js": "^4.1.1",
+    "dayjs": "^1.11.6",
+    "events": "^3.3.0",
+    "framer-motion": "^7.6.9",
+    "history": "^5.3.0",
+    "i18next": "^22.0.6",
+    "jwt-decode": "^3.1.2",
+    "moment": "^2.29.4",
+    "react": "^18.1.0",
+    "react-chartjs-2": "^5.0.1",
+    "react-dom": "^18.1.0",
+    "react-hook-form": "^7.39.5",
+    "react-i18next": "^12.0.0",
+    "react-moment": "^1.1.2",
+    "react-redux": "^8.0.5",
+    "react-router-dom": "^6.4.3",
+    "react-scripts": "5.0.1",
+    "react-toastify": "^9.1.1",
+    "redux-persist": "^6.0.0",
+    "tailwind-merge": "^1.8.0",
+    "use-deep-compare-effect": "^1.8.1",
+    "yup": "^0.32.11"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^17.3.0",
+    "@commitlint/config-conventional": "^17.3.0",
+    "@storybook/addon-actions": "^6.5.13",
+    "@storybook/addon-essentials": "^6.5.13",
+    "@storybook/addon-interactions": "^6.5.13",
+    "@storybook/addon-links": "^6.5.13",
+    "@storybook/builder-webpack5": "^6.5.13",
+    "@storybook/manager-webpack5": "^6.5.13",
+    "@storybook/node-logger": "^6.5.13",
+    "@storybook/preset-create-react-app": "^4.1.2",
+    "@storybook/react": "^6.5.13",
+    "@storybook/testing-library": "^0.0.13",
+    "@tailwindcss/aspect-ratio": "^0.4.0",
+    "@tailwindcss/forms": "^0.5.2",
+    "@tailwindcss/line-clamp": "^0.4.0",
+    "@tailwindcss/typography": "^0.5.8",
+    "@trivago/prettier-plugin-sort-imports": "^3.4.0",
+    "@types/crypto-js": "^4.1.1",
+    "@types/file-loader": "^5.0.1",
+    "@types/loadable__component": "^5.13.4",
+    "@types/lodash": "^4.14.190",
+    "@types/react": "^18.0.25",
+    "@types/react-dom": "^18.0.9",
+    "@types/react-pdf": "^6.2.0",
+    "@typescript-eslint/eslint-plugin": "^5.44.0",
+    "@typescript-eslint/parser": "^5.44.0",
+    "autoprefixer": "^10.4.13",
+    "babel-plugin-named-exports-order": "^0.0.2",
+    "eslint": "^8.28.0",
+    "eslint-config-airbnb": "19.0.4",
+    "eslint-config-airbnb-typescript": "^17.0.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-import-resolver-typescript": "^3.5.2",
+    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-jsx-a11y": "^6.5.1",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-react": "^7.31.11",
+    "eslint-plugin-react-hooks": "^4.3.0",
+    "file-loader": "^6.2.0",
+    "husky": "^8.0.2",
+    "lint-staged": "^13.0.3",
+    "postcss": "^8.4.19",
+    "prettier": "^2.8.0",
+    "pretty-quick": "^3.1.3",
+    "prop-types": "^15.8.1",
+    "react-pdf": "^6.2.0",
+    "tailwindcss": "^3.2.4",
+    "typescript": "^4.9.3",
+    "web-vitals": "^3.1.0",
+    "webpack": "^5.75.0"
+  },
+  "eslintConfig": {
+    "overrides": [
+      {
+        "files": [
+          "**/*.stories.*"
+        ],
+        "rules": {
+          "import/no-anonymous-default-export": "off"
+        }
+      }
+    ]
+  }
+}

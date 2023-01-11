@@ -1,0 +1,21 @@
+export type ResumeProps = {
+  address: string;
+  careerGoals: string;
+  certificate: string;
+  dob: string;
+  education: string;
+  email: string;
+  id: string | number;
+  name: string;
+  path: string;
+  phone: string;
+  Project: string;
+  Skill: string;
+  experience: string;
+  position: string;
+  sex: string;
+  skill: string;
+  updateAt: string;
+  createdAt: string;
+  _entity: string;
+};

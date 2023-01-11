@@ -1,0 +1,10 @@
+/* Set width when upload pdf file */
+.react-pdf__Page__canvas {
+  max-width: 1530px !important;
+}
+
+@media (max-width: 1530px) {
+  .react-pdf__Page__canvas {
+    width: 100% !important;
+  }
+}

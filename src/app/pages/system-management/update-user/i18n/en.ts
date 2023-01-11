@@ -1,0 +1,26 @@
+const locale = {
+  ADD_USER: 'Add new user',
+  SAVE: 'Save',
+  FULL_NAME: 'Full name',
+  PHONE_NUMBER: 'Phone number',
+  STATUS: 'Status',
+  GROUP_MANAGEMENT: 'Nhóm người dùng',
+  GENDER: 'Gender',
+  DECENTRALIZATION: 'Phân quyền',
+  PERMISSION_NAME: 'Tên phân quyền',
+  DESCRIPTION: 'Description',
+  ACTIVE: 'Active',
+  DEACTIVATE: 'Deactivate',
+  MALE: 'Male',
+  FEMALE: 'Female',
+  OTHERS: 'Other',
+  CHOOSE_GENDER: 'Choose Gender',
+  CHOOSE_DEPARTMENT: 'Choose Department',
+  NAME_REQUIRE: 'Name is require',
+  EMAIL_REQUIRE: 'Email is require',
+  EMAIL_ERROR: 'Email invalid',
+  STATUS_REQUIRE: 'Status is require',
+  DEPARTMENT_REQUIRE: 'Department is require',
+};
+
+export default locale;

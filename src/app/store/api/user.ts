@@ -1,0 +1,114 @@
+import { createApi } from '@reduxjs/toolkit/query/react';
+
+import { API_CONFIG } from '@configs';
+import { DeleteUserProps } from '@src/app/types/api/user/delete-user';
+import {
+  API_METHOD,
+  ChangePasswordProps,
+  ChangePasswordResponse,
+  CreateUserProps,
+  CreateUserResponse,
+  ForgotPasswordProps,
+  ForgotPasswordResponse,
+  GetUsersResponse,
+  SignInWithEmailAndPasswordProps,
+  SignInWithEmailAndPasswordResponse,
+  SignInWithTokenResponse,
+  UpdateUserProps,
+  UpdateUserResponse,
+  UserProps,
+} from '@types';
+
+import { GetUser } from '../../types/api/user/get-user';
+import { baseQuery } from './base-query';
+
+const { SIGN_IN_WITH_EMAIL_AND_PASSWORD, SIGN_IN_WITH_TOKEN, FORGOT_PASSWORD, CHANGE_PASSWORD, USERS } = API_CONFIG;
+const { GET, POST, PATCH, DELETE } = API_METHOD;
+
+export const USER_API_REDUCER_KEY = 'userApi';
+
+export const userAPI = createApi({
+  reducerPath: USER_API_REDUCER_KEY,
+
+  baseQuery,
+
+  endpoints: builder => ({
+    signInWithEmailAndPassword: builder.mutation<SignInWithEmailAndPasswordResponse, SignInWithEmailAndPasswordProps>({
+      query: data => ({
+        url: SIGN_IN_WITH_EMAIL_AND_PASSWORD,
+        method: POST,
+        data,
+      }),
+    }),
+    signInWithToken: builder.mutation<SignInWithTokenResponse, void>({
+      query: () => ({
+        url: SIGN_IN_WITH_TOKEN,
+        method: GET,
+      }),
+    }),
+
+    forgotPassword: builder.mutation<ForgotPasswordResponse, ForgotPasswordProps>({
+      query: data => ({
+        url: FORGOT_PASSWORD,
+        method: POST,
+        data,
+      }),
+    }),
+    changePassword: builder.mutation<ChangePasswordResponse, ChangePasswordProps>({
+      query: data => ({
+        url: CHANGE_PASSWORD,
+        method: POST,
+        data,
+      }),
+    }),
+
+    getUsers: builder.query<GetUsersResponse, void>({
+      query: () => ({
+        url: USERS,
+        method: GET,
+      }),
+    }),
+
+    createUser: builder.mutation<CreateUserResponse, CreateUserProps>({
+      query: data => ({
+        url: USERS,
+        method: POST,
+        data,
+      }),
+    }),
+    deleteUserById: builder.mutation<void, DeleteUserProps>({
+      query: data => ({
+        url: `${USERS}/${data.id}`,
+        method: DELETE,
+      }),
+    }),
+    getUserById: builder.query<UserProps, GetUser>({
+      query: data => ({
+        url: `${USERS}/${data.id}`,
+        method: GET,
+      }),
+    }),
+
+    updateUser: builder.mutation<UpdateUserResponse, UpdateUserProps>({
+      query: data => ({
+        url: `${USERS}/${data.id}`,
+        method: PATCH,
+        data,
+      }),
+    }),
+  }),
+});
+
+export const userAPIReducer = userAPI.reducer;
+
+export const {
+  useSignInWithEmailAndPasswordMutation,
+  useSignInWithTokenMutation,
+  useChangePasswordMutation,
+  useForgotPasswordMutation,
+  useGetUsersQuery,
+  useDeleteUserByIdMutation,
+  useUpdateUserMutation,
+  useCreateUserMutation,
+  useGetUserByIdQuery,
+} = userAPI;

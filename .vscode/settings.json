@@ -1,0 +1,9 @@
+{
+  "i18n-ally.localesPaths": [
+    "src/app/components/navbar-item/i18n",
+    "src/app/components/user-menu/i18n",
+    "src/app/pages/auth/sign-in/i18n",
+    "src/app/pages/user-management/add/i18n"
+  ],
+  "cSpell.words": ["persistor"]
+}
