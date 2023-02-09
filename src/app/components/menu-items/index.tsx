@@ -24,7 +24,7 @@ const MenuItems = ({ data }: MenuItemsProps) => {
   };
 
   return (
-    <Menu.Items as="section">
+    <Menu.Items static as="section">
       {data.map(({ id, icon, text, to, onClick }) => (
         <Menu.Item
           key={id}

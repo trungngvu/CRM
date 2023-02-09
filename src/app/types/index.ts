@@ -10,7 +10,7 @@ export * from './position';
 
 export * from './pages';
 
-export * from './menus';
+export * from './pages-name';
 
 export * from './languages';
 
@@ -32,7 +32,7 @@ export * from './comment-type';
 
 export * from './comment';
 
-export * from './user-group-status';
+export * from './active-status';
 
 export * from './error-response';
 

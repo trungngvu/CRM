@@ -1,5 +1,5 @@
-import { selectUserRoles, useAppSelector } from '@store';
-import { ROLE } from '@types';
+import { selectUserRoles, useAppSelector } from '../../store';
+import { ROLE } from '../../types';
 
 const useRoles = () => {
   const userRoles = useAppSelector(selectUserRoles);

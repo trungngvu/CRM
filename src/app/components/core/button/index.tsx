@@ -85,6 +85,9 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     const onMouseEnter = () => setIconComponentColor(iconHoverColor);
     const onMouseLeave = () => setIconComponentColor(iconColor);
 
+    /**
+     * Change icon color when disable status change
+     */
     useEffect(() => {
       if (!disabled) {
         setIconComponentColor(iconColor);
@@ -117,7 +120,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
               'rounded-[3px]': shape === 'default',
               'rounded-[20px]': shape === 'round',
             },
-            'whitespace-nowrap select-none flex justify-center items-center | disabled:opacity-80'
+            'whitespace-nowrap select-none flex justify-center items-center'
           ),
           props.className
         )}

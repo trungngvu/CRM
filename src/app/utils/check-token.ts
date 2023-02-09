@@ -1,10 +1,16 @@
 import jwtDecode, { JwtPayload } from 'jwt-decode';
 
-const isTokenValid = (accessToken: string): boolean => {
+const checkToken = (accessToken: string): boolean => {
+  /**
+   * Check if access token is does not exist
+   */
   if (!accessToken) {
     return false;
   }
 
+  /**
+   * Check if access token is not valid time
+   */
   const decoded: JwtPayload = jwtDecode(accessToken);
 
   const currentTime = Date.now() / 1000;
@@ -16,4 +22,4 @@ const isTokenValid = (accessToken: string): boolean => {
   return true;
 };
 
-export default isTokenValid;
+export default checkToken;

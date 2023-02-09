@@ -11,24 +11,12 @@ import { EmailIcon } from '@components/core/icons';
 import Input from '@components/core/input';
 import useI18n from '@hooks/use-i18n';
 import { useForgotPasswordMutation } from '@store';
-import { ForgotPasswordProps, LANGUAGES, PAGES } from '@types';
+import { ForgotPasswordProps, PAGES } from '@types';
 
-import { en, vi } from './i18n';
+import languages from './i18n';
 
 const ForgotPassword = (): JSX.Element => {
-  const translate = useI18n({
-    name: ForgotPassword.name,
-    data: [
-      {
-        key: LANGUAGES.EN,
-        value: en,
-      },
-      {
-        key: LANGUAGES.VI,
-        value: vi,
-      },
-    ],
-  });
+  const translate = useI18n(languages);
   const [forgotPassword, { isLoading, isError, error }] = useForgotPasswordMutation();
 
   const isNetworkError = isError && !(error as AxiosError)?.status;

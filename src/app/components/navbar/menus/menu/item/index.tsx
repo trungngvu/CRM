@@ -5,9 +5,8 @@ import { SETTINGS_CONFIG } from '@configs';
 import history from '@history';
 import useI18n from '@hooks/use-i18n';
 import { selectDisplaySetting, useAppSelector } from '@store';
-import { LANGUAGES } from '@types';
 
-import { en, vi } from './i18n';
+import languages from './i18n';
 
 const { LOGO_SIZE } = SETTINGS_CONFIG;
 
@@ -23,28 +22,12 @@ type ItemProps = {
   onClick?: (() => void) | null;
 };
 
-const Item = ({
-  data: { name, icon, path },
-  isParent = false,
-  isExpand = false,
-  active,
-  onClick,
-}: ItemProps): JSX.Element => {
+const Item = ({ data, isParent = false, isExpand = false, active, onClick }: ItemProps): JSX.Element => {
+  const { name, icon, path } = data || {};
+
   const { expandNavbar } = useAppSelector(selectDisplaySetting);
 
-  const translate = useI18n({
-    name: Item.name,
-    data: [
-      {
-        key: LANGUAGES.EN,
-        value: en,
-      },
-      {
-        key: LANGUAGES.VI,
-        value: vi,
-      },
-    ],
-  });
+  const translate = useI18n(languages);
 
   const handleClick = () => (onClick ? onClick() : history.push(path));
 

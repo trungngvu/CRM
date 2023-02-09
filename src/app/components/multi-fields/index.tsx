@@ -35,7 +35,7 @@ const MultiField = ({ dataField, control, errors, onChangeEtm, valueEtmTime }: M
   const taskId = searchParams.get('taskId');
 
   const handleOnkeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === '-' || e.key === '+') {
+    if (e.key.match(/[+-]/)) {
       e.preventDefault();
     }
   };
@@ -110,7 +110,7 @@ const MultiField = ({ dataField, control, errors, onChangeEtm, valueEtmTime }: M
                   return (
                     <div className="col-span-1 sm:col-span-2" key={name}>
                       <SelectHeadless
-                        className=" m-[-1px] h-[42px]"
+                        className="h-10"
                         label={label}
                         isRequire={isRequire}
                         data={data}
@@ -135,7 +135,7 @@ const MultiField = ({ dataField, control, errors, onChangeEtm, valueEtmTime }: M
                     {isRequire && <p className="text-[red]">*</p>}
                   </label>
                 )}
-                <div className="flex justify-between w-[100%] h-[42px] border-[1px] border-solid border-secondary rounded-[4px] hover:border-[black] ">
+                <div className="flex justify-between w-[100%] h-[40px] border-[1px] border-solid border-secondary rounded-[4px] hover:border-[black] ">
                   <Controller
                     name={name}
                     control={control}
@@ -144,7 +144,7 @@ const MultiField = ({ dataField, control, errors, onChangeEtm, valueEtmTime }: M
                         <>
                           {onChangeEtm && (
                             <input
-                              className="w-[75%] border-transparent focus:border-transparent focus:ring-0 rounded-[4px]"
+                              className="w-[75%] h-full border-transparent focus:border-transparent focus:ring-0 rounded-[4px]"
                               type="number"
                               value={valueEtmTime}
                               placeholder="0"
@@ -158,7 +158,7 @@ const MultiField = ({ dataField, control, errors, onChangeEtm, valueEtmTime }: M
                             errors={errors?.[name]}
                             fieldData={{ ...field }}
                             withoutBorder
-                            className="w-[100px] h-[26px] my-[7px]"
+                            className="w-[100px] h-6 my-2"
                             data={data}
                             placeholder={placeholder || data[0].label}
                           />
@@ -205,7 +205,7 @@ const MultiField = ({ dataField, control, errors, onChangeEtm, valueEtmTime }: M
                       errors={errors?.[name]}
                       data={data}
                       key={name}
-                      className=" m-[-1px] h-[42px]"
+                      className="h-10 "
                       fieldData={{ ...field }}
                       placeholder={placeholder || data[0]?.label}
                       label={label}

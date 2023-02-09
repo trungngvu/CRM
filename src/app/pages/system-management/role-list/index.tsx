@@ -3,43 +3,28 @@ import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import { Button, Loading, PopupDelete, Table, TextLink } from '@components';
-// import history from '@history';
+import { AddIcon, DeleteIcon, EditIcon } from '@components/core/icons';
+import Popup from '@components/core/popup';
+import history from '@history';
 import useI18n from '@hooks/use-i18n';
-import { AddIcon, DeleteIcon, EditIcon } from '@src/app/components/core/icons';
-import Popup from '@src/app/components/core/popup';
-import useModal from '@src/app/hooks/use-modal';
-import useStatus from '@src/app/hooks/use-status';
-import { useDeleteRoleByIdMutation, useGetRolesQuery } from '@src/app/store';
-import history from '@src/browser-history';
-import { LANGUAGES, PAGES, RoleProps, USER_GROUP_STATUS } from '@types';
+import useModal from '@hooks/use-modal';
+import useStatus from '@hooks/use-status';
+import { useDeleteRoleByIdMutation, useGetRolesQuery } from '@store';
+import { ACTIVE_STATUS, PAGES, RoleProps } from '@types';
 
-import { en, vi } from './i18n';
+import languages from './i18n';
 
-const { ALL, ACTIVE, DEACTIVATE } = USER_GROUP_STATUS;
+const { ALL, ACTIVE, DEACTIVATED } = ACTIVE_STATUS;
 
 const RoleList = (): JSX.Element => {
   const { data, refetch } = useGetRolesQuery(undefined, { refetchOnMountOrArgChange: true });
   const [deleteRole, { isLoading, isError, isSuccess }] = useDeleteRoleByIdMutation();
   const [idRole, setIdRole] = useState<number>();
   const [displayData, setDisplayData] = useState<RoleProps[]>([]);
-  const { currentStatus, SelectStatus } = useStatus<USER_GROUP_STATUS>({
-    defaultValue: USER_GROUP_STATUS.ALL,
-  });
-  const { isOpen, open, close } = useModal();
+  const { currentStatus, SelectStatus } = useStatus();
+  const { open, isOpen, close } = useModal();
 
-  const translate = useI18n({
-    name: RoleList.name,
-    data: [
-      {
-        key: LANGUAGES.EN,
-        value: en,
-      },
-      {
-        key: LANGUAGES.VI,
-        value: vi,
-      },
-    ],
-  });
+  const translate = useI18n(languages);
   const title = translate('TITLE');
   const statusList = [
     {
@@ -51,8 +36,8 @@ const RoleList = (): JSX.Element => {
       label: translate(ACTIVE),
     },
     {
-      value: DEACTIVATE,
-      label: translate(DEACTIVATE),
+      value: DEACTIVATED,
+      label: translate(DEACTIVATED),
     },
   ];
 
@@ -70,19 +55,17 @@ const RoleList = (): JSX.Element => {
     { value: 'actions', label: translate('ACTIONS') },
   ];
 
-  const tableSearchData = displayData.map(value => ({
-    name: value?.name,
-  }));
-
   const handlePopupDelete = (id: number) => {
     open();
     setIdRole(id);
   };
 
   const handleDeleteRole = () => {
-    if (idRole) deleteRole({ id: idRole });
-    close();
-    refetch();
+    if (idRole) {
+      deleteRole({ id: idRole });
+      refetch();
+      close();
+    }
   };
 
   const dataTable = displayData.map((value, key) => ({
@@ -183,7 +166,7 @@ const RoleList = (): JSX.Element => {
         data={dataTable}
         searchOptions={{
           display: true,
-          searchData: tableSearchData,
+          rootData: displayData,
         }}
       />
 

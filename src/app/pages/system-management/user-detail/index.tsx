@@ -1,36 +1,24 @@
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
-import { Button, PopupDelete, ProjectManagerNav, TagsList } from '@components';
-import { DeleteIcon, EditIcon } from '@src/app/components/core/icons';
-import Popup from '@src/app/components/core/popup';
-import useI18n from '@src/app/hooks/use-i18n';
-import useModal from '@src/app/hooks/use-modal';
-import { useGetUserByIdQuery } from '@src/app/store';
-import { Department, LANGUAGES, PAGES } from '@types';
+import { Button, Loading, OptionsNav, PopupDelete, TagsList } from '@components';
+import { DeleteIcon, EditIcon } from '@components/core/icons';
+import Popup from '@components/core/popup';
+import useI18n from '@hooks/use-i18n';
+import useModal from '@hooks/use-modal';
+import { useGetUserByIdQuery } from '@store';
+import { PAGES } from '@types';
 
-import { en, vi } from './i18n';
+import languages from './i18n';
 import UserDetailInfo from './user-detail-info';
 
 const UserDetail = (): JSX.Element => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const userId = searchParams.get('id');
-  const userDetail = useGetUserByIdQuery({ id: userId })?.data;
+  const { data: userDetail, isLoading } = useGetUserByIdQuery({ id: userId }, { refetchOnMountOrArgChange: true });
 
   const { close, isOpen, open } = useModal();
-  const translate = useI18n({
-    name: UserDetail.name,
-    data: [
-      {
-        key: LANGUAGES.EN,
-        value: en,
-      },
-      {
-        key: LANGUAGES.VI,
-        value: vi,
-      },
-    ],
-  });
+  const translate = useI18n(languages);
 
   const handleDeleteUser = (): void => {
     close();
@@ -68,25 +56,26 @@ const UserDetail = (): JSX.Element => {
   const tagsListData = [
     {
       title: translate('GROUP_USER'),
-      tags:
-        userDetail?.department?.map((item: Department) => {
-          return {
-            name: item.name,
-            url: '',
-          };
-        }) || [],
+      tags: (userDetail?.department || []).map(item => {
+        return {
+          name: item.name,
+          url: '',
+        };
+      }),
     },
     {
       title: translate('SET_PERMISSION'),
-      tags:
-        userDetail?.roles?.map(item => {
-          return {
-            name: item.name,
-            url: '',
-          };
-        }) || [],
+      tags: (userDetail?.roles || []).map(item => {
+        return {
+          name: item.name,
+          url: '',
+        };
+      }),
     },
   ];
+  if (isLoading) {
+    return <Loading />;
+  }
   return (
     <div className="flex flex-col min-h-[calc(100vh-58px)] p-4">
       <Popup isOpen={isOpen} onClose={close}>
@@ -98,7 +87,7 @@ const UserDetail = (): JSX.Element => {
           content={translate('ARE_YOU_SURE_WANT_TO_DELETE')}
         />
       </Popup>
-      <ProjectManagerNav
+      <OptionsNav
         className="mb-3"
         title={translate('USER_DETAIL')}
         onClickReturn={handleClickBack}
@@ -106,10 +95,7 @@ const UserDetail = (): JSX.Element => {
       />
       <div className="shadow-2 border border-secondary-light rounded-[5px] bg-white py-3 px-4 flex gap-x-[29px] gap-y-[5px] mb-4">
         <div className="grow-[1] flex flex-col gap-y-[8px]">
-          <UserDetailInfo
-            title={translate('FULL_NAME')}
-            description={`${userDetail?.firstName || ''} ${userDetail?.lastName || ''}`}
-          />
+          <UserDetailInfo title={translate('FULL_NAME')} description={`${userDetail?.fullName || ''}`} />
           <UserDetailInfo title="Email" description={userDetail?.email || ''} />
           <UserDetailInfo title={translate('PHONE_NUMBER')} description={userDetail?.phone || ''} />
         </div>

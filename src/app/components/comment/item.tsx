@@ -2,10 +2,10 @@ import { Avatar } from '@mui/material';
 import { SetStateAction } from 'react';
 
 import useI18n from '@hooks/use-i18n';
-import { COMMENT, COMMENT_TYPE, LANGUAGES, UserProps } from '@types';
+import { COMMENT, COMMENT_TYPE, UserProps } from '@types';
 
 import Input from '../core/input';
-import { en, vi } from './i18n';
+import languages from './i18n';
 
 interface PropsType {
   item: COMMENT;
@@ -18,19 +18,8 @@ interface PropsType {
 }
 
 const CommentItem = ({ item, index, displayData, user, modify, setModify, setHiddenPopup }: PropsType) => {
-  const translate = useI18n({
-    name: CommentItem.name,
-    data: [
-      {
-        key: LANGUAGES.EN,
-        value: en,
-      },
-      {
-        key: LANGUAGES.VI,
-        value: vi,
-      },
-    ],
-  });
+  const translate = useI18n(languages);
+
   const content = (el: COMMENT) => {
     if (typeof el.detail === 'string')
       if (el.id === modify)

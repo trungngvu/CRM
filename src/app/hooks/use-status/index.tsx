@@ -1,11 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
-import SelectItem from '@components/select-item';
-
-type UseStatusProps<T> = {
-  defaultValue: T;
-};
+import SelectItem from '../../components/select-item';
 
 type SelectStatusProps<T> = {
   title: string;
@@ -13,13 +9,13 @@ type SelectStatusProps<T> = {
     value: T;
     label: string;
   }[];
-  onClick?: () => void;
+  defaultValue?: T;
 };
 
-const useStatus = <T extends string>({ defaultValue }: UseStatusProps<T>) => {
+const useStatus = <T extends string>() => {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const [currentStatus, setCurrentStatus] = useState<T>((searchParams.get('status') as T) || defaultValue);
+  const [currentStatus, setCurrentStatus] = useState<T>(searchParams.get('status') as T);
 
   /**
    * Update status in url when currentStatus change
@@ -27,7 +23,9 @@ const useStatus = <T extends string>({ defaultValue }: UseStatusProps<T>) => {
   useEffect(() => {
     const currentParams = Object.fromEntries([...searchParams]);
 
-    setSearchParams({ ...currentParams, status: currentStatus });
+    if (currentStatus !== null) {
+      setSearchParams({ ...currentParams, status: currentStatus });
+    }
   }, [currentStatus]);
 
   return {

@@ -9,8 +9,9 @@ const locale = {
   DESCRIPTION: 'Description',
   ENTER_DESCRIPTION: 'Enter description',
   ROLE: 'Role',
-  DEACTIVATE: 'Deactivate',
+  DEACTIVATED: 'Deactivated',
   ACTIVE: 'Active',
+  GROUP_NAME: 'Group name',
   FULL_NAME: 'Full name',
   DELETE: 'Delete',
   NAME_ERROR: 'Invalid user group name',
@@ -21,6 +22,7 @@ const locale = {
   DESCRIPTION_REQUIRE: 'Description is require',
   DECENTRALIZATION: 'Decentralization',
   PERMISSION_NAME: 'Permission name',
+  CHOOSE_PERMISSION: 'Choose permission',
 };
 
 export default locale;

@@ -12,7 +12,7 @@ const locale = {
   STATUS: 'Trạng thái',
   GROUP_NAME: 'Tên nhóm',
   ACTIVE: 'Đang hoạt động',
-  DEACTIVATE: 'Không hoạt động',
+  DEACTIVATED: 'Không hoạt động',
   DELETE_USER_GROUP_TOASTIFY_SUCCESS: 'Xoá nhóm người dùng thành công',
   DELETE_USER_GROUP_TOASTIFY_FAIL: 'Xoá nhóm người dùng thất bại',
   USER_GROUP_NOT_EXIST: 'Nhóm người dùng không tồn tại',

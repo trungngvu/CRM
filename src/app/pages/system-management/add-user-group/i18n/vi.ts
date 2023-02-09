@@ -9,8 +9,9 @@ const locale = {
   DESCRIPTION: 'Mô tả',
   ROLE: 'Quyền truy cập',
   ENTER_DESCRIPTION: 'Nhập mô tả',
-  DEACTIVATE: 'Không hoạt động',
-  ACTIVE: 'Hoạt động',
+  DEACTIVATED: 'Không hoạt động',
+  ACTIVE: 'Đang hoạt động',
+  GROUP_NAME: 'Tên nhóm',
   FULL_NAME: 'Họ tên',
   DELETE: 'Xóa',
   NAME_ERROR: 'Tên nhóm người dùng không hợp lệ',
@@ -21,6 +22,7 @@ const locale = {
   DESCRIPTION_REQUIRE: 'Mô tả không được để trống',
   DECENTRALIZATION: 'Phân quyền',
   PERMISSION_NAME: 'Tên quyền',
+  CHOOSE_PERMISSION: 'Chọn quyền truy cập',
 };
 
 export default locale;

@@ -13,7 +13,7 @@ type TagsListProps = {
   titleClass?: string;
 };
 
-const TagsList = ({ className, data, titleClass }: TagsListProps): JSX.Element => {
+const TagsList = ({ className, data = [], titleClass }: TagsListProps): JSX.Element => {
   return (
     <div
       className={twMerge(
@@ -28,8 +28,8 @@ const TagsList = ({ className, data, titleClass }: TagsListProps): JSX.Element =
             {item.tags.map(tag => {
               return (
                 <Link key={tag.name} to={tag.url}>
-                  <div className=" bg-secondary-extraLight text-primary rounded-[3px] pl-[8px] pb-[8px] pt-[6px] pr-[7px] border border-secondary cursor-pointer h-[32px] flex items-center justify-center">
-                    {tag.name}
+                  <div className="bg-secondary-extraLight text-primary rounded-[3px] pl-[8px] pb-[8px] pt-[6px] pr-[7px] cursor-pointer h-[32px] flex items-center justify-center">
+                    <span className="translate-y-px">{tag.name}</span>
                   </div>
                 </Link>
               );

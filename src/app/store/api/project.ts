@@ -1,7 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 
 import { API_CONFIG } from '@configs';
-import { UpdateProjectProps, UpdateProjectResponse } from '@src/app/types/api/project/update-project';
 import {
   API_METHOD,
   CreateProjectProps,
@@ -11,6 +10,9 @@ import {
   GetProjectProps,
   GetProjectResponse,
   GetProjectsResponse,
+  ProjectProps,
+  UpdateProjectProps,
+  UpdateProjectResponse,
 } from '@types';
 
 import { baseQuery } from './base-query';
@@ -22,9 +24,8 @@ export const PROJECT_API_REDUCER_KEY = 'projectApi';
 
 export const projectApi = createApi({
   reducerPath: PROJECT_API_REDUCER_KEY,
-
   baseQuery,
-
+  refetchOnMountOrArgChange: true,
   endpoints: builder => ({
     createProject: builder.mutation<CreateProjectResponse, CreateProjectProps>({
       query: data => ({
@@ -33,18 +34,19 @@ export const projectApi = createApi({
         data,
       }),
     }),
-    getProjects: builder.query<GetProjectsResponse, void>({
+    getProjects: builder.query<ProjectProps[], void>({
       query: () => ({
         url: PROJECTS,
         method: GET,
       }),
+      transformResponse: (response: GetProjectsResponse) => response?.data,
     }),
     getProjectById: builder.query<GetProjectResponse, GetProjectProps>({
       query: data => ({
         url: `${PROJECTS}/${data.id}`,
         method: GET,
       }),
-      transformErrorResponse: (response: ErrorResponse) => response.data.errors.message,
+      transformErrorResponse: (response: ErrorResponse) => response.code,
     }),
     updateProject: builder.mutation<UpdateProjectResponse, UpdateProjectProps>({
       query: data => ({

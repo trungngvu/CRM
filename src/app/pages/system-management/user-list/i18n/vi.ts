@@ -2,7 +2,7 @@ const locale = {
   TITLE: 'Trạng thái',
   ALL: 'Tất cả',
   ACTIVE: 'Đang hoạt động',
-  DEACTIVATE: 'Không hoạt động',
+  DEACTIVATED: 'Không hoạt động',
   STT: 'STT',
   NAME: 'Họ Tên',
   EMAIL: 'Email',

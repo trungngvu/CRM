@@ -28,7 +28,7 @@ type TextEditorProps = {
   description?: string | undefined;
   errors?: FieldValues | undefined;
   isValidateDsc?: boolean;
-  editorErrorMess: string;
+  editorErrorMess?: string;
 };
 
 const TextEditor = ({
@@ -88,7 +88,7 @@ const TextEditor = ({
             extraPlugins: [uploadPlugin],
           }}
         />
-        {isValidateDsc && <p className="text-sm text-red-500">{editorErrorMess}</p>}
+        {isValidateDsc && <p className="text-sm text-error">{editorErrorMess}</p>}
       </div>
       <div
         className={clsx(

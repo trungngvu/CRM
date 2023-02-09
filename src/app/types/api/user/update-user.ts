@@ -1,4 +1,5 @@
-import { UserStatus } from './status';
+import { ACTIVE_STATUS } from '../../active-status';
+import { UserProps } from './user';
 
 export type UpdateUserProps = {
   id: string | number;
@@ -10,7 +11,7 @@ export type UpdateUserProps = {
   photo?: string;
   roles: number[];
   department: number[];
-  status: UserStatus;
+  status: ACTIVE_STATUS;
 };
 
-export type UpdateUserResponse = UpdateUserProps;
+export type UpdateUserResponse = UserProps;

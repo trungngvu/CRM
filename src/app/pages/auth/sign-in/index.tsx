@@ -12,25 +12,13 @@ import { EmailIcon, LockIcon } from '@components/core/icons';
 import Input from '@components/core/input';
 import useI18n from '@hooks/use-i18n';
 import { useSignInWithEmailAndPasswordMutation } from '@store';
-import { LANGUAGES, PAGES, SignInWithEmailAndPasswordProps } from '@types';
+import { PAGES, SignInWithEmailAndPasswordProps } from '@types';
 import checkApiError from '@utils/check-api-error';
 
-import { en, vi } from './i18n';
+import languages from './i18n';
 
 const SignIn = (): JSX.Element => {
-  const translate = useI18n({
-    name: SignIn.name,
-    data: [
-      {
-        key: LANGUAGES.EN,
-        value: en,
-      },
-      {
-        key: LANGUAGES.VI,
-        value: vi,
-      },
-    ],
-  });
+  const translate = useI18n(languages);
   const [signInWithEmailAndPassword, { isLoading, isError, error }] = useSignInWithEmailAndPasswordMutation();
 
   const { isNetworkError } = checkApiError(error as AxiosError);

@@ -3,7 +3,7 @@ import { CKEditor } from '@ckeditor/ckeditor5-react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useEffect, useState } from 'react';
 import { Controller, FieldValues, useForm } from 'react-hook-form';
-import { Link, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import * as Yup from 'yup';
 
@@ -12,29 +12,17 @@ import { SaveIcon } from '@components/core/icons';
 import { DataDisplay } from '@components/popups/popup-add-member';
 import history from '@history';
 import useI18n from '@hooks/use-i18n';
-import useModal from '@src/app/hooks/use-modal';
+import useModal from '@hooks/use-modal';
 import { useGetDepartmentByIdQuery, useGetRolesQuery, useGetUsersQuery, useUpdateDepartmentMutation } from '@store';
-import { FIELD_TYPE, LANGUAGES, PAGES, SelectItem, UpdateDepartmentProps, USER_GROUP_STATUS } from '@types';
+import { ACTIVE_STATUS, FIELD_TYPE, PAGES, SelectItem, UpdateDepartmentProps } from '@types';
 
-import { en, vi } from './i18n';
+import languages from './i18n';
 
 const { INPUT, SELECT } = FIELD_TYPE;
-const { ACTIVE, DEACTIVATE } = USER_GROUP_STATUS;
+const { ACTIVE, DEACTIVATED } = ACTIVE_STATUS;
 
 const UpdateUserGroup = (): JSX.Element => {
-  const translate = useI18n({
-    name: UpdateUserGroup.name,
-    data: [
-      {
-        key: LANGUAGES.EN,
-        value: en,
-      },
-      {
-        key: LANGUAGES.VI,
-        value: vi,
-      },
-    ],
-  });
+  const translate = useI18n(languages);
 
   const { isOpen, open, close, Popup } = useModal();
 
@@ -55,6 +43,8 @@ const UpdateUserGroup = (): JSX.Element => {
   const [updateDepartment, { isLoading, isSuccess, isError, error }] = useUpdateDepartmentMutation();
   const { data: dataRole } = useGetRolesQuery(undefined, { refetchOnMountOrArgChange: true });
 
+  const navigate = useNavigate();
+
   const schema = Yup.object({
     name: Yup.string().nullable().required(translate('NAME_ERROR').toString()),
   });
@@ -62,14 +52,15 @@ const UpdateUserGroup = (): JSX.Element => {
   const {
     handleSubmit,
     control,
-    formState: { errors, dirtyFields },
+    formState: { errors, isDirty },
     setError,
     setValue,
+    reset,
   } = useForm<FieldValues>({
     resolver: yupResolver(schema),
     defaultValues: {
       name: '',
-      status: USER_GROUP_STATUS.ACTIVE,
+      status: ACTIVE,
       description: '',
       users: [],
       roles: [],
@@ -93,6 +84,10 @@ const UpdateUserGroup = (): JSX.Element => {
   const onChangeDsc = (_event: Event, editor: typeof ClassicEditor) => {
     const dataDsc = editor.getData();
     setValueDescription(dataDsc);
+  };
+
+  const handleBack = () => {
+    navigate(-1);
   };
 
   const onSubmit = async (dataFields: FieldValues) => {
@@ -123,8 +118,7 @@ const UpdateUserGroup = (): JSX.Element => {
 
   useEffect(() => {
     if (departmentById.data) {
-      setValue('id', departmentById.data?.id);
-      setValue('name', departmentById.data?.name);
+      reset(departmentById.data);
       setValue('status', {
         value: departmentById?.data.status,
         label: translate(departmentById.data.status),
@@ -173,7 +167,11 @@ const UpdateUserGroup = (): JSX.Element => {
   useEffect(() => {
     listUsers.map(user => {
       return Object.assign(user, {
-        removeMember: <Button onClick={() => handleRemoveUser(user.id)}>{translate('DELETE')}</Button>,
+        removeMember: (
+          <Button color="action" shape="round" onClick={() => handleRemoveUser(user.id)}>
+            {translate('DELETE')}
+          </Button>
+        ),
       });
     });
   }, [listUsers]);
@@ -203,7 +201,7 @@ const UpdateUserGroup = (): JSX.Element => {
         })
       );
     if (
-      Object.keys(dirtyFields).length !== 0 ||
+      isDirty ||
       (departmentById.data?.description !== null && departmentById.data?.description !== valueDescription) ||
       !isLisUsersChange
     ) {
@@ -211,7 +209,7 @@ const UpdateUserGroup = (): JSX.Element => {
     } else {
       setIsDisable(false);
     }
-  }, [dirtyFields, valueDescription, listUsers]);
+  }, [isDirty, valueDescription, listUsers]);
 
   const columns = [
     { value: 'id', label: translate('ID') },
@@ -233,7 +231,7 @@ const UpdateUserGroup = (): JSX.Element => {
       label: translate('STATUS'),
       data: [
         { label: translate(ACTIVE), value: ACTIVE },
-        { label: translate(DEACTIVATE), value: DEACTIVATE },
+        { label: translate(DEACTIVATED), value: DEACTIVATED },
       ],
       name: 'status',
       isRequire: true,
@@ -250,9 +248,9 @@ const UpdateUserGroup = (): JSX.Element => {
       <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
         <div className="flex items-center justify-between">
           <div className="flex items-center">
-            <Link className="pr-3" to={PAGES.USER_GROUP_LIST}>
+            <div className="pr-3 cursor-pointer" onClick={handleBack}>
               <img width={10} src="/assets/icons/chevron-right.svg" alt="logo" />
-            </Link>
+            </div>
             <div className="text-xl font-bold">{translate('UPDATE_USER_GROUP')}</div>
           </div>
 
@@ -276,7 +274,7 @@ const UpdateUserGroup = (): JSX.Element => {
           <div className="flex flex-col col-span-3 gap-y-2">
             <label className="flex select-none">
               {translate('DESCRIPTION')}
-              <p className="ml-1 text-red-500">*</p>
+              <p className="ml-1 text-error">*</p>
             </label>
 
             <CKEditor
@@ -289,7 +287,6 @@ const UpdateUserGroup = (): JSX.Element => {
                 toolbarLocation: 'bottom',
               }}
             />
-            {/* <p className="text-sm text-red-500">{translate('DESCRIPTION_REQUIRE')}</p> */}
           </div>
         </div>
 
@@ -334,18 +331,6 @@ const UpdateUserGroup = (): JSX.Element => {
             />
           </Popup>
         </div>
-        {/* <div>
-          <Table
-            headerOptions={{ title: translate('DECENTRALIZATION') || '' }}
-            columns={permissionTableColumn}
-            data={permissionTableData}
-            selectOptions={{
-              display: true,
-              selectedList: selectListDTZ,
-              onChangeSelectedList: setSelectListDTZ,
-            }}
-          />
-        </div> */}
       </form>
     </div>
   );

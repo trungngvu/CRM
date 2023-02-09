@@ -1,5 +1,0 @@
-export enum USER_GROUP_STATUS {
-  ACTIVE = 'ACTIVE',
-  DEACTIVATE = 'DEACTIVATE',
-  ALL = 'ALL',
-}

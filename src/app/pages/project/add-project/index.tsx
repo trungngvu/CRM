@@ -14,28 +14,16 @@ import useI18n from '@hooks/use-i18n';
 import { API_DATE_FORMAT } from '@src/app/configs';
 import useModal from '@src/app/hooks/use-modal';
 import { useCreateProjectMutation, useGetUsersQuery } from '@store';
-import { COLORS, CreateProjectProps, FIELD_TYPE, LANGUAGES, PAGES, PROJECT_AND_TASK_STATUS, SelectItem } from '@types';
+import { COLORS, CreateProjectProps, FIELD_TYPE, PAGES, PROJECT_AND_TASK_STATUS, SelectItem } from '@types';
 
-import { en, vi } from './i18n';
+import languages from './i18n';
 
 const { NOT_STARTED, PAUSE, CANCELLED, COMPLETED, IN_PROGRESS } = PROJECT_AND_TASK_STATUS;
 const { DARK } = COLORS;
 const { SELECT, DATE } = FIELD_TYPE;
 
 const AddProject = (): JSX.Element => {
-  const translate = useI18n({
-    name: AddProject.name,
-    data: [
-      {
-        key: LANGUAGES.EN,
-        value: en,
-      },
-      {
-        key: LANGUAGES.VI,
-        value: vi,
-      },
-    ],
-  });
+  const translate = useI18n(languages);
 
   const { isOpen, open, close, Popup } = useModal();
 
@@ -139,6 +127,7 @@ const AddProject = (): JSX.Element => {
         removeMember: (
           <Button
             shape="round"
+            color="action"
             iconOptions={{
               icon: DeleteIcon,
             }}

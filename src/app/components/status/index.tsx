@@ -1,7 +1,7 @@
 import useI18n from '@hooks/use-i18n';
-import { LANGUAGES, PROJECT_AND_TASK_STATUS } from '@types';
+import { PROJECT_AND_TASK_STATUS } from '@types';
 
-import { en, vi } from './i18n';
+import languages from './i18n';
 
 export type StatusProps = {
   value: PROJECT_AND_TASK_STATUS;
@@ -10,19 +10,7 @@ export type StatusProps = {
 const { NOT_STARTED, IN_PROGRESS, PAUSE, CANCELLED, COMPLETED } = PROJECT_AND_TASK_STATUS;
 
 const Status = ({ value }: StatusProps): JSX.Element => {
-  const translate = useI18n({
-    name: Status.name,
-    data: [
-      {
-        key: LANGUAGES.EN,
-        value: en,
-      },
-      {
-        key: LANGUAGES.VI,
-        value: vi,
-      },
-    ],
-  });
+  const translate = useI18n(languages);
 
   return (
     <div className="flex items-center w-full gap-x-2">

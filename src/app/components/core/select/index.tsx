@@ -3,8 +3,10 @@ import { clsx } from 'clsx';
 import { ChangeEvent, ComponentPropsWithRef, Fragment, useEffect, useRef, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 
-import { ExpandMoreIcon, Icon } from '@components/core/icons';
 import { COLORS, SIZE } from '@types';
+import { filterByKeyword } from '@utils';
+
+import { ExpandMoreIcon, Icon } from '../icons';
 
 const { DARK } = COLORS;
 
@@ -21,9 +23,10 @@ export type SelectProps = {
     text: string;
     className?: string;
   };
-  data: SelectItemProps[];
-  selectedItemValue: SelectItemProps;
-  setSelectedItemValue: (value: SelectItemProps) => void;
+  data: (string | number | SelectItemProps)[];
+  defaultSelectedValue?: string | number | undefined;
+  selectedItem: SelectItemProps | null;
+  setSelectedItem: (value: SelectItemProps) => void;
   isRequired?: boolean;
 } & Omit<ComponentPropsWithRef<'input'>, 'size'>;
 
@@ -31,12 +34,23 @@ const Select = ({
   size = 'medium',
   labelOptions,
   data,
-  selectedItemValue,
-  setSelectedItemValue,
+  defaultSelectedValue,
+  selectedItem,
+  setSelectedItem,
   isRequired = false,
   name,
   ...props
 }: SelectProps): JSX.Element => {
+  const selectData = data.map(item => {
+    if (typeof item === 'string' || typeof item === 'number') {
+      return {
+        value: item,
+        label: `${item}`,
+      };
+    }
+
+    return item;
+  });
   const { text: labelText, className: labelClassName } = labelOptions || {};
 
   const [width, setWidth] = useState(0);
@@ -44,16 +58,19 @@ const Select = ({
 
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  const filteredItem =
-    query === ''
-      ? data
-      : data.filter(item =>
-          item?.label.toLowerCase().replace(/\s+/g, '').includes(query.toLowerCase().replace(/\s+/g, ''))
-        );
+  const filteredItem = query === '' ? selectData : selectData.filter(item => filterByKeyword(item?.label || '', query));
 
   useEffect(() => {
-    if (inputRef.current?.offsetWidth) {
+    if (inputRef?.current?.offsetWidth) {
       setWidth(inputRef?.current?.offsetWidth);
+    }
+
+    if (selectedItem === null) {
+      if (defaultSelectedValue) {
+        setSelectedItem(selectData.find(item => item?.value === defaultSelectedValue) || undefined);
+      } else {
+        setSelectedItem(defaultSelectedValue === undefined ? undefined : selectData[0]);
+      }
     }
   }, []);
 
@@ -61,7 +78,7 @@ const Select = ({
     setQuery(event.target.value);
 
     if (event.target.value === '') {
-      setSelectedItemValue(undefined);
+      setSelectedItem(undefined);
     }
   };
 
@@ -76,7 +93,7 @@ const Select = ({
       )}
 
       <div className="w-full">
-        <Combobox value={selectedItemValue} onChange={setSelectedItemValue}>
+        <Combobox value={selectedItem} onChange={setSelectedItem}>
           <div className="relative w-fit overflow-hidden text-left bg-transparent rounded-[3px] cursor-default focus:outline-none focus:ring-offset-0 sm:text-sm">
             <Combobox.Input
               onChange={onChangeSelect}

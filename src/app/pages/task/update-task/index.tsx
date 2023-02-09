@@ -18,39 +18,19 @@ import {
   useAppDispatch,
   useGetTaskByIdQuery,
   useGetTasksQuery,
-  useGetUsersQuery,
+  useGetUsersByTaskQuery,
   useUpdateTaskMutation,
 } from '@store';
-import {
-  ESTIMATE_UNIT,
-  FIELD_TYPE,
-  LANGUAGES,
-  PRIORITY,
-  PROJECT_AND_TASK_STATUS,
-  SelectItem,
-  UpdateTaskResponse,
-} from '@types';
+import { ESTIMATE_UNIT, FIELD_TYPE, PRIORITY, PROJECT_AND_TASK_STATUS, SelectItem, UpdateTaskResponse } from '@types';
 
-import { en, vi } from './i18n';
+import languages from './i18n';
 
 const { NOT_STARTED, IN_PROGRESS, CANCELLED, COMPLETED, PAUSE } = PROJECT_AND_TASK_STATUS;
 const { DAY, HOUR } = ESTIMATE_UNIT;
 const { SELECT, DATE, INPUT_SELECT, SELECT_SEARCH } = FIELD_TYPE;
 
 const UpdateTask = (): JSX.Element => {
-  const translate = useI18n({
-    name: UpdateTask.name,
-    data: [
-      {
-        key: LANGUAGES.EN,
-        value: en,
-      },
-      {
-        key: LANGUAGES.VI,
-        value: vi,
-      },
-    ],
-  });
+  const translate = useI18n(languages);
 
   const { isOpen, open, close, Popup } = useModal();
 
@@ -64,24 +44,24 @@ const UpdateTask = (): JSX.Element => {
       .min(Yup.ref('startDate'), translate('END_DATE_ERROR').toString()),
   });
 
-  const getUsers = useGetUsersQuery();
   const [updateTask, { isLoading, isSuccess, isError }] = useUpdateTaskMutation();
   const dispatch = useAppDispatch();
 
   const [valueDescription, setValueDescription] = useState('');
   const [listUsers, setListUsers] = useState<DataDisplay[]>([]);
   const [valueEtmTime, setValueEtmTime] = useState('');
-  const [isValidateDsc, setIsValidateDsc] = useState(false);
   const [isDisable, setIsDisable] = useState(false);
 
   const [searchParams] = useSearchParams();
   const projectId = searchParams.get('projectId');
-  const taskId = searchParams.get('id');
-  const tasksList = useGetTasksQuery({ projectId })?.data?.data || [];
+  const taskId = searchParams.get('taskId');
+  const { data: tasksList = [] } = useGetTasksQuery({ projectId });
   const dataTask = useGetTaskByIdQuery({
     projectId,
     id: taskId,
   }).data;
+
+  const listMembersInProject = useGetUsersByTaskQuery({ projectId }, { refetchOnMountOrArgChange: true });
 
   const {
     handleSubmit,
@@ -107,8 +87,8 @@ const UpdateTask = (): JSX.Element => {
   });
 
   const dataSelect: SelectItem[] = [];
-  if (getUsers) {
-    getUsers.data?.data.forEach(user => {
+  if (listMembersInProject) {
+    listMembersInProject.data?.data.forEach(user => {
       dataSelect.push({
         label: user?.fullName,
         value: user?.id,
@@ -147,9 +127,6 @@ const UpdateTask = (): JSX.Element => {
   const onChangeDsc = (_event: Event, editor: typeof ClassicEditor) => {
     const dataDsc = editor.getData();
     setValueDescription(dataDsc);
-    if (valueDescription !== ' ') {
-      setIsValidateDsc(false);
-    }
   };
 
   const onSubmit = async (dataSubmit: FieldValues) => {
@@ -189,12 +166,7 @@ const UpdateTask = (): JSX.Element => {
       }
     });
 
-    setIsValidateDsc(true);
-
-    if (valueDescription !== '') {
-      setIsValidateDsc(false);
-      await updateTask(dataPost as UpdateTaskResponse);
-    }
+    await updateTask(dataPost as UpdateTaskResponse);
   };
 
   useEffect(() => {
@@ -227,51 +199,18 @@ const UpdateTask = (): JSX.Element => {
 
   useEffect(() => {
     if (dataTask) {
-      setValue('id', dataTask?.id);
-      setValue('name', dataTask?.name);
-      setValue('priority', {
-        value: dataTask.priority,
-        label: translate(dataTask.priority),
-      });
-      if (dataTask.startDate) {
-        setValue('startDate', dayjs(dataTask?.startDate));
-      }
-      if (dataTask.endDate) {
-        setValue('endDate', dayjs(dataTask.endDate));
-      }
-      setValue('status', {
-        value: dataTask?.status,
-        label: translate(dataTask.status),
-      });
-      if (dataTask.assignee) {
-        setValue('assigneeId', {
-          value: dataTask?.assignee?.id,
-          label: dataTask?.assignee?.fullName,
-        });
-      }
-      if (dataTask.estimate) {
-        setValue('estimate', {
-          value: dataTask?.estimate?.unit,
-          label: translate(dataTask?.estimate?.unit),
-        });
-      }
-      if (dataTask.parent) {
-        setValue('parentId', {
-          value: dataTask.parent?.id,
-          label: dataTask?.parent.name,
-        });
-      }
-      setListUsers(
-        dataTask.follower.map(member => {
-          return {
-            id: member?.id,
-            name: member?.fullName,
-            email: member.email,
-          };
-        })
-      );
-      if (dataTask.estimate?.value) setValueEtmTime(dataTask.estimate?.value.toString());
-      if (dataTask.description) setValueDescription(dataTask.description);
+      const { name, priority, startDate, endDate, status, assignee, estimate, parent, follower } = dataTask;
+      setValue('name', name);
+      setValue('priority', { value: priority, label: translate(priority) });
+      setValue('startDate', startDate ? dayjs(startDate) : null);
+      setValue('endDate', endDate ? dayjs(endDate) : null);
+      setValue('status', { value: status, label: translate(status) });
+      setValue('assigneeId', assignee ? { value: assignee.id, label: assignee.fullName } : null);
+      setValue('estimate', estimate ? { value: estimate.unit, label: translate(estimate.unit) } : null);
+      setValue('parentId', parent ? { value: parent.id, label: parent.name } : null);
+      setListUsers(follower.map(member => ({ id: member.id, name: member.fullName, email: member.email })));
+      setValueEtmTime(estimate?.value?.toString() || '');
+      setValueDescription(dataTask.description || '');
     }
   }, [dataTask]);
 
@@ -286,28 +225,13 @@ const UpdateTask = (): JSX.Element => {
   }, [isSuccess]);
 
   useEffect(() => {
-    const isLisUsersChange =
-      JSON.stringify(
-        listUsers.map(user => {
-          return user.id;
-        })
-      ) !==
-      JSON.stringify(
-        dataTask?.follower.map(user => {
-          return user.id;
-        })
-      );
+    const listUsersIds = listUsers.map(user => user.id);
+    const dataTaskFollowersIds = dataTask?.follower.map(user => user.id);
+    const isLisUsersChange = JSON.stringify(listUsersIds) !== JSON.stringify(dataTaskFollowersIds);
+    const isValueEtmChange = valueEtmTime !== (dataTask?.estimate?.value.toString() || '');
+    const isDescriptionChange = valueDescription !== (dataTask?.description || '');
 
-    const isDescriptionChange = dataTask?.description !== valueDescription;
-
-    const validStr = (value: string | null | undefined | number) => value || '';
-    const isValueEtmChange = valueEtmTime !== validStr(dataTask?.estimate?.value.toString());
-
-    if (isDirty || isDescriptionChange || isLisUsersChange || isValueEtmChange) {
-      setIsDisable(true);
-    } else {
-      setIsDisable(false);
-    }
+    setIsDisable(isDirty || isDescriptionChange || isLisUsersChange || isValueEtmChange);
   }, [isDirty, valueDescription, listUsers, valueEtmTime]);
 
   const config = [
@@ -441,8 +365,6 @@ const UpdateTask = (): JSX.Element => {
             onChangeEtm={onChangeEtm}
             description={valueDescription}
             valueEtmTime={valueEtmTime}
-            editorErrorMess={translate('DESCRIPTION_REQUIRE').toString()}
-            isValidateDsc={isValidateDsc}
           />
         </div>
         <Popup>
@@ -451,7 +373,7 @@ const UpdateTask = (): JSX.Element => {
             setListUsers={setListUsers}
             isOpen={isOpen}
             handleClose={close}
-            data={getUsers.data?.data}
+            data={listMembersInProject.data?.data}
           />
         </Popup>
         <TrackerTask listUser={listUsers} handleOpen={open} handleRemoveUser={handleRemoveUser} />

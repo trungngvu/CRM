@@ -7,14 +7,15 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import * as Yup from 'yup';
 
-import { Button, Input, ProjectManagerNav, SelectHeadless, Table } from '@components';
-import { SaveIcon } from '@src/app/components/core/icons';
-import { ItemType } from '@src/app/components/core/select-headless';
-import useI18n from '@src/app/hooks/use-i18n';
-import { useCreateRoleMutation } from '@src/app/store';
-import { LANGUAGES, PAGES, USER_GROUP_STATUS } from '@types';
+import { Button, Input, Loading, OptionsNav, SelectHeadless, Table } from '@components';
+import { SaveIcon } from '@components/core/icons';
+import useI18n from '@hooks/use-i18n';
+import { useCreateRoleMutation, useGetPermissionsQuery } from '@store';
+import { ACTIVE_STATUS, CreateRoleProps, PAGES } from '@types';
 
-import { en, vi } from './i18n';
+import languages from './i18n';
+
+const { ACTIVE, DEACTIVATED } = ACTIVE_STATUS;
 
 type Item = {
   id: number;
@@ -23,32 +24,16 @@ type Item = {
 };
 
 const AddRole = (): JSX.Element => {
+  const { data: permissions, isLoading: isLoadingPermission } = useGetPermissionsQuery();
   const navigate = useNavigate();
 
   const [createRole, { isLoading, isSuccess, isError }] = useCreateRoleMutation();
 
   const [description, setDescription] = useState<string>('');
   const [descriptionError, setDescriptionError] = useState<string | null>(null);
-  const [roleList, setRoleList] = useState<Item[]>([]);
+  const [permissionsList, setPermissionsList] = useState<Item[]>([]);
 
-  const [status, setStatus] = useState<ItemType>({
-    value: '',
-    label: '',
-  });
-
-  const translate = useI18n({
-    name: AddRole.name,
-    data: [
-      {
-        key: LANGUAGES.EN,
-        value: en,
-      },
-      {
-        key: LANGUAGES.VI,
-        value: vi,
-      },
-    ],
-  });
+  const translate = useI18n(languages);
 
   const columns = [
     {
@@ -61,24 +46,8 @@ const AddRole = (): JSX.Element => {
     },
   ];
 
-  const tableData = [
-    {
-      name: 'Chức năng 1',
-      description: 'Lorem1',
-    },
-    {
-      name: 'Chức năng 2',
-      description: 'Lorem2',
-    },
-    {
-      name: 'Chức năng 3',
-      description: 'Lorem3',
-    },
-  ];
-
   const schema = Yup.object({
     name: Yup.string().required(translate('NAME_REQUIRED_ROLE').toString()),
-    status: Yup.object().nullable().required(translate('STATUS_REQUIRED_ROLE').toString()),
   });
 
   const {
@@ -89,7 +58,7 @@ const AddRole = (): JSX.Element => {
     resolver: yupResolver(schema),
     defaultValues: {
       name: '',
-      status: '',
+      status: ACTIVE,
     },
   });
 
@@ -97,14 +66,18 @@ const AddRole = (): JSX.Element => {
     navigate(PAGES.ROLE_LIST);
   };
 
-  const onSubmit = (data: FieldValues): void => {
+  const onSubmit = (data: FieldValues) => {
     if (Object.values(errors).some(error => error) || description.trim() === '') {
       if (description.trim() === '') setDescriptionError(translate('DESCRIPTION_REQUIRED_ROLE'));
       return;
     }
-    data.description = description;
-    data.status = data.status.value;
-    createRole(data as FormData);
+    const postData = {
+      name: data.name,
+      description,
+      status: data.status.value,
+      permissions: permissionsList.map(item => item.id),
+    };
+    createRole(postData as CreateRoleProps);
   };
 
   useEffect(() => {
@@ -128,14 +101,22 @@ const AddRole = (): JSX.Element => {
     setDescription(editor.getData());
   };
 
-  const onStatusChange = (value: ItemType): void => {
-    setStatus(value);
-  };
+  const permissionsData = (permissions?.data || []).map(item => {
+    return {
+      id: item?.id,
+      name: translate(item?.name),
+      description: translate(item?.name),
+    };
+  });
+
+  if (isLoadingPermission) {
+    return <Loading />;
+  }
 
   return (
     <div className="p-4 min-h-[calc(100vh-58px)]">
       <form onSubmit={handleSubmit(onSubmit)}>
-        <ProjectManagerNav
+        <OptionsNav
           className="mb-3"
           onClickReturn={handleOnClickReturn}
           title={translate('ADD')}
@@ -151,7 +132,6 @@ const AddRole = (): JSX.Element => {
               }}
               shape="round"
               className="w-full"
-              onClick={onSubmit}
             >
               {translate('SAVE')}
             </Button>
@@ -189,14 +169,13 @@ const AddRole = (): JSX.Element => {
                   return (
                     <SelectHeadless
                       data={[
-                        { label: translate('ACTIVE'), value: `${USER_GROUP_STATUS.ACTIVE}` },
-                        { label: translate('DEACTIVATE'), value: `${USER_GROUP_STATUS.DEACTIVATE}` },
+                        { label: translate('ACTIVE'), value: ACTIVE },
+                        { label: translate('DEACTIVATED'), value: DEACTIVATED },
                       ]}
                       className="h-[40px]"
                       label={translate('STATUS')}
+                      placeholder={translate('ACTIVE').toString()}
                       isRequire
-                      onChangeValue={onStatusChange}
-                      selected={status}
                       fieldData={{ ...field }}
                       errors={errors.status}
                     />
@@ -208,7 +187,7 @@ const AddRole = (): JSX.Element => {
           <div className="flex flex-col gap-y-2">
             <p className="mb-[6px]">
               {translate('DESCRIPTION')}
-              <span className="text-red-500"> *</span>
+              <span className="text-error"> *</span>
             </p>
             <div>
               <CKEditor
@@ -219,33 +198,27 @@ const AddRole = (): JSX.Element => {
               />
             </div>
             {descriptionError !== null && descriptionError !== '' && (
-              <div className="text-sm text-red-500">{descriptionError}</div>
+              <div className="text-sm text-error">{descriptionError}</div>
             )}
           </div>
         </div>
         <div>
-          <Table<Item>
+          <Table
             headerOptions={{
               title: `${translate('FUNCTION_LIST')}`,
             }}
             searchOptions={{
               display: true,
               searchByValue: 'name',
-              searchData: tableData,
+              rootData: permissionsData,
             }}
             selectOptions={{
               display: true,
-              selectedList: roleList,
-              onChangeSelectedList: setRoleList,
+              selectedList: permissionsList,
+              setSelectList: setPermissionsList,
             }}
             columns={columns}
-            data={tableData.map((item, index) => {
-              return {
-                id: index,
-                name: item.name,
-                description: item.description,
-              };
-            })}
+            data={permissionsData}
           />
         </div>
       </form>

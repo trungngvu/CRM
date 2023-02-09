@@ -2,15 +2,15 @@ import { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import { Button, PopupDelete, ProjectManagerNav, Table } from '@components';
-import { DeleteIcon, EditIcon } from '@src/app/components/core/icons';
-import Popup from '@src/app/components/core/popup';
-import useI18n from '@src/app/hooks/use-i18n';
-import useModal from '@src/app/hooks/use-modal';
-import { useDeleteRoleByIdMutation, useGetRoleByIdQuery } from '@src/app/store';
-import { LANGUAGES, PAGES } from '@types';
+import { Button, Loading, OptionsNav, PopupDelete, Table } from '@components';
+import { DeleteIcon, EditIcon } from '@components/core/icons';
+import Popup from '@components/core/popup';
+import useI18n from '@hooks/use-i18n';
+import useModal from '@hooks/use-modal';
+import { useDeleteRoleByIdMutation, useGetRoleByIdQuery } from '@store';
+import { PAGES } from '@types';
 
-import { en, vi } from './i18n';
+import languages from './i18n';
 
 const RoleDetail = (): JSX.Element => {
   const [deleteRole, { isLoading, isSuccess, isError }] = useDeleteRoleByIdMutation();
@@ -19,19 +19,11 @@ const RoleDetail = (): JSX.Element => {
   const roleId = searchParams.get('id');
   const navigate = useNavigate();
   const handleOnClickReturn = (): void => navigate(`${PAGES.ROLE_LIST}`);
-  const translate = useI18n({
-    name: RoleDetail.name,
-    data: [
-      {
-        key: LANGUAGES.EN,
-        value: en,
-      },
-      {
-        key: LANGUAGES.VI,
-        value: vi,
-      },
-    ],
-  });
+  const { data: roleDetail, isLoading: isLoadingRoleDetail } = useGetRoleByIdQuery(
+    { id: roleId },
+    { refetchOnMountOrArgChange: true }
+  );
+  const translate = useI18n(languages);
   const roleTableColumn = [
     {
       value: 'name',
@@ -42,17 +34,6 @@ const RoleDetail = (): JSX.Element => {
       label: translate('DESCRIPTION'),
     },
   ];
-  const roleTableData = [
-    {
-      name: 'khanh',
-      description: '1',
-    },
-    {
-      name: 'manh',
-      description: '2',
-    },
-  ];
-  const roleDetail = useGetRoleByIdQuery({ id: roleId }).data;
 
   useEffect(() => {
     if (isSuccess) {
@@ -75,6 +56,18 @@ const RoleDetail = (): JSX.Element => {
     deleteRole({ id: roleId });
   };
 
+  const permissionsList = (roleDetail?.permissions || []).map((item, index) => {
+    return {
+      id: index,
+      name: `${translate(item.name)}`,
+      description: `${translate(item.name)}`,
+    };
+  });
+
+  if (isLoadingRoleDetail) {
+    return <Loading />;
+  }
+
   return (
     <div className="p-4">
       <Popup isOpen={isOpen} onClose={close}>
@@ -86,7 +79,7 @@ const RoleDetail = (): JSX.Element => {
           content={translate('CONFIRM_DELETE_CONTENT')}
         />
       </Popup>
-      <ProjectManagerNav
+      <OptionsNav
         className="mb-3"
         onClickReturn={handleOnClickReturn}
         title={translate('DETAIL')}
@@ -129,13 +122,7 @@ const RoleDetail = (): JSX.Element => {
       </div>
       <Table
         columns={roleTableColumn}
-        data={roleTableData.map((item, index) => {
-          return {
-            id: index,
-            name: item.name,
-            description: item.description,
-          };
-        })}
+        data={permissionsList}
         headerOptions={{ title: translate('FUNCTIONS_LIST') || '' }}
       />
     </div>

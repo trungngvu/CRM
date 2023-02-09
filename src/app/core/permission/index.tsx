@@ -1,10 +1,11 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { matchRoutes, useLocation } from 'react-router-dom';
+import useDeepCompareEffect from 'use-deep-compare-effect';
 
 import { ROUTES_CONFIG, SETTINGS_CONFIG } from '@configs';
 import history from '@history';
-import { selectUserRoles, useAppSelector } from '@store';
-import { checkPermission } from '@utils';
+import { selectUserPermissions, selectUserRoles, useAppSelector } from '@store';
+import checkPermission from '@utils/check-permission';
 
 type PermissionProps = {
   children: ReactNode;
@@ -16,7 +17,8 @@ const Permission = ({ children }: PermissionProps): JSX.Element => {
   const [access, setAccess] = useState(true);
   const signInRedirectUrl = useRef<string | null>(null);
 
-  const userRoles = useAppSelector(selectUserRoles) || [];
+  const userRoles = useAppSelector(selectUserRoles);
+  const userPermissions = useAppSelector(selectUserPermissions);
   const location = useLocation();
 
   const redirectRoute = useCallback(() => {
@@ -49,10 +51,21 @@ const Permission = ({ children }: PermissionProps): JSX.Element => {
   /**
    * Check user access permission to current page
    */
-  useEffect(() => {
-    const [matchedRoute] = matchRoutes(ROUTES_CONFIG, location) ?? [];
+  useDeepCompareEffect(() => {
+    const [matchedRoute] = matchRoutes(ROUTES_CONFIG, location) || [];
 
-    setAccess(matchedRoute ? checkPermission({ auth: matchedRoute?.route?.auth, roles: userRoles }) : true);
+    const matchedRouteConfig = ROUTES_CONFIG.find(item => item.path === matchedRoute.pathname);
+
+    setAccess(
+      matchedRoute && matchedRouteConfig
+        ? checkPermission({
+            auth: matchedRoute.route.auth,
+            roles: userRoles,
+            permissions: userPermissions,
+            name: matchedRouteConfig.name,
+          })
+        : true
+    );
   }, [location, userRoles]);
 
   /**

@@ -2,7 +2,7 @@ const locale = {
   TITLE: 'Status',
   ALL: 'All',
   ACTIVE: 'Active',
-  DEACTIVATE: 'Not active',
+  DEACTIVATED: 'Deactivated',
   USERS_GROUP_NAME: 'Users group name',
   NAME: 'Users group name',
   STATUS: 'Status',

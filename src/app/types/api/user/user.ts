@@ -1,14 +1,13 @@
+import { ACTIVE_STATUS } from '../../active-status';
+import { PAGES_NAME } from '../../pages-name';
 import { ROLE } from '../../roles';
-import { UserStatus } from './status';
 
-export type Status = 'ALL' | 'ACTIVE' | 'DEACTIVATE';
-
-export type Department = {
+type UserDepartmentProps = {
   createdAt: string;
   updatedAt: string;
   id: number;
   name: string;
-  status: Status;
+  status: ACTIVE_STATUS;
 };
 
 export type UserProps = {
@@ -20,17 +19,16 @@ export type UserProps = {
   lastName: string;
   photo: string;
   fullName: string;
-  status: UserStatus;
+  status: ACTIVE_STATUS;
   gender: string;
+  permissions: PAGES_NAME[];
   roles: {
     createdAt: string;
     updatedAt: string;
     id: number | string;
     name: ROLE;
-    status?: UserStatus;
+    status?: ACTIVE_STATUS;
   }[];
   phone: string;
-  department: Department[];
+  department: UserDepartmentProps[];
 };
-
-export type GetUserResponse = UserProps;

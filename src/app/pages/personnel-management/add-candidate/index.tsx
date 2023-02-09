@@ -19,28 +19,12 @@ import {
   useResumeParserMutation,
   useUpdateResumeMutation,
 } from '@store';
-import { LANGUAGES, PAGES, ResumeParserResponse } from '@types';
+import { PAGES, ResumeParserResponse } from '@types';
 
-import { en, vi } from './i18n';
+import languages from './i18n';
 
-interface validate extends ResumeParserResponse {
-  id: string | number;
-}
-
-const AddCandidate = (): JSX.Element => {
-  const translate = useI18n({
-    name: AddCandidate.name,
-    data: [
-      {
-        key: LANGUAGES.EN,
-        value: en,
-      },
-      {
-        key: LANGUAGES.VI,
-        value: vi,
-      },
-    ],
-  });
+const AddCandidate = () => {
+  const translate = useI18n(languages);
 
   const { open, close, Popup } = useModal();
 
@@ -49,7 +33,7 @@ const AddCandidate = (): JSX.Element => {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<validate>();
+  } = useForm<ResumeParserResponse>();
 
   const { BASE_URL, RESUME } = API_CONFIG;
 
@@ -97,8 +81,8 @@ const AddCandidate = (): JSX.Element => {
     setSex(data);
   };
 
-  const onSubmit = async (data: validate) => {
-    await updateCv(data as ResumeParserResponse);
+  const onSubmit = async (data: ResumeParserResponse) => {
+    await updateCv(data);
     navigate(PAGES.CANDIDATE_LIST);
   };
 
@@ -223,7 +207,7 @@ const AddCandidate = (): JSX.Element => {
           </div>
         </div>
         <div className="flex flex-row gap-[20px]">
-          <div className=" w-1/2 max-h-fit border relative border-secondary-light border-solid rounded-[5px] ml-[13px] mb-[16px]">
+          <div className=" w-1/2 max-h-fit border relative border-secondary-light border-solid rounded-[5px] ml-4 mb-4">
             <div className="min-h-[826px] max-h-max m-1 flex flex-col">
               <div className="flex flex-col mx-auto text-center">
                 <Document
@@ -231,7 +215,7 @@ const AddCandidate = (): JSX.Element => {
                   loading={`${translate('PLEASE_WAIT')}`}
                   onLoadSuccess={onLoadPageDocument}
                   error={
-                    <div className="text-red-500 ">
+                    <div className="text-error">
                       {translate('ERROR')}
                       <br />
                       {translate('CHOSE_FILE')}

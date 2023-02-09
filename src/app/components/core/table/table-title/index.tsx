@@ -4,9 +4,9 @@ import Button from '../../button';
 import { AddIcon } from '../../icons';
 
 type TableTitleProps = {
-  title?: string | JSX.Element;
-  buttonContent?: string;
-  buttonAction?: () => void;
+  title: string | JSX.Element | undefined;
+  buttonContent: string | undefined;
+  buttonAction: (() => void) | undefined;
 };
 
 const TableTitle = ({ title, buttonContent, buttonAction }: TableTitleProps): JSX.Element => (

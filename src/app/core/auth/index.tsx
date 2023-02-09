@@ -9,7 +9,7 @@ import {
   userActions,
   useSignInWithTokenMutation,
 } from '@store';
-import { checkToken } from '@utils';
+import checkToken from '@utils/check-token';
 
 type AuthProps = {
   children: ReactNode;

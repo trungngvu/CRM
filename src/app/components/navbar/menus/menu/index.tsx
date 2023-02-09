@@ -18,7 +18,9 @@ type MenuProps = {
   };
 };
 
-const Menu = ({ data, data: { path, subs } }: MenuProps): JSX.Element => {
+const Menu = ({ data }: MenuProps): JSX.Element => {
+  const { path, subs } = data || {};
+
   const [isExpand, setIsExpand] = useState(false);
 
   const { pathname } = useLocation();
@@ -55,9 +57,9 @@ const Menu = ({ data, data: { path, subs } }: MenuProps): JSX.Element => {
       {subs && subs.length > 0 && expandNavbar && isExpand && (
         <div className="flex flex-col whitespace-nowrap gap-y-[5px] mt-[5px]">
           {subs.map(sub => {
-            const pathWithoutQuery = sub.path.split('?')[0];
+            const pathWithoutQuery = sub?.path.split('?')[0];
 
-            return <Item key={sub.name} data={sub} active={pathname.includes(pathWithoutQuery)} />;
+            return <Item key={sub?.name} data={sub} active={pathname === pathWithoutQuery} />;
           })}
         </div>
       )}

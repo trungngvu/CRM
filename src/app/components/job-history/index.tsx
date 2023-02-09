@@ -3,9 +3,8 @@ import CommentIcon from '@mui/icons-material/Comment';
 import EditIcon from '@mui/icons-material/Edit';
 
 import useI18n from '@hooks/use-i18n';
-import { LANGUAGES } from '@types';
 
-import { en, vi } from './i18n';
+import languages from './i18n';
 
 export interface PropTypes {
   id: number;
@@ -17,19 +16,8 @@ export interface PropTypes {
 }
 
 const JobHistory = ({ data }: { data: PropTypes[] }) => {
-  const translate = useI18n({
-    name: JobHistory.name,
-    data: [
-      {
-        key: LANGUAGES.EN,
-        value: en,
-      },
-      {
-        key: LANGUAGES.VI,
-        value: vi,
-      },
-    ],
-  });
+  const translate = useI18n(languages);
+
   return (
     <div className="w-full bg-white border rounded border-secondary">
       <div className="px-4 py-2 font-bold border-b border-b-secondary">

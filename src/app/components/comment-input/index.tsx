@@ -4,10 +4,9 @@ import { ChangeEvent, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 
 import useI18n from '@hooks/use-i18n';
-import { LANGUAGES } from '@types';
 
 import Input from '../core/input';
-import { en, vi } from './i18n';
+import languages from './i18n';
 
 const CommentInput = () => {
   const [inputValue, setInputValue] = useState<string>('');
@@ -16,19 +15,8 @@ const CommentInput = () => {
     setInputValue(e.target.value);
   };
 
-  const translate = useI18n({
-    name: CommentInput.name,
-    data: [
-      {
-        key: LANGUAGES.EN,
-        value: en,
-      },
-      {
-        key: LANGUAGES.VI,
-        value: vi,
-      },
-    ],
-  });
+  const translate = useI18n(languages);
+
   return (
     <div className="sticky bottom-0 w-full px-2 py-2 bg-white">
       <Input value={inputValue} onChange={handleOnChangeValue} placeholder={`${translate('CONTENT')}`} />

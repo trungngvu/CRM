@@ -57,4 +57,5 @@ input::-webkit-inner-spin-button {
 /* Hide Arrows From Input Number with Firefox browser */
 input[type='number'] {
   -moz-appearance: textfield;
+  appearance: textfield;
 }

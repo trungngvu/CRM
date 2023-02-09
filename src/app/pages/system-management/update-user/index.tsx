@@ -1,7 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useEffect, useState } from 'react';
 import { FieldValues, useForm } from 'react-hook-form';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import * as Yup from 'yup';
 
@@ -10,32 +10,21 @@ import { BackIcon, Icon, SaveIcon } from '@components/core/icons';
 import history from '@history';
 import useI18n from '@hooks/use-i18n';
 import { useGetDepartmentsQuery, useGetRolesQuery, useGetUserByIdQuery, useUpdateUserMutation } from '@store';
-import { COLORS, FIELD_TYPE, GENDER, LANGUAGES, PAGES, SelectItem, UpdateUserProps, USER_GROUP_STATUS } from '@types';
+import { ACTIVE_STATUS, COLORS, FIELD_TYPE, GENDER, PAGES, SelectItem, UpdateUserProps } from '@types';
 
-import { en, vi } from './i18n';
+import languages from './i18n';
 
 const { DARK } = COLORS;
-const { ACTIVE, DEACTIVATE } = USER_GROUP_STATUS;
+const { ACTIVE, DEACTIVATED } = ACTIVE_STATUS;
 const { MALE, FEMALE, OTHER } = GENDER;
 const { SELECT_MULTIPLE, INPUT, SELECT } = FIELD_TYPE;
 
 const AddUser = () => {
-  const translate = useI18n({
-    name: AddUser.name,
-    data: [
-      {
-        key: LANGUAGES.EN,
-        value: en,
-      },
-      {
-        key: LANGUAGES.VI,
-        value: vi,
-      },
-    ],
-  });
+  const translate = useI18n(languages);
 
   const [searchParams] = useSearchParams();
   const userId = searchParams.get('id');
+  const navigate = useNavigate();
 
   const { data: dataRoles } = useGetRolesQuery(undefined, { refetchOnMountOrArgChange: true });
   const { data: dataDepartment } = useGetDepartmentsQuery(undefined, { refetchOnMountOrArgChange: true });
@@ -75,8 +64,6 @@ const AddUser = () => {
       .nullable()
       .required(translate('EMAIL_REQUIRE').toString())
       .email(`${translate('EMAIL_ERROR')}`),
-    status: Yup.object().nullable().required(translate('STATUS_REQUIRE').toString()),
-    department: Yup.array().nullable().required(translate('DEPARTMENT_REQUIRE').toString()),
   });
 
   const {
@@ -107,12 +94,16 @@ const AddUser = () => {
         data[key] = data[key].map((item: SelectItem) => item.value);
       }
 
-      if (data[key] === null || data[key] === '' || data[key] === 'Invalid Date' || data[key]?.length < 1) {
+      if (data[key] === null || data[key] === '' || data[key] === 'Invalid Date') {
         delete data[key];
       }
     });
 
     await updateUser(data as UpdateUserProps);
+  };
+
+  const handleBack = () => {
+    navigate(-1);
   };
 
   useEffect(() => {
@@ -190,7 +181,7 @@ const AddUser = () => {
       label: translate('STATUS'),
       data: [
         { label: translate(ACTIVE), value: ACTIVE },
-        { label: translate(DEACTIVATE), value: DEACTIVATE },
+        { label: translate(DEACTIVATED), value: DEACTIVATED },
       ],
       name: 'status',
       isRequire: true,
@@ -235,9 +226,9 @@ const AddUser = () => {
       <form className="grid gap-4" onSubmit={handleSubmit(onSubmit)}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-x-2">
-            <Icon icon={BackIcon} color={DARK} to={PAGES.PROJECT_LIST} />
+            <Icon icon={BackIcon} color={DARK} onClick={handleBack} />
 
-            <div className="font-bold text-[20px] text-dark">{translate('ADD_USER')}</div>
+            <div className="font-bold text-[20px] text-dark">{translate('UPDATE_USER')}</div>
           </div>
 
           <div className="flex items-center gap-x-2">

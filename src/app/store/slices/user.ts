@@ -40,9 +40,6 @@ export const userSlice = createSlice({
     builder.addMatcher(userAPI.endpoints.signInWithEmailAndPassword.matchFulfilled, (state, action) => {
       state.waitAuthCheck = false;
       state.isAuthenticated = true;
-      // state.accessToken = action.payload.data.accessToken;
-      // state.data = action.payload.data.user;
-
       state.accessToken = action.payload.token;
       state.data = action.payload.user;
     });
@@ -54,9 +51,6 @@ export const userSlice = createSlice({
     builder.addMatcher(userAPI.endpoints.signInWithToken.matchFulfilled, (state, action) => {
       state.waitAuthCheck = false;
       state.isAuthenticated = true;
-      // state.accessToken = action.payload.data.accessToken;
-      // state.data = action.payload.data.user;
-
       state.accessToken = action.payload.token;
       state.data = action.payload.user;
     });
@@ -71,7 +65,10 @@ export const selectUser = ({ user }: { user: UserSliceProps }) => user;
 
 export const selectUserData = ({ user }: { user: UserSliceProps }) => user?.data;
 
-export const selectUserRoles = ({ user }: { user: UserSliceProps }) => user?.data?.roles.map(item => item.name);
+export const selectUserRoles = ({ user }: { user: UserSliceProps }) =>
+  (user?.data?.roles || []).map(item => item?.name);
+
+export const selectUserPermissions = ({ user }: { user: UserSliceProps }) => user?.data?.permissions || [];
 
 export const userActions = userSlice.actions;
 

@@ -1,5 +1,5 @@
 const locale = {
-  ADD_USER: 'Add new user',
+  UPDATe_USER: 'Update user',
   SAVE: 'Save',
   FULL_NAME: 'Full name',
   PHONE_NUMBER: 'Phone number',
@@ -10,7 +10,7 @@ const locale = {
   PERMISSION_NAME: 'Tên phân quyền',
   DESCRIPTION: 'Description',
   ACTIVE: 'Active',
-  DEACTIVATE: 'Deactivate',
+  DEACTIVATED: 'Deactivated',
   MALE: 'Male',
   FEMALE: 'Female',
   OTHERS: 'Other',

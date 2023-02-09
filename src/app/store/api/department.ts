@@ -23,9 +23,8 @@ export const DEPARTMENT_API_REDUCER_KEY = 'departmentApi';
 
 export const departmentApi = createApi({
   reducerPath: DEPARTMENT_API_REDUCER_KEY,
-
   baseQuery,
-
+  refetchOnMountOrArgChange: true,
   endpoints: builder => ({
     createDepartment: builder.mutation<CreateDepartmentResponse, CreateDepartmentProps>({
       query: data => ({
@@ -33,7 +32,7 @@ export const departmentApi = createApi({
         method: POST,
         data,
       }),
-      transformErrorResponse: (response: ErrorResponse) => response.data.errors.name,
+      transformErrorResponse: (response: ErrorResponse) => response.code,
     }),
     getDepartments: builder.query<GetDepartmentsResponse, void>({
       query: () => ({
@@ -53,7 +52,7 @@ export const departmentApi = createApi({
         method: PATCH,
         data,
       }),
-      transformErrorResponse: (response: ErrorResponse) => response.data.errors.name,
+      transformErrorResponse: (response: ErrorResponse) => response.code,
     }),
     deleteDepartmentById: builder.mutation<void, DeleteDepartmentProps>({
       query: data => ({

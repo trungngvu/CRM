@@ -6,14 +6,13 @@ import { toast } from 'react-toastify';
 
 import {
   Button,
+  CardDetail,
+  Loading,
   Options,
+  OptionsNav,
   PopupDelete,
-  ProjectManagerChart,
-  ProjectManagerNav,
-  ProjectManagerStats,
-  ProjectManagerStatus,
-  ProjectManagerTitle,
   Status,
+  StyledStatus,
   Table,
   TextLink,
   Time,
@@ -21,7 +20,6 @@ import {
 import { EditIcon } from '@components/core/icons';
 import useI18n from '@hooks/use-i18n';
 import useRoles from '@hooks/use-roles';
-import { DATE_FORMAT } from '@src/app/configs';
 import useModal from '@src/app/hooks/use-modal';
 import {
   projectActions,
@@ -30,9 +28,11 @@ import {
   useGetProjectByIdQuery,
   useGetTasksQuery,
 } from '@store';
-import { LANGUAGES, PAGES, PROJECT_AND_TASK_STATUS } from '@types';
+import { PAGES, PROJECT_AND_TASK_STATUS } from '@types';
 
-import { en, vi } from './i18n';
+import languages from './i18n';
+import ProjectDetailChart from './project-detail-chart';
+import ProjectDetailStats from './project-detail-stats';
 
 const { ALL, NOT_STARTED, IN_PROGRESS, CANCELLED, COMPLETED, PAUSE } = PROJECT_AND_TASK_STATUS;
 
@@ -46,9 +46,12 @@ const ProjectDetail = (): JSX.Element => {
 
   const id = searchParams.get('id');
 
-  const tasksData = useGetTasksQuery({ projectId: id }, { refetchOnMountOrArgChange: true })?.data?.data || [];
+  const { data: tasksData = [], isLoading: isLoadingTasks } = useGetTasksQuery(
+    { projectId: id },
+    { refetchOnMountOrArgChange: true }
+  );
 
-  const { data } = useGetProjectByIdQuery(
+  const { data: projectDetail, isLoading: isLoadingProjectDetail } = useGetProjectByIdQuery(
     { id },
     {
       refetchOnMountOrArgChange: true,
@@ -64,19 +67,7 @@ const ProjectDetail = (): JSX.Element => {
 
   const [deleteProject, { isLoading }] = useDeleteProjectByIdMutation();
 
-  const translate = useI18n({
-    name: ProjectDetail.name,
-    data: [
-      {
-        key: LANGUAGES.EN,
-        value: en,
-      },
-      {
-        key: LANGUAGES.VI,
-        value: vi,
-      },
-    ],
-  });
+  const translate = useI18n(languages);
 
   const chartData = {
     labels: [
@@ -132,6 +123,49 @@ const ProjectDetail = (): JSX.Element => {
     { value: 'priority_level', label: translate('PRIORITY_LEVEL') },
   ];
 
+  const projectMemberData = (projectDetail?.member || []).map((member, i) => {
+    return {
+      id: member?.id,
+      index: i + 1,
+      email: <span className="w-full text-left">{member?.email || ''}</span>,
+      name: <span className="w-full text-left">{`${member?.fullName || ''}`}</span>,
+    };
+  });
+
+  const projectTaskData = (tasksData || []).map(item => ({
+    id: item.id,
+    code: (
+      <TextLink state={{ from: PAGES.PROJECT_DETAIL }} to={`${PAGES.TASK_DETAIL}?projectId=${id}&id=${item.id}`}>
+        {item?.id}
+      </TextLink>
+    ),
+    task_name: (
+      <TextLink state={{ from: PAGES.PROJECT_DETAIL }} to={`${PAGES.TASK_DETAIL}?projectId=${id}&id=${item.id}`}>
+        {item?.name}
+      </TextLink>
+    ),
+    start_date: <Time className="flex items-center justify-center text-secondary">{item?.startDate}</Time>,
+    end_date: <Time className="flex items-center justify-center text-secondary">{item?.endDate}</Time>,
+    performer: `${item?.assignee?.fullName || ''}`,
+    status: <Status value={item?.status} />,
+    priority_level: <span>{translate(item?.priority)}</span>,
+  }));
+
+  const columnsMembersTable = [
+    {
+      value: 'index',
+      label: translate('INDEX'),
+    },
+    {
+      value: 'name',
+      label: translate('FULL_NAME'),
+    },
+    {
+      value: 'email',
+      label: 'Email',
+    },
+  ];
+
   let optionItems = null;
 
   if (isAdmin) {
@@ -144,7 +178,7 @@ const ProjectDetail = (): JSX.Element => {
       {
         label: translate('DELETE_PROJECT'),
         onClick: () => open(),
-        className: 'text-red-500',
+        className: 'text-error',
       },
     ];
   } else {
@@ -163,36 +197,33 @@ const ProjectDetail = (): JSX.Element => {
 
   const optionNav = (
     <div className="flex items-center justify-center">
-      {data?.endDate && (
+      {projectDetail?.endDate && (
         <span className="mr-5 text-sm">
-          {translate('END_DATE')}: <Time>{data?.endDate}</Time>
+          {translate('END_DATE')}: <Time>{projectDetail?.endDate}</Time>
         </span>
       )}
-      <ProjectManagerStatus className="mr-5 text-base" status={data?.status || ALL} />
+      <StyledStatus className="mr-5 text-base" status={projectDetail?.status || ALL} />
       {isAdmin && (
-        <Link to={`${PAGES.UPDATE_PROJECT}?id=${id}`}>
+        <Link className="mr-3.5" to={`${PAGES.UPDATE_PROJECT}?id=${id}`}>
           <Button
             shape="round"
             iconOptions={{
               icon: EditIcon,
             }}
-            className="mr-3.5"
           >
             {translate('EDIT')}
           </Button>
         </Link>
       )}
-      <Options optionsPosition="left" items={optionItems} />
+      <Options items={optionItems} />
     </div>
   );
 
-  const tableSearchData = data?.member
-    ? data.member.map(value => ({
-        name: value?.fullName,
-      }))
-    : [];
-
   const handleClickReturn = () => navigate(PAGES.PROJECT_LIST);
+
+  if (isLoadingProjectDetail && isLoadingTasks) {
+    return <Loading />;
+  }
 
   return (
     <div className="flex flex-col p-4">
@@ -206,7 +237,7 @@ const ProjectDetail = (): JSX.Element => {
         />
       </Popup>
 
-      <ProjectManagerNav
+      <OptionsNav
         className="mb-4"
         title={translate('PROJECT_DETAIL')}
         onClickReturn={handleClickReturn}
@@ -216,50 +247,50 @@ const ProjectDetail = (): JSX.Element => {
       {isAdmin && (
         <>
           <div className="grid grid-cols-6 mb-4 gap-x-5">
-            <ProjectManagerStats
+            <ProjectDetailStats
               status={ALL}
               total={allTasks}
               url={`${PAGES.TASK_LIST}?projectId=${id}&status=${ALL}`}
             />
-            <ProjectManagerStats
+            <ProjectDetailStats
               status={IN_PROGRESS}
               total={tasksInProgress}
               url={`${PAGES.TASK_LIST}?projectId=${id}&status=${IN_PROGRESS}`}
             />
-            <ProjectManagerStats
+            <ProjectDetailStats
               status={NOT_STARTED}
               total={tasksNotStarted}
               url={`${PAGES.TASK_LIST}?projectId=${id}&status=${NOT_STARTED}`}
             />
-            <ProjectManagerStats
+            <ProjectDetailStats
               status={PAUSE}
               total={tasksPause}
               url={`${PAGES.TASK_LIST}?projectId=${id}&status=${PAUSE}`}
             />
-            <ProjectManagerStats
+            <ProjectDetailStats
               status={COMPLETED}
               total={tasksCompleted}
               url={`${PAGES.TASK_LIST}?projectId=${id}&status=${COMPLETED}`}
             />
-            <ProjectManagerStats
+            <ProjectDetailStats
               status={CANCELLED}
               total={tasksCancelled}
               url={`${PAGES.TASK_LIST}?projectId=${id}&status=${CANCELLED}`}
             />
           </div>
 
-          <ProjectManagerChart data={chartData} />
+          <ProjectDetailChart data={chartData} />
         </>
       )}
 
       <div className="mb-4">
-        <ProjectManagerTitle
+        <CardDetail
           data={{
-            startDate: data?.startDate ? dayjs(data?.startDate).format(DATE_FORMAT) : '',
-            startTime: data?.startDate ? dayjs(data?.startDate).format('h:mm') : '',
-            projectOwner: `${data?.author?.firstName || ''} ${data?.author?.lastName || ''} `,
-            projectManager: `${data?.manager?.firstName || ''} ${data?.manager?.lastName || ''}`,
-            projectInfo: data?.description || '',
+            startDate: <Time>{projectDetail?.startDate || ''}</Time>,
+            startTime: projectDetail?.startDate ? dayjs(projectDetail?.startDate).format('h:mm') : '',
+            projectOwner: `${projectDetail?.author?.fullName || ''} `,
+            projectManager: `${projectDetail?.manager?.fullName || ''}`,
+            projectInfo: projectDetail?.description || '',
           }}
         />
       </div>
@@ -268,30 +299,7 @@ const ProjectDetail = (): JSX.Element => {
         <div className="mb-4">
           <Table
             columns={columns}
-            data={tasksData.map(item => ({
-              id: item.id,
-              code: (
-                <TextLink
-                  state={{ from: PAGES.PROJECT_DETAIL }}
-                  to={`${PAGES.TASK_DETAIL}?projectId=${id}&id=${item.id}`}
-                >
-                  {item?.id}
-                </TextLink>
-              ),
-              task_name: (
-                <TextLink
-                  state={{ from: PAGES.PROJECT_DETAIL }}
-                  to={`${PAGES.TASK_DETAIL}?projectId=${id}&id=${item.id}`}
-                >
-                  {item?.name}
-                </TextLink>
-              ),
-              start_date: <Time className="flex items-center justify-center text-secondary">{item?.startDate}</Time>,
-              end_date: <Time className="flex items-center justify-center text-secondary">{item?.endDate}</Time>,
-              performer: `${item?.assignee?.firstName || ''} ${item?.assignee?.lastName || ''}`,
-              status: <Status value={item?.status} />,
-              priority_level: <span>{translate(item?.priority)}</span>,
-            }))}
+            data={projectTaskData}
             headerOptions={{
               title: (
                 <Link to={`${PAGES.TASK_LIST}/?projectId=${id}`}>
@@ -308,36 +316,10 @@ const ProjectDetail = (): JSX.Element => {
       )}
 
       <Table
-        columns={[
-          {
-            value: 'index',
-            label: translate('INDEX'),
-          },
-          {
-            value: 'name',
-            label: translate('FULL_NAME'),
-          },
-          {
-            value: 'email',
-            label: 'Email',
-          },
-        ]}
-        data={
-          data?.member.map((member, i) => {
-            return {
-              id: member?.id,
-              index: i + 1,
-              email: <span className="w-full text-left">{member?.email}</span>,
-              name: <span className="w-full text-left">{`${member?.firstName} ${member?.lastName}`}</span>,
-            };
-          }) || []
-        }
+        columns={columnsMembersTable}
+        data={projectMemberData}
         headerOptions={{
           title: `${translate('PROJECT_MEMBERS')}`,
-        }}
-        searchOptions={{
-          display: true,
-          searchData: tableSearchData,
         }}
       />
     </div>

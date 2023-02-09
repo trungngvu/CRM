@@ -6,6 +6,7 @@ import {
   CreateRoleProps,
   CreateRoleResponse,
   DeleteRoleProps,
+  GetPermissionResponse,
   GetRoleProps,
   GetRoleResponse,
   GetRolesResponse,
@@ -15,16 +16,15 @@ import {
 
 import { baseQuery } from './base-query';
 
-const { ROLE } = API_CONFIG;
+const { PERMISSION, ROLE } = API_CONFIG;
 const { POST, GET, PATCH, DELETE } = API_METHOD;
 
 export const ROLE_API_REDUCER_KEY = 'roleAPI';
 
 export const roleAPI = createApi({
   reducerPath: ROLE_API_REDUCER_KEY,
-
   baseQuery,
-
+  refetchOnMountOrArgChange: true,
   endpoints: builder => ({
     createRole: builder.mutation<CreateRoleResponse, CreateRoleProps>({
       query: data => ({
@@ -59,6 +59,14 @@ export const roleAPI = createApi({
         method: DELETE,
       }),
     }),
+
+    getPermissions: builder.query<GetPermissionResponse, void>({
+      query: data => ({
+        url: PERMISSION,
+        method: GET,
+        data,
+      }),
+    }),
   }),
 });
 
@@ -67,6 +75,7 @@ export const roleApiReducer = roleAPI.reducer;
 export const {
   useCreateRoleMutation,
   useGetRolesQuery,
+  useGetPermissionsQuery,
   useGetRoleByIdQuery,
   useUpdateRoleMutation,
   useDeleteRoleByIdMutation,

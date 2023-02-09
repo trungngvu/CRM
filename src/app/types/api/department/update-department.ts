@@ -1,11 +1,11 @@
-import { USER_GROUP_STATUS } from '../../user-group-status';
+import { ACTIVE_STATUS } from '../../active-status';
 import { DepartmentProps } from './department';
 
 export type UpdateDepartmentProps = {
   id: string;
   name: string;
   description: string;
-  status?: USER_GROUP_STATUS;
+  status?: ACTIVE_STATUS;
   users: number[];
 };
 

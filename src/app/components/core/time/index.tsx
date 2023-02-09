@@ -3,8 +3,8 @@ import Moment, { MomentProps } from 'react-moment';
 import { DATE_FORMAT } from '@configs';
 
 type TimeProps = {
-  children: string | number | Date;
-} & MomentProps;
+  children: string;
+} & Omit<MomentProps, 'children'>;
 
 const INVALID_DATE = 'Invalid date';
 
@@ -16,10 +16,14 @@ const filter = (date: string) => {
   return date;
 };
 
-const Time = ({ format = DATE_FORMAT, children, ...props }: TimeProps) => (
-  <Moment filter={filter} format={format} {...props}>
-    {children}
-  </Moment>
-);
+const Time = ({ format = DATE_FORMAT, children, ...props }: TimeProps) => {
+  const date = new Date(Date.parse(children));
+
+  return (
+    <Moment filter={filter} format={format} {...props}>
+      {date}
+    </Moment>
+  );
+};
 
 export default Time;

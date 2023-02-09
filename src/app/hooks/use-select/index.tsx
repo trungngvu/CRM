@@ -1,15 +1,12 @@
 import { ComponentPropsWithRef, useState } from 'react';
 
-import Select, { SelectItemProps } from '@components/core/select';
-import { SIZE } from '@types';
-
-type UseStatusProps = {
-  data: (string | number | SelectItemProps)[];
-  defaultValue?: string | number | undefined;
-};
+import Select, { SelectItemProps } from '../../components/core/select';
+import { SIZE } from '../../types';
 
 export type SelectProps = {
   size?: SIZE;
+  data: (string | number | SelectItemProps)[];
+  defaultSelectedValue?: string | number | undefined;
   labelOptions?: {
     text: string;
     className?: string;
@@ -17,35 +14,13 @@ export type SelectProps = {
   isRequired?: boolean;
 } & Omit<ComponentPropsWithRef<'input'>, 'size'>;
 
-const useSelect = ({ data, defaultValue }: UseStatusProps) => {
-  const selectData = data.map(item => {
-    if (typeof item === 'string' || typeof item === 'number') {
-      return {
-        value: item,
-        label: `${item}`,
-      };
-    }
-
-    return item;
-  });
-
-  const defaultSelectedItem = defaultValue
-    ? selectData.find(item => item?.value === defaultValue) || undefined
-    : defaultValue === undefined
-    ? undefined
-    : selectData[0];
-
-  const [selectedItemValue, setSelectedItemValue] = useState<SelectItemProps>(defaultSelectedItem);
+const useSelect = () => {
+  const [selectedItemValue, setSelectedItemValue] = useState<SelectItemProps | null>(null);
 
   return {
     selectedItemValue: selectedItemValue?.value,
     Select: ({ ...selectProps }: SelectProps) => (
-      <Select
-        {...selectProps}
-        data={selectData}
-        selectedItemValue={selectedItemValue}
-        setSelectedItemValue={setSelectedItemValue}
-      />
+      <Select {...selectProps} selectedItem={selectedItemValue} setSelectedItem={setSelectedItemValue} />
     ),
   };
 };

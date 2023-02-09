@@ -1,3 +1,18 @@
-export { default as en } from './en';
+import { LANGUAGES } from '@types';
 
-export { default as vi } from './vi';
+import en from './en';
+import vi from './vi';
+
+export default {
+  name: 'POPUP_ADD_MEMBER',
+  locales: [
+    {
+      key: LANGUAGES.EN,
+      value: en,
+    },
+    {
+      key: LANGUAGES.VI,
+      value: vi,
+    },
+  ],
+};

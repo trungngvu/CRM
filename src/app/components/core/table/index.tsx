@@ -1,17 +1,16 @@
-import { clsx } from 'clsx';
 import { ChangeEvent, Dispatch, SetStateAction, useEffect, useState } from 'react';
 
-import { SearchIcon } from '@components/core/icons';
-import useI18n from '@hooks/use-i18n';
-import useSelect from '@hooks/use-select';
-import { LANGUAGES } from '@types';
-import { removeUndefinedValueObject } from '@utils';
+import { SETTINGS_CONFIG } from '@configs';
+import { useI18n, useSelect } from '@hooks';
+import { filterByKeyword } from '@utils';
 
 import Checkbox from '../checkbox';
+import { SearchIcon } from '../icons';
 import Input from '../input';
-import { en, vi } from './i18n';
 import TablePagination from './table-pagination';
 import TableTitle from './table-title';
+
+const { TABLE_ROW_VALUES } = SETTINGS_CONFIG;
 
 export type TableProps<T> = {
   columns: {
@@ -22,12 +21,12 @@ export type TableProps<T> = {
   searchOptions?: {
     display?: boolean;
     searchByValue?: string;
-    searchData?: { [key: string]: string | number }[];
+    rootData?: { [key: string]: unknown }[];
   };
   selectOptions?: {
     display?: boolean;
     selectedList: T[];
-    onChangeSelectedList: Dispatch<SetStateAction<T[]>>;
+    setSelectList: Dispatch<SetStateAction<T[]>>;
   };
   rowsPerPageOptions?: {
     display?: boolean;
@@ -51,38 +50,61 @@ const Table = <T extends { [key: string]: string | number | JSX.Element; id: str
   rowsPerPageOptions,
   headerOptions,
 }: TableProps<T>): JSX.Element => {
-  const { display: isDisplaySearch = false, searchByValue = 'name', searchData = [] } = searchOptions || {};
-  const { display: isDisplaySelect = false, selectedList = [], onChangeSelectedList = () => {} } = selectOptions || {};
+  const { display: isDisplaySearch = false, searchByValue = 'name', rootData = [] } = searchOptions || {};
+  const { display: isDisplaySelect = false, selectedList = [], setSelectList = () => {} } = selectOptions || {};
   const {
     display: isDisplayRowsPerPage = true,
-    values: rowsPerPageValues = [10, 20, 50, 100],
-    defaultValue: defaultRowsPerPage = 10,
+    values: rowsPerPageValues = TABLE_ROW_VALUES,
+    defaultValue: defaultRowsPerPage = TABLE_ROW_VALUES[0],
   } = rowsPerPageOptions || {};
-  const { title, button } = headerOptions || {};
-  const { content: buttonContent, action: buttonAction } = button || {};
+  const { title, button: { content: buttonContent = '', action: buttonAction = () => {} } = {} } = headerOptions || {};
 
   const [page, setPage] = useState(1);
   const [searchValue, setSearchValue] = useState('');
   const [searchedData, setSearchData] = useState(data);
   const [displayData, setDisplayData] = useState(searchedData);
 
-  const translate = useI18n({
-    name: Table.name,
-    data: [
-      {
-        key: LANGUAGES.EN,
-        value: en,
-      },
-      {
-        key: LANGUAGES.VI,
-        value: vi,
-      },
-    ],
-  });
-  const { selectedItemValue: rowsPerPage, Select: SelectRows } = useSelect({
-    defaultValue: defaultRowsPerPage,
-    data: rowsPerPageValues,
-  });
+  const translate = useI18n();
+  const { selectedItemValue: rowsPerPage, Select: SelectRows } = useSelect();
+
+  /**
+   * Filter data by search value
+   */
+  useEffect(() => {
+    const filteredData = data.filter((item, index) => {
+      const dataBySearchValue = (rootData[index] || {})[searchByValue];
+
+      if (!dataBySearchValue) {
+        if (searchValue) {
+          return false;
+        }
+
+        return item;
+      }
+
+      return filterByKeyword(`${dataBySearchValue}`, searchValue);
+    });
+
+    setSearchData(filteredData);
+  }, [searchValue, data]);
+
+  /**
+   * Filter display data by page number
+   */
+  useEffect(() => {
+    if (!rowsPerPage) {
+      setDisplayData(searchedData);
+    } else {
+      const dataByPage = searchedData.filter(
+        (_item, index) => index <= page * Number(rowsPerPage) - 1 && index >= (page - 1) * Number(rowsPerPage)
+      );
+
+      setDisplayData(dataByPage);
+    }
+  }, [page, searchedData, rowsPerPage]);
+
+  const totalPage = Math.ceil(searchedData.length / Number(rowsPerPage)) || 1;
+  const isSelectAll = displayData.every(row => selectedList.map(item => item.id).includes(row.id));
 
   const onChangePage = (value: number) => setPage(value);
   const onChangeSearch = (event: ChangeEvent<HTMLInputElement>) => setSearchValue(event.target.value);
@@ -93,71 +115,21 @@ const Table = <T extends { [key: string]: string | number | JSX.Element; id: str
       ? selectedList.filter(item => item.id !== id)
       : [...selectedList, selectedRow];
 
-    onChangeSelectedList(newCheckedList);
+    setSelectList(newCheckedList);
   };
-  const checkDupDisplayData = (el: T) => {
-    for (let i = 0; i <= displayData.length; i += 1) {
-      if (displayData[i]?.id === el?.id) return false;
-    }
-    return true;
-  };
-
   const onSelectAll = () => {
-    const isIncludeAll = displayData.every(value => selectedList.map(item => item.id).includes(value.id));
-    onChangeSelectedList(
-      isIncludeAll
-        ? selectedList.filter(el => checkDupDisplayData(el))
-        : [...displayData, ...selectedList.filter(el => checkDupDisplayData(el))]
-    );
+    const newCheckedList = isSelectAll
+      ? selectedList.filter(row => !displayData.map(item => item.id).includes(row.id))
+      : [...displayData, ...selectedList];
+
+    setSelectList(newCheckedList);
   };
-
-  /**
-   * Filter data by search value
-   */
-  useEffect(() => {
-    setSearchData(
-      data.filter((item, index) => {
-        const dataBySearchValue = (searchData[index] || {})[searchByValue];
-
-        if (!dataBySearchValue) {
-          if (searchValue) {
-            return false;
-          }
-
-          return item;
-        }
-
-        return dataBySearchValue
-          .toString()
-          .toLowerCase()
-          .replace(/\s+/g, '')
-          .includes(searchValue.toLowerCase().replace(/\s+/g, ''));
-      })
-    );
-  }, [searchValue, data]);
-
-  /**
-   * Filter display data by page number
-   */
-  useEffect(() => {
-    if (!rowsPerPage) {
-      setDisplayData(searchedData);
-    } else {
-      setDisplayData(
-        searchedData.filter(
-          (_item, index) => index <= page * Number(rowsPerPage) - 1 && index >= (page - 1) * Number(rowsPerPage)
-        )
-      );
-    }
-  }, [page, searchedData, rowsPerPage]);
-
-  const totalPage = Math.ceil(searchedData.length / Number(rowsPerPage)) || 1;
-  const tableTitleProps = removeUndefinedValueObject({ title, buttonContent });
-  tableTitleProps.buttonAction = buttonAction;
 
   return (
     <div className="w-full overflow-x-auto border border-secondary-light rounded-[5px] bg-white flex flex-col gap-y-[10px] p-[12px]">
-      {(title || buttonContent) && <TableTitle {...tableTitleProps} />}
+      {(title || buttonContent) && (
+        <TableTitle title={title} buttonContent={buttonContent} buttonAction={buttonAction} />
+      )}
 
       {isDisplaySearch && (
         <div className="flex items-center">
@@ -177,32 +149,22 @@ const Table = <T extends { [key: string]: string | number | JSX.Element; id: str
 
       {displayData.length > 0 && (
         <div className="w-full bg-white">
-          <div
-            className={clsx(
-              {
-                'border-b-0': !isDisplayRowsPerPage || data.length <= Number(rowsPerPage),
-              },
-              'border border-secondary-light rounded-[5px]'
-            )}
-          >
+          <div className="border rounded-[5px] border-b-0 overflow-hidden">
             <table className="w-full">
               <thead className="bg-secondary-light">
                 <tr>
                   {isDisplaySelect && (
                     <th className="border-r border-r-secondary">
                       <div className="flex items-center justify-center px-3 h-[50px]">
-                        <Checkbox
-                          onChange={onSelectAll}
-                          checked={displayData.every(row => selectedList.map(item => item.id).includes(row.id))}
-                        />
+                        <Checkbox onChange={onSelectAll} checked={isSelectAll} />
                       </div>
                     </th>
                   )}
 
-                  {columns.map(column => (
-                    <th key={column.value} className="border-r last:border-r-0 border-r-secondary">
+                  {columns.map(({ value, label }) => (
+                    <th key={value} className="border-r last:border-r-0 border-r-secondary">
                       <div className="px-3 font-normal whitespace-nowrap h-[50px] flex justify-center items-center text-dark">
-                        {column.label}
+                        {label}
                       </div>
                     </th>
                   ))}
@@ -238,7 +200,14 @@ const Table = <T extends { [key: string]: string | number | JSX.Element; id: str
 
             <TablePagination
               isDisplayRowsPerPage={isDisplayRowsPerPage}
-              SelectRows={SelectRows}
+              SelectRows={
+                <SelectRows
+                  size="small"
+                  data={rowsPerPageValues}
+                  defaultSelectedValue={defaultRowsPerPage}
+                  className="w-[70px]"
+                />
+              }
               totalPage={totalPage}
               onChangePage={onChangePage}
             />

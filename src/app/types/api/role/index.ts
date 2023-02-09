@@ -9,3 +9,5 @@ export * from './get-roles';
 export * from './update-role';
 
 export * from './delete-role';
+
+export * from './get-permissions';

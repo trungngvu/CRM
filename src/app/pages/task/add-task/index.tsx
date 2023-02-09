@@ -27,14 +27,13 @@ import {
   ESTIMATE_UNIT,
   FIELD_TYPE,
   GetTaskResponse,
-  LANGUAGES,
   PAGES,
   PRIORITY,
   PROJECT_AND_TASK_STATUS,
   SelectItem,
 } from '@types';
 
-import { en, vi } from './i18n';
+import languages from './i18n';
 
 const { NOT_STARTED, IN_PROGRESS, CANCELLED, COMPLETED, PAUSE } = PROJECT_AND_TASK_STATUS;
 const { DAY, HOUR } = ESTIMATE_UNIT;
@@ -42,19 +41,7 @@ const { SELECT, DATE, INPUT_SELECT, SELECT_SEARCH } = FIELD_TYPE;
 
 const AddProject = (): JSX.Element => {
   const dispatch = useAppDispatch();
-  const translate = useI18n({
-    name: AddProject.name,
-    data: [
-      {
-        key: LANGUAGES.EN,
-        value: en,
-      },
-      {
-        key: LANGUAGES.VI,
-        value: vi,
-      },
-    ],
-  });
+  const translate = useI18n(languages);
 
   const { isOpen, open, close, Popup } = useModal();
 
@@ -63,13 +50,12 @@ const AddProject = (): JSX.Element => {
   const [valueDescription, setValueDescription] = useState('');
   const [listUsers, setListUsers] = useState<DataDisplay[]>([]);
   const [valueEtmTime, setValueEtmTime] = useState('');
-  const [isValidateDsc, setIsValidateDsc] = useState(false);
 
   const [searchParams] = useSearchParams();
   const projectId = searchParams.get('projectId');
   const taskId = searchParams.get('taskId');
 
-  const tasksData = useGetTasksQuery({ projectId }, { refetchOnMountOrArgChange: true })?.data?.data || [];
+  const { data: tasksData = [] } = useGetTasksQuery({ projectId }, { refetchOnMountOrArgChange: true });
   const listMembersInProject = useGetUsersByTaskQuery({ projectId }, { refetchOnMountOrArgChange: true });
 
   const schema = Yup.object({
@@ -138,9 +124,6 @@ const AddProject = (): JSX.Element => {
   const onChangeDsc = (_event: Event, editor: typeof ClassicEditor) => {
     const dataDsc = editor.getData();
     setValueDescription(dataDsc);
-    if (valueDescription !== ' ') {
-      setIsValidateDsc(false);
-    }
   };
 
   const onSubmit = async (dataSubmit: FieldValues) => {
@@ -155,9 +138,6 @@ const AddProject = (): JSX.Element => {
     );
 
     Object.keys(dataPost).forEach(key => {
-      if (dataPost.endDate === 'Invalid Date') {
-        delete dataPost.endDate;
-      }
       if (key === 'startDate' || key === 'endDate') {
         const dateFormat = dayjs(dataPost[key]).format(API_DATE_FORMAT).toString();
         dataPost[key] = dateFormat;
@@ -180,21 +160,14 @@ const AddProject = (): JSX.Element => {
       }
     });
 
-    if (valueDescription === '') {
-      setIsValidateDsc(true);
-    }
-
-    if (valueDescription !== '') {
-      setIsValidateDsc(false);
-      await createTask(dataPost as CreateTaskProps);
-    }
+    await createTask(dataPost as CreateTaskProps);
   };
 
   const onChangeEtm = (event: ChangeEvent<HTMLInputElement>) => {
-    if (+event.target.value.length > 3) {
+    if (event.target.value.charAt(0) === '0') {
       event.preventDefault();
     } else {
-      setValueEtmTime(event.target.value);
+      setValueEtmTime(event.target.value.slice(0, 3));
     }
   };
 
@@ -223,7 +196,10 @@ const AddProject = (): JSX.Element => {
   useEffect(() => {
     if (isSuccess) {
       toast.success(translate('POST_SUCCESS'));
-      history.push(PAGES.TASK_LIST);
+      history.push(`${PAGES.TASK_LIST}?projectId=${projectId}`);
+    }
+    if (isSuccess && taskId) {
+      history.push(`${PAGES.TASK_DETAIL}?id=${taskId}&projectId=${projectId}`);
     }
   }, [isSuccess]);
 
@@ -374,7 +350,6 @@ const AddProject = (): JSX.Element => {
             placeholderEditor={translate('PLACEHOLDER_EDITOR').toString()}
             errors={errors}
             onChangeEtm={onChangeEtm}
-            isValidateDsc={isValidateDsc}
             description={valueDescription}
             valueEtmTime={valueEtmTime}
             editorErrorMess={translate('DESCRIPTION_REQUIRE').toString()}

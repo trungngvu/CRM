@@ -6,27 +6,15 @@ import { PopupDelete } from '@components';
 import useI18n from '@hooks/use-i18n';
 import useModal from '@src/app/hooks/use-modal';
 import { selectUserData, useAppSelector } from '@store';
-import { COMMENT, COMMENT_TYPE, LANGUAGES } from '@types';
+import { COMMENT, COMMENT_TYPE } from '@types';
 
-import { en, vi } from './i18n';
+import languages from './i18n';
 import CommentItem from './item';
 
 const COMMENT_NUMBER = 5;
 
 const Comment = ({ data }: { data: COMMENT[] }) => {
-  const translate = useI18n({
-    name: Comment.name,
-    data: [
-      {
-        key: LANGUAGES.EN,
-        value: en,
-      },
-      {
-        key: LANGUAGES.VI,
-        value: vi,
-      },
-    ],
-  });
+  const translate = useI18n(languages);
 
   const { open, close, Popup } = useModal();
 

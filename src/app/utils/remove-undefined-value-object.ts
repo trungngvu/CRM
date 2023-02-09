@@ -1,6 +1,6 @@
-const removeUndefinedValueObject = (value: Record<string, unknown>) => {
-  if (typeof value.title === 'object') return value;
-  return JSON.parse(JSON.stringify(value));
-};
+/**
+ * Remove null value in object
+ */
+const removeUndefinedValueObject = (value: Record<string, unknown>) => JSON.parse(JSON.stringify(value));
 
 export default removeUndefinedValueObject;

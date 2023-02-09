@@ -22,9 +22,8 @@ export const RESUME_API_REDUCER_KEY = 'resumeApi';
 
 export const resumeApi = createApi({
   reducerPath: RESUME_API_REDUCER_KEY,
-
   baseQuery,
-
+  refetchOnMountOrArgChange: true,
   endpoints: builder => ({
     resumeParser: builder.mutation<ResumeParserResponse, ResumeParserProps>({
       query: data => ({

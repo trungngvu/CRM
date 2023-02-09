@@ -3,6 +3,7 @@ import axios, { AxiosError } from 'axios';
 
 import { API_CONFIG } from '@configs';
 import { UserSliceProps } from '@types';
+import convertNullToUndefined from '@utils/convert-null-to-undefined';
 
 const { BASE_URL } = API_CONFIG;
 
@@ -11,7 +12,7 @@ type RootState = {
 };
 
 export const baseInstance = axios.create({
-  baseURL: BASE_URL,
+  baseURL: BASE_URL || '',
 });
 
 const axiosBaseQuery =
@@ -27,7 +28,7 @@ const axiosBaseQuery =
         },
       });
 
-      return { data: result.data };
+      return { data: convertNullToUndefined(result.data) };
     } catch (axiosError) {
       const err = axiosError as AxiosError;
 

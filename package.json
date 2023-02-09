@@ -13,7 +13,7 @@
     "lint-staged-husky": "pretty-quick --staged && lint-staged",
     "lint:fix": "eslint --fix --ext .js,jsx,ts,tsx src",
     "prepare": "husky install",
-    "prettier": "prettier --config .prettierrc \"**/*.{html,css,scss,js,jsx,ts,tsx,json,md,svg}\" --write",
+    "prettier": "prettier --config .prettierrc \"**/*.{html,css,scss,js,jsx,ts,tsx,json,md}\" --write",
     "start": "craco start",
     "test": "craco test",
     "storybook": "start-storybook -p 6006 -s public",

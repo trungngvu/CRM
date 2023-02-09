@@ -10,16 +10,16 @@ import {
   CreateUserResponse,
   ForgotPasswordProps,
   ForgotPasswordResponse,
+  GetUserProps,
+  GetUserResponse,
   GetUsersResponse,
   SignInWithEmailAndPasswordProps,
   SignInWithEmailAndPasswordResponse,
   SignInWithTokenResponse,
   UpdateUserProps,
   UpdateUserResponse,
-  UserProps,
 } from '@types';
 
-import { GetUser } from '../../types/api/user/get-user';
 import { baseQuery } from './base-query';
 
 const { SIGN_IN_WITH_EMAIL_AND_PASSWORD, SIGN_IN_WITH_TOKEN, FORGOT_PASSWORD, CHANGE_PASSWORD, USERS } = API_CONFIG;
@@ -29,9 +29,8 @@ export const USER_API_REDUCER_KEY = 'userApi';
 
 export const userAPI = createApi({
   reducerPath: USER_API_REDUCER_KEY,
-
   baseQuery,
-
+  refetchOnMountOrArgChange: true,
   endpoints: builder => ({
     signInWithEmailAndPassword: builder.mutation<SignInWithEmailAndPasswordResponse, SignInWithEmailAndPasswordProps>({
       query: data => ({
@@ -62,13 +61,6 @@ export const userAPI = createApi({
       }),
     }),
 
-    getUsers: builder.query<GetUsersResponse, void>({
-      query: () => ({
-        url: USERS,
-        method: GET,
-      }),
-    }),
-
     createUser: builder.mutation<CreateUserResponse, CreateUserProps>({
       query: data => ({
         url: USERS,
@@ -76,24 +68,29 @@ export const userAPI = createApi({
         data,
       }),
     }),
-    deleteUserById: builder.mutation<void, DeleteUserProps>({
-      query: data => ({
-        url: `${USERS}/${data.id}`,
-        method: DELETE,
+    getUsers: builder.query<GetUsersResponse, void>({
+      query: () => ({
+        url: USERS,
+        method: GET,
       }),
     }),
-    getUserById: builder.query<UserProps, GetUser>({
+    getUserById: builder.query<GetUserResponse, GetUserProps>({
       query: data => ({
         url: `${USERS}/${data.id}`,
         method: GET,
       }),
     }),
-
     updateUser: builder.mutation<UpdateUserResponse, UpdateUserProps>({
       query: data => ({
         url: `${USERS}/${data.id}`,
         method: PATCH,
         data,
+      }),
+    }),
+    deleteUserById: builder.mutation<void, DeleteUserProps>({
+      query: data => ({
+        url: `${USERS}/${data.id}`,
+        method: DELETE,
       }),
     }),
   }),

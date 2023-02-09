@@ -3,7 +3,9 @@ import { initReactI18next } from 'react-i18next';
 
 import { LANGUAGES } from '@types';
 
-const resources = {};
+import languages from './i18n-global';
+
+const resources = { ...languages };
 
 i18n.use(initReactI18next).init({
   resources,
@@ -12,6 +14,7 @@ i18n.use(initReactI18next).init({
   interpolation: {
     escapeValue: false,
   },
+  fallbackNS: 'translation',
 });
 
 export default i18n;

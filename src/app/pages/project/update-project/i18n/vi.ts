@@ -12,7 +12,7 @@ const locale = {
   START: 'Bắt đầu',
   PENDING: 'Tạm dừng',
   END: 'Kết thúc',
-  SAVE: 'Lưu',
+  SAVE: 'Lưu dự án',
   CANCEL: 'Xóa',
   FULL_NAME: 'Họ tên',
   ROLE: 'Chức vụ',

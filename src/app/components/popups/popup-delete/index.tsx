@@ -1,8 +1,7 @@
 import useI18n from '@hooks/use-i18n';
-import { LANGUAGES } from '@types';
 
 import Button from '../../core/button';
-import { en, vi } from './i18n';
+import languages from './i18n';
 
 type PopupDeleteProps = {
   onSubmit: () => void;
@@ -13,21 +12,10 @@ type PopupDeleteProps = {
 };
 
 const PopupDelete = ({ header, onSubmit, onCancel, content, isLoading = false }: PopupDeleteProps): JSX.Element => {
-  const translate = useI18n({
-    name: PopupDelete.name,
-    data: [
-      {
-        key: LANGUAGES.EN,
-        value: en,
-      },
-      {
-        key: LANGUAGES.VI,
-        value: vi,
-      },
-    ],
-  });
+  const translate = useI18n(languages);
+
   return (
-    <div className="z-50 w-full text-light rounded-md overflow-hidden">
+    <div className="z-50 w-full overflow-hidden rounded-md text-light">
       <div className="px-4 py-2 font-bold bg-primary">{header}</div>
       <div className="pt-3 pb-4 pl-4 pr-4 bg-white">
         <h4 className="mb-8 text-dark">{content}</h4>

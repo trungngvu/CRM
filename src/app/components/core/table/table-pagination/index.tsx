@@ -1,15 +1,14 @@
 import MuiPagination from '@mui/material/Pagination';
 import { clsx } from 'clsx';
-import { ChangeEvent, ElementType } from 'react';
+import { ChangeEvent } from 'react';
 
-import { SelectProps } from '@hooks/use-select';
 import { COLORS } from '@types';
 
 const { DARK, LIGHT, SECONDARY, PRIMARY } = COLORS;
 
 type TablePaginationProps = {
   isDisplayRowsPerPage: boolean;
-  SelectRows: ElementType<SelectProps>;
+  SelectRows: JSX.Element;
   totalPage: number;
   onChangePage: (value: number) => void;
 };
@@ -32,7 +31,7 @@ const TablePagination = ({
         'flex px-[10px] bg-secondary-light items-center h-[45px]'
       )}
     >
-      {isDisplayRowsPerPage && <SelectRows size="small" className="w-[70px] rounded-[3px] px-[10px]" />}
+      {isDisplayRowsPerPage && SelectRows}
 
       <MuiPagination
         variant="outlined"

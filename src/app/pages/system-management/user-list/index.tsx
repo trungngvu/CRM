@@ -3,18 +3,18 @@ import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import { Button, Loading, PopupDelete, Table, TextLink } from '@components';
+import { AddIcon, DeleteIcon, EditIcon } from '@components/core/icons';
+import Popup from '@components/core/popup';
 import history from '@history';
 import useI18n from '@hooks/use-i18n';
-import { AddIcon, DeleteIcon, EditIcon } from '@src/app/components/core/icons';
-import Popup from '@src/app/components/core/popup';
-import useModal from '@src/app/hooks/use-modal';
-import useStatus from '@src/app/hooks/use-status';
-import { useDeleteUserByIdMutation, useGetUsersQuery } from '@src/app/store';
-import { LANGUAGES, PAGES, USER_GROUP_STATUS, UserProps } from '@types';
+import useModal from '@hooks/use-modal';
+import useStatus from '@hooks/use-status';
+import { useDeleteUserByIdMutation, useGetUsersQuery } from '@store';
+import { ACTIVE_STATUS, PAGES, UserProps } from '@types';
 
-import { en, vi } from './i18n';
+import languages from './i18n';
 
-const { ALL, ACTIVE, DEACTIVATE } = USER_GROUP_STATUS;
+const { ALL, ACTIVE, DEACTIVATED } = ACTIVE_STATUS;
 
 const UserList = (): JSX.Element => {
   const { data, refetch } = useGetUsersQuery(undefined, { refetchOnMountOrArgChange: true });
@@ -23,23 +23,9 @@ const UserList = (): JSX.Element => {
   const [idUser, setIdUser] = useState<number>();
   const { isOpen, open, close } = useModal();
 
-  const { currentStatus, SelectStatus } = useStatus<USER_GROUP_STATUS>({
-    defaultValue: USER_GROUP_STATUS.ALL,
-  });
+  const { currentStatus, SelectStatus } = useStatus();
 
-  const translate = useI18n({
-    name: UserList.name,
-    data: [
-      {
-        key: LANGUAGES.EN,
-        value: en,
-      },
-      {
-        key: LANGUAGES.VI,
-        value: vi,
-      },
-    ],
-  });
+  const translate = useI18n(languages);
   const title = translate('TITLE');
   const statusList = [
     {
@@ -51,8 +37,8 @@ const UserList = (): JSX.Element => {
       label: translate(ACTIVE),
     },
     {
-      value: DEACTIVATE,
-      label: translate(DEACTIVATE),
+      value: DEACTIVATED,
+      label: translate(DEACTIVATED),
     },
   ];
 
@@ -74,27 +60,29 @@ const UserList = (): JSX.Element => {
     { value: 'actions', label: translate('ACTIONS') },
   ];
 
-  const tableSearchData = displayData.map(value => ({
-    name: value.fullName && value.fullName,
-  }));
-
   const handlePopupDelete = (id: number) => {
     setIdUser(id);
     open();
   };
 
-  const handleDeleteUser = async () => {
-    if (idUser) await deleteUser({ id: idUser });
-    close();
-    refetch();
+  const handleDeleteUser = () => {
+    if (idUser) {
+      deleteUser({ id: idUser });
+      refetch();
+      close();
+    }
   };
+
+  // useEffect(() => {
+  //   close();
+  // }, [displayData]);
 
   const dataTable = displayData.map((value, key) => ({
     id: value.id,
     stt: key + 1,
     name: (
       <div className="w-full text-left">
-        <TextLink to={`${PAGES.USER_DETAIL}?id=${value.id}`}>{`${value?.firstName} ${value.lastName}`}</TextLink>
+        <TextLink to={`${PAGES.USER_DETAIL}?id=${value.id}`}>{`${value?.fullName}`}</TextLink>
       </div>
     ),
     email: value.email,
@@ -188,7 +176,7 @@ const UserList = (): JSX.Element => {
         data={dataTable}
         searchOptions={{
           display: true,
-          searchData: tableSearchData,
+          rootData: displayData,
         }}
       />
 

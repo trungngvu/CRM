@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction, useEffect } from 'react';
 
 import Button from '@components/core/button';
 
@@ -8,38 +8,39 @@ type SelectItemProps<T> = {
     value: T;
     label: string;
   }[];
+  defaultValue?: T;
   currentItemValue: T;
   setCurrentItemValue: Dispatch<SetStateAction<T>>;
-  onClick?: () => void;
 };
 
 const SelectItem = <T extends string>({
-  title,
-  data,
+  title = '',
+  data = [],
+  defaultValue = data[0]?.value,
   currentItemValue,
   setCurrentItemValue,
-  onClick,
 }: SelectItemProps<T>) => {
-  const handleClick = (value: T) => {
-    setCurrentItemValue(value);
-
-    if (onClick) {
-      onClick();
+  /**
+   * Set current item to default value when current item does not exist
+   */
+  useEffect(() => {
+    if (currentItemValue === null) {
+      setCurrentItemValue(defaultValue);
     }
-  };
+  }, [currentItemValue]);
 
   return (
     <div className="flex items-center gap-x-[10px]">
-      <div className="text-sm text-dark">{title}:</div>
+      {title && <div className="text-sm text-dark">{title}:</div>}
 
       <div className="flex gap-x-2">
         {data.map(({ value, label }) => (
           <Button
             key={value}
             size="small"
-            color={value === currentItemValue ? 'active' : 'inactive'}
             shape="round"
-            onClick={() => handleClick(value)}
+            color={value === currentItemValue ? 'active' : 'inactive'}
+            onClick={() => setCurrentItemValue(value)}
           >
             {label}
           </Button>

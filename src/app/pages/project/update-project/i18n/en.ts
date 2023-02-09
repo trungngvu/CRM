@@ -12,7 +12,7 @@ const locale = {
   START: 'Start',
   PENDING: 'Pending',
   END: 'End',
-  SAVE: 'Save',
+  SAVE: 'Save project',
   CANCEL: 'Delete',
   FULL_NAME: 'Full name',
   ROLE: 'Role',

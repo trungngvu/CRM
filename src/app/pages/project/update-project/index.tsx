@@ -15,36 +15,24 @@ import useI18n from '@hooks/use-i18n';
 import { API_DATE_FORMAT } from '@src/app/configs';
 import useModal from '@src/app/hooks/use-modal';
 import { useGetProjectByIdQuery, useGetUsersQuery, useUpdateProjectMutation } from '@store';
-import { FIELD_TYPE, LANGUAGES, PAGES, PROJECT_AND_TASK_STATUS, SelectItem, UpdateProjectProps } from '@types';
+import { FIELD_TYPE, PAGES, PROJECT_AND_TASK_STATUS, SelectItem, UpdateProjectProps } from '@types';
 
-import { en, vi } from './i18n';
+import languages from './i18n';
 
 const { NOT_STARTED, IN_PROGRESS, CANCELLED, COMPLETED, PAUSE } = PROJECT_AND_TASK_STATUS;
 const { SELECT, DATE } = FIELD_TYPE;
 
 const AddProject = (): JSX.Element => {
   const navigate = useNavigate();
-  const translate = useI18n({
-    name: AddProject.name,
-    data: [
-      {
-        key: LANGUAGES.EN,
-        value: en,
-      },
-      {
-        key: LANGUAGES.VI,
-        value: vi,
-      },
-    ],
-  });
+  const translate = useI18n(languages);
 
-  const { isOpen, open, close, Popup } = useModal();
+  const { open, close, Popup } = useModal();
 
   const [searchParams] = useSearchParams();
   const projectId = searchParams.get('id');
 
   const getUsers = useGetUsersQuery();
-  const project = useGetProjectByIdQuery({ id: projectId });
+  const { data: projectData } = useGetProjectByIdQuery({ id: projectId });
 
   const [updateProject, { isLoading, isSuccess, isError }] = useUpdateProjectMutation();
 
@@ -86,12 +74,12 @@ const AddProject = (): JSX.Element => {
     getUsers.data?.data.forEach(user => {
       dataSelect.push({
         label: user?.fullName,
-        value: user.id,
+        value: user?.id,
       });
     });
   }
 
-  const handleRemoveUser = (id: string | number) => {
+  const handleDeleteMember = (id: number | string) => {
     setListUsers(listUsers.filter(item => item.id !== id));
   };
 
@@ -101,14 +89,11 @@ const AddProject = (): JSX.Element => {
     const dataPost = Object.assign(data, { description: valueDescription || '' }, { users: configListUsers });
 
     Object.keys(dataPost).forEach(key => {
-      if (dataPost.endDate === 'Invalid Date') {
-        delete dataPost.endDate;
-      }
       if (key === 'startDate' || key === 'endDate') {
         const dateFormat = dayjs(dataPost[key]).format(API_DATE_FORMAT).toString();
         dataPost[key] = dateFormat;
       }
-      if (typeof dataPost[key]?.value !== 'undefined') {
+      if (dataPost[key]?.value !== undefined) {
         dataPost[key] = dataPost[key].value;
       }
 
@@ -132,37 +117,28 @@ const AddProject = (): JSX.Element => {
   };
 
   useEffect(() => {
-    if (project.data) {
-      reset(project.data);
-      setValue('managerId', {
-        label: project.data?.manager?.fullName,
-        value: project.data.manager.id,
-      });
-      setValue('status', {
-        value: project.data?.status,
-        label: translate(project.data.status),
-      });
-      if (project.data.member.length > 0)
-        setValue(
-          'member',
-          project.data?.member.map(item => {
-            return item.id;
-          })
-        );
-      if (project.data?.description) setValueDescription(project.data?.description);
+    if (projectData) {
+      reset(projectData);
+      const { manager, status, member: listMember, description } = projectData;
+
+      setValue('managerId', manager ? { label: manager.fullName, value: manager.id } : null);
+      setValue('status', { value: status, label: translate(status) });
+      setValue(
+        'member',
+        listMember.map(item => item.id)
+      );
+      setValueDescription(description || '');
 
       setListUsers(
-        project.data.member.map((member, i) => {
-          return {
-            id: member.id,
-            index: i + 1,
-            name: member?.fullName,
-            email: member.email,
-          };
-        })
+        listMember.map((member, i) => ({
+          id: member.id,
+          index: i + 1,
+          name: member.fullName,
+          email: member.email,
+        }))
       );
     }
-  }, [project]);
+  }, [projectData]);
 
   useEffect(() => {
     if (isSuccess) {
@@ -185,8 +161,9 @@ const AddProject = (): JSX.Element => {
         all: <Checkbox />,
         removeMember: (
           <Button
+            color="action"
             className="text-sm  h-[32px] font-normal normal-case rounded-full"
-            onClick={() => handleRemoveUser(user.id)}
+            onClick={() => handleDeleteMember(user.id)}
           >
             {translate('DELETE')}
           </Button>
@@ -196,25 +173,13 @@ const AddProject = (): JSX.Element => {
   }, [listUsers]);
 
   useEffect(() => {
-    const isLisUsersChange =
-      JSON.stringify(
-        listUsers.map(user => {
-          return user.id;
-        })
-      ) !==
-      JSON.stringify(
-        project.data?.member.map(user => {
-          return user.id;
-        })
-      );
-    const isDescriptionChange = project.data?.description !== valueDescription;
+    const listUsersIds = listUsers.map(user => user.id);
+    const projectDataMembersIds = projectData?.member.map(user => user.id);
+    const isLisUsersChange = JSON.stringify(listUsersIds) !== JSON.stringify(projectDataMembersIds);
+    const isDescriptionChange = projectData?.description !== valueDescription;
 
-    if (isDirty || isDescriptionChange || isLisUsersChange) {
-      setIsDisable(true);
-    } else {
-      setIsDisable(false);
-    }
-  }, [isDirty, valueDescription, listUsers]);
+    setIsDisable(isDirty || isDescriptionChange || isLisUsersChange);
+  }, [isDirty, valueDescription, listUsers, projectData]);
 
   const config = [
     {
@@ -319,7 +284,7 @@ const AddProject = (): JSX.Element => {
             onChangeDsc={onChangeDsc}
             placeholderEditor={translate('PLACEHOLDER_EDITOR').toString()}
             errors={errors}
-            description={project.data?.description}
+            description={projectData?.description}
             editorErrorMess={translate('DESCRIPTION_REQUIRE').toString()}
           />
         </div>
@@ -335,13 +300,17 @@ const AddProject = (): JSX.Element => {
                 action: open,
               },
             }}
+            searchOptions={{
+              display: true,
+              rootData: listUsers,
+            }}
           />
         </div>
 
         <Popup>
           <PopupAddMember
             setListUsers={setListUsers}
-            isOpen={isOpen}
+            // isOpen={isOpen}
             handleClose={close}
             data={getUsers.data?.data}
             listUsers={listUsers}

@@ -5,7 +5,7 @@ import { ControllerRenderProps, FieldError, FieldValues } from 'react-hook-form'
 import { DATE_FORMAT } from '@configs';
 import { COLORS } from '@types';
 
-const { ERROR } = COLORS;
+const { ERROR, DARK } = COLORS;
 
 type DatePickerType = {
   placeholder?: string | null;
@@ -40,6 +40,10 @@ const DatePicker = ({
       '& fieldset': {
         borderColor: errors && ERROR,
       },
+      '&.Mui-focused fieldset': {
+        border: '1px solid ',
+        borderColor: errors ? ERROR : DARK,
+      },
     },
     '& .MuiButtonBase-root': {
       position: 'absolute',
@@ -53,14 +57,13 @@ const DatePicker = ({
       {label && (
         <label htmlFor={label} className="flex select-none">
           {label}
-          {isRequire && <p className="ml-1 text-red-500">*</p>}
+          {isRequire && <p className="ml-1 text-error">*</p>}
         </label>
       )}
 
       <div className={className}>
         <DesktopDatePicker
           inputFormat={DATE_FORMAT}
-          label={null}
           {...fieldData}
           value={fieldData.value ? fieldData.value : null}
           renderInput={params => (

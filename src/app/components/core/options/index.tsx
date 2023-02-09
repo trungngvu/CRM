@@ -1,7 +1,12 @@
-import clsx from 'clsx';
+import { Menu } from '@headlessui/react';
 import { DefaultTFuncReturn } from 'i18next';
-import React, { useState } from 'react';
-import { twMerge } from 'tailwind-merge';
+import React from 'react';
+
+import { COLORS } from '@src/app/types';
+
+import PopupAbsolute from '../../popup-absolute';
+import { Icon } from '../icons';
+import OptionIcon from '../icons/option';
 
 type OptionsProps = {
   items: {
@@ -10,58 +15,38 @@ type OptionsProps = {
     onClick: () => void;
     disabled?: boolean;
   }[];
-  className?: string;
-  optionsPosition?: string;
 };
 
-const Options = ({ items, className, optionsPosition = 'right' }: OptionsProps): JSX.Element => {
-  const [expand, setExpand] = useState<boolean>(false);
+const { DARK } = COLORS;
 
+const Options = ({ items }: OptionsProps): JSX.Element => {
   function handleOnclick(onClickFnc: () => void, isDisabled: boolean | undefined, e: React.SyntheticEvent): void {
     e.stopPropagation();
     if (!isDisabled) {
       onClickFnc();
-      setExpand(false);
     }
   }
 
   return (
-    <div
-      onClick={() => setExpand(pre => !pre)}
-      className={twMerge(
-        'border border-slate-400 relative rounded-full h-[32px] w-[32px] bg-white flex items-center justify-center cursor-pointer shadow-1',
-        className
-      )}
+    <PopupAbsolute
+      button={<Icon icon={OptionIcon} size={32} color={DARK} className="rounded-full border p-1 bg-white" />}
+      popupStyle="right-0 w-max min-w-[200px]"
     >
-      <img src="/assets/icons/options.svg" alt="options" />
-      {expand && (
-        <ul
-          className={clsx(
-            {
-              'right-0': optionsPosition === 'left',
-              'left-0': optionsPosition === 'right',
-            },
-            'absolute w-[334px] z-10 bg-white text-base top-full translate-y-1 border rounded pb-1 pt-1.5'
-          )}
-        >
+      <Menu>
+        <Menu.Items static>
           {items.map(item => (
             // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
             <li
+              className="px-3.5 py-3 text-dark list-none hover:bg-primary-extraLight hover:text-light cursor-pointer"
               key={item.label}
               onClick={e => handleOnclick(item.onClick, item.disabled, e)}
-              className={twMerge(
-                item.className,
-                `px-3.5 py-3 ${
-                  item.disabled ? 'cursor-default text-slate-300' : 'hover:bg-primary-extraLight hover:text-light'
-                }`
-              )}
             >
               {item.label}
             </li>
           ))}
-        </ul>
-      )}
-    </div>
+        </Menu.Items>
+      </Menu>
+    </PopupAbsolute>
   );
 };
 

@@ -13,11 +13,10 @@ import {
   useAppSelector,
   useGetProjectsQuery,
 } from '@store';
-import { COLORS, LANGUAGES, PAGES, SelectItem } from '@types';
+import { COLORS, PAGES, SelectItem } from '@types';
 
 import { Icon, MenuIcon } from '../core/icons';
-import SelectHeadless from '../core/select-headless';
-import { en, vi } from '../navbar/menus/menu/item/i18n';
+import SelectPopover from '../select-popover';
 import UserMenu from '../user-menu';
 
 const { NAVBAR_SIZE, EXPAND_NAVBAR_SIZE, TOOLBAR_HEIGHT } = SETTINGS_CONFIG;
@@ -29,25 +28,13 @@ const Toolbar = (): JSX.Element => {
   const { expandNavbar } = useAppSelector(selectDisplaySetting);
 
   const { pathname } = useLocation();
-  const translate = useI18n({
-    name: Toolbar.name,
-    data: [
-      {
-        key: LANGUAGES.EN,
-        value: en,
-      },
-      {
-        key: LANGUAGES.VI,
-        value: vi,
-      },
-    ],
-  });
+  const translateMenuItem = useI18n('MENU_ITEM');
 
   const parentMenu = MENUS.find(menu => menu.path && pathname.includes(menu.path));
 
   const toggleNavbar = () => dispatch(settingsActions.toggleNavbar());
 
-  const { data, isLoading } = useGetProjectsQuery(undefined, { refetchOnMountOrArgChange: true });
+  const { data: projectsData = [], refetch } = useGetProjectsQuery(undefined, { refetchOnMountOrArgChange: true });
   const [displayData, setDisplayData] = useState<SelectItem[]>([
     {
       value: '',
@@ -66,9 +53,9 @@ const Toolbar = (): JSX.Element => {
   const isShowSelectTask = pathname.includes('task');
 
   useEffect(() => {
-    if (data) {
+    if (projectsData.length > 0) {
       setDisplayData(
-        data.data.map(item => {
+        projectsData.map(item => {
           return {
             value: item.id,
             label: item.name,
@@ -76,7 +63,7 @@ const Toolbar = (): JSX.Element => {
         })
       );
     }
-  }, [isLoading]);
+  }, [projectsData]);
 
   useEffect(() => {
     if (id) {
@@ -88,6 +75,10 @@ const Toolbar = (): JSX.Element => {
       if (dataSelected) setSelected(dataSelected);
     }
   }, [displayData, id, projectId]);
+
+  useEffect(() => {
+    refetch();
+  }, [pathname]);
 
   const handleSelect = (item: SelectItem) => {
     if (item.value && displayData.includes(item)) {
@@ -119,16 +110,11 @@ const Toolbar = (): JSX.Element => {
 
       <div className="text-xl font-semibold">
         {isShowSelectProject || isShowSelectTask ? (
-          <SelectHeadless
-            className="w-[350px]"
-            withoutBorder
-            selectHeader
-            data={displayData}
-            selected={selected}
-            onChangeValue={handleSelect}
-          />
+          <SelectPopover data={displayData} selected={selected} onChangeValue={handleSelect} />
         ) : (
-          <div className="font-semibold ml-[15px] text-xl text-dark">{translate(parentMenu?.name as string)}</div>
+          <div className="font-semibold ml-[15px] text-xl text-dark">
+            {translateMenuItem(parentMenu?.name as string)}
+          </div>
         )}
       </div>
 

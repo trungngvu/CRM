@@ -1,6 +1,6 @@
 import { ReactNode, useState } from 'react';
 
-import Popup from '@components/core/popup';
+import Popup from '../../components/core/popup';
 
 type PopupProps = {
   children: ReactNode;

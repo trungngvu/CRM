@@ -1,22 +1,10 @@
 import useI18n from '@hooks/use-i18n';
-import { LANGUAGES } from '@types';
 
-import { en, vi } from './i18n';
+import languages from './i18n';
 
 const JobWatcher = ({ data }: { data: string[] }) => {
-  const translate = useI18n({
-    name: JobWatcher.name,
-    data: [
-      {
-        key: LANGUAGES.EN,
-        value: en,
-      },
-      {
-        key: LANGUAGES.VI,
-        value: vi,
-      },
-    ],
-  });
+  const translate = useI18n(languages);
+
   return (
     <div className="px-4 py-2 bg-white border rounded border-secondary-dark">
       <div>{translate('WATCHER')}</div>

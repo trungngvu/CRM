@@ -5,26 +5,14 @@ import { AddIcon } from '@components/core/icons';
 import history from '@history';
 import useI18n from '@hooks/use-i18n';
 import { useGetResumesQuery } from '@store';
-import { LANGUAGES, PAGES, ResumeProps } from '@types';
+import { PAGES, ResumeProps } from '@types';
 
-import { en, vi } from './i18n';
+import languages from './i18n';
 
 const CandidateList = () => {
   const [displayData, setDisplayData] = useState<ResumeProps[]>([]);
 
-  const translate = useI18n({
-    name: CandidateList.name,
-    data: [
-      {
-        key: LANGUAGES.EN,
-        value: en,
-      },
-      {
-        key: LANGUAGES.VI,
-        value: vi,
-      },
-    ],
-  });
+  const translate = useI18n(languages);
   const { data: resumeData, isLoading } = useGetResumesQuery(null, { refetchOnMountOrArgChange: true });
 
   /**
@@ -52,16 +40,13 @@ const CandidateList = () => {
   ];
   const tableData = displayData.map((value, key) => ({
     id: value?.id,
-    stt: key + 1,
+    stt: <div>{key + 1}</div>,
     name: <TextLink to={`${PAGES.ADD_CANDIDATE}?id=${value?.id}`}>{value?.name}</TextLink>,
-    phoneNumber: value?.phone,
-    address: value?.address,
-    email: value?.email,
-    education: value?.education,
+    phoneNumber: <div>{value?.phone}</div>,
+    address: <div>{value?.address}</div>,
+    email: <div>{value?.email}</div>,
+    education: <div>{value?.education}</div>,
     createdAt: <Time>{value?.createdAt}</Time>,
-  }));
-  const tableSearchData = displayData.map(value => ({
-    name: value?.name,
   }));
 
   /**
@@ -77,6 +62,7 @@ const CandidateList = () => {
         <div className="text-xl font-bold text-dark">{translate('CANDIDATE_LIST')}</div>
 
         <Button
+          shape="round"
           iconOptions={{
             icon: AddIcon,
             size: 20,
@@ -92,7 +78,7 @@ const CandidateList = () => {
         data={tableData}
         searchOptions={{
           display: true,
-          searchData: tableSearchData,
+          rootData: displayData,
         }}
       />
     </div>

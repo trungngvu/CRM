@@ -12,18 +12,19 @@ const locale = {
   DESCRIPTION: 'Mô tả',
   ROLE: 'Phân quyền',
   ACTIVE: 'Đang hoạt động',
-  DEACTIVATE: 'Không hoạt động',
+  DEACTIVATED: 'Không hoạt động',
   MALE: 'Nữ',
   FEMALE: 'Nam',
   OTHER: 'Khác',
-  CHOOSE_GENDER: 'Chọn giới thính',
+  CHOOSE_GENDER: 'Chọn giới tính',
   CHOOSE_DEPARTMENT: 'Chọn nhóm người dùng',
-  CHOOSE_ROLE: 'Chọn Phân quyền',
+  CHOOSE_ROLE: 'Chọn phân quyền',
   NAME_REQUIRE: 'Họ và tên không hợp lệ',
   EMAIL_REQUIRE: 'Email không hợp lệ',
   STATUS_REQUIRE: ' Vui lòng chọn trạng thái',
   DEPARTMENT_REQUIRE: 'Vui lòng chọn nhóm người dùng',
   POST_SUCCESS: 'Thêm người dùng thành công',
+  POST_ERROR: 'Thêm người dùng thất bại',
 };
 
 export default locale;

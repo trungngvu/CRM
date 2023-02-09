@@ -9,11 +9,11 @@ import { AddIcon, DeleteIcon, EditIcon } from '@src/app/components/core/icons';
 import useModal from '@src/app/hooks/use-modal';
 import useStatus from '@src/app/hooks/use-status';
 import { useDeleteDepartmentByIdMutation, useGetDepartmentsQuery } from '@store';
-import { DepartmentProps, LANGUAGES, PAGES, USER_GROUP_STATUS } from '@types';
+import { ACTIVE_STATUS, DepartmentProps, PAGES } from '@types';
 
-import { en, vi } from './i18n';
+import languages from './i18n';
 
-const { ALL, ACTIVE, DEACTIVATE } = USER_GROUP_STATUS;
+const { ALL, ACTIVE, DEACTIVATED } = ACTIVE_STATUS;
 
 const UserGroupList = (): JSX.Element => {
   const { open, close, Popup } = useModal();
@@ -22,23 +22,9 @@ const UserGroupList = (): JSX.Element => {
 
   const [deleteGroup, { isLoading, isError, isSuccess }] = useDeleteDepartmentByIdMutation();
   const [displayData, setDisplayData] = useState<DepartmentProps[]>([]);
-  const { currentStatus, SelectStatus } = useStatus<USER_GROUP_STATUS>({
-    defaultValue: USER_GROUP_STATUS.ALL,
-  });
+  const { currentStatus, SelectStatus } = useStatus();
 
-  const translate = useI18n({
-    name: UserGroupList.name,
-    data: [
-      {
-        key: LANGUAGES.EN,
-        value: en,
-      },
-      {
-        key: LANGUAGES.VI,
-        value: vi,
-      },
-    ],
-  });
+  const translate = useI18n(languages);
   const title = translate('TITLE');
   const statusList = [
     {
@@ -50,8 +36,8 @@ const UserGroupList = (): JSX.Element => {
       label: translate(ACTIVE),
     },
     {
-      value: DEACTIVATE,
-      label: translate(DEACTIVATE),
+      value: DEACTIVATED,
+      label: translate(DEACTIVATED),
     },
   ];
 
@@ -65,7 +51,7 @@ const UserGroupList = (): JSX.Element => {
     { value: 'actions', label: translate('ACTIONS') },
   ];
 
-  const handlePopup = (id: number) => {
+  const handleOpenPopup = (id: number) => {
     open();
     setIdGroup(id);
   };
@@ -102,16 +88,12 @@ const UserGroupList = (): JSX.Element => {
           iconOptions={{
             icon: DeleteIcon,
           }}
-          onClick={() => handlePopup(value.id)}
+          onClick={() => handleOpenPopup(value.id)}
         >
           {translate('DELETE')}
         </Button>
       </div>
     ),
-  }));
-
-  const tableSearchData = displayData.map(value => ({
-    name: value?.name,
   }));
 
   // const handleAddUserGroup = () => {
@@ -179,7 +161,7 @@ const UserGroupList = (): JSX.Element => {
         data={dataTable}
         searchOptions={{
           display: true,
-          searchData: tableSearchData,
+          rootData: displayData,
         }}
       />
       <Popup>

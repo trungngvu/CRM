@@ -2,24 +2,12 @@ import { Link } from 'react-router-dom';
 
 import useI18n from '@hooks/use-i18n';
 import { Button } from '@src/app/components';
-import { LANGUAGES } from '@types';
 
-import { en, vi } from './i18n';
+import languages from './i18n';
 
 const Error404 = (): JSX.Element => {
-  const translate = useI18n({
-    name: Error404.name,
-    data: [
-      {
-        key: LANGUAGES.EN,
-        value: en,
-      },
-      {
-        key: LANGUAGES.VI,
-        value: vi,
-      },
-    ],
-  });
+  const translate = useI18n(languages);
+
   return (
     <div className="flex items-center justify-center h-screen">
       <img alt="Not found" src="/assets/404/404.png" />

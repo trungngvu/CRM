@@ -12,9 +12,8 @@ export const FILES_API_REDUCER_KEY = 'filesApi';
 
 export const fileApi = createApi({
   reducerPath: FILES_API_REDUCER_KEY,
-
   baseQuery,
-
+  refetchOnMountOrArgChange: true,
   endpoints: builder => ({
     fileParser: builder.mutation<FileParserResponse, FileParserProps>({
       query: data => ({

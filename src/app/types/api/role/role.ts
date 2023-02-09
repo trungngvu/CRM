@@ -1,4 +1,5 @@
-export type RoleStatus = 'ALL' | 'ACTIVE' | 'DEACTIVATE';
+import { ACTIVE_STATUS } from '../../active-status';
+import { PAGES_NAME } from '../../pages-name';
 
 export type RoleProps = {
   createdAt: string;
@@ -6,12 +7,16 @@ export type RoleProps = {
   id: number;
   name: string;
   description: string;
-  status: RoleStatus;
+  status: ACTIVE_STATUS;
+  permissions: {
+    id: number;
+    name: PAGES_NAME;
+  }[];
 };
 
 export type Role = {
   description: string;
   id: number;
   name: string;
-  status: RoleStatus;
+  status: ACTIVE_STATUS;
 };

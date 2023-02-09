@@ -12,7 +12,7 @@ const locale = {
   STATUS: 'Status',
   GROUP_NAME: 'Group name',
   ACTIVE: 'Active',
-  DEACTIVATE: 'Deactive',
+  DEACTIVATED: 'Deactive',
   DELETE_USER_GROUP_TOASTIFY_SUCCESS: 'Delete user group success',
   DELETE_USER_GROUP_TOASTIFY_FAIL: 'Delete group user fail',
   USER_GROUP_NOT_EXIST: 'User group does not exist',

@@ -1,8 +1,7 @@
 import useI18n from '@hooks/use-i18n';
-import { LANGUAGES } from '@types';
 
 import Button from '../core/button';
-import { en, vi } from './i18n';
+import languages from './i18n';
 
 type LogOutProps = {
   onClose: () => void;
@@ -10,19 +9,7 @@ type LogOutProps = {
 };
 
 const LogOut = ({ onClose, onConfirm }: LogOutProps) => {
-  const translate = useI18n({
-    name: LogOut.name,
-    data: [
-      {
-        key: LANGUAGES.EN,
-        value: en,
-      },
-      {
-        key: LANGUAGES.VI,
-        value: vi,
-      },
-    ],
-  });
+  const translate = useI18n(languages);
 
   return (
     <div className="p-2 bg-light sm:p-0">

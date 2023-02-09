@@ -10,7 +10,7 @@ const locale = {
   PERMISSION_NAME: 'Tên phân quyền',
   DESCRIPTION: 'Description',
   ACTIVE: 'Active',
-  DEACTIVATE: 'Deactivate',
+  DEACTIVATED: 'Deactivated',
   MALE: 'Male',
   FEMALE: 'Female',
   OTHERS: 'Other',
@@ -22,6 +22,7 @@ const locale = {
   STATUS_REQUIRE: 'Status is require',
   DEPARTMENT_REQUIRE: 'Department is require',
   POST_SUCCESS: 'Add user is successfully',
+  POST_ERROR: 'Add user is error',
 };
 
 export default locale;

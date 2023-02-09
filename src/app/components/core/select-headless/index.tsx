@@ -7,9 +7,8 @@ import { ControllerRenderProps, FieldError, FieldErrorsImpl, FieldValues } from 
 import { twMerge } from 'tailwind-merge';
 
 import useI18n from '@hooks/use-i18n';
-import { LANGUAGES } from '@types';
 
-import { en, vi } from './i18n';
+import languages from './i18n';
 
 type SelectHeadlessProps = {
   data?: ItemType[];
@@ -46,19 +45,7 @@ const SelectHeadless = ({
   disable = false,
   ...props
 }: SelectHeadlessProps) => {
-  const translate = useI18n({
-    name: SelectHeadless.name,
-    data: [
-      {
-        key: LANGUAGES.EN,
-        value: en,
-      },
-      {
-        key: LANGUAGES.VI,
-        value: vi,
-      },
-    ],
-  });
+  const translate = useI18n(languages);
   const [selectedAuto, setSelectedAuto] = useState<ItemType | null>(null);
   const [query, setQuery] = useState('');
 
@@ -99,28 +86,20 @@ const SelectHeadless = ({
       {label && (
         <label htmlFor="name" className="flex select-none">
           {label}
-          {isRequire && <p className="ml-1 text-red-500">*</p>}
+          {isRequire && <p className="ml-1 text-error">*</p>}
         </label>
       )}
       <Combobox disabled={disable} value={selected} onChange={setSelectedAuto} {...fieldData}>
-        <div
-          className={twMerge(
-            clsx(
-              props.className,
-              'relative cursor-pointer border-l-[1px] border-solid border-secondary  text-left ',
-              !withoutBorder && 'border-[1px] border-solid  border-secondary rounded-[4px] hover:border-[black] ',
-              errors && 'border-error',
-              selectHeader && 'border-none',
-              disable && 'bg-secondary hover:border-transparent opacity-70'
-            )
-          )}
-        >
+        <div className={twMerge(clsx(props.className, 'relative cursor-pointer '))}>
           <div className="relative flex cursor-default overflow-hidden w-full h-[100%] items-center justify-between  ">
             <Combobox.Input
               className={clsx(
-                'h-[100%] w-full rounded-[4px] border-none pl-[8px] leading-5 focus:ring-0 placeholder-secondary text-ellipsis	',
+                'h-[100%] w-full rounded-[4px] border-secondary text-left pl-[8px] hover:border-[black] leading-5 focus:ring-0 focus:border-black  placeholder-secondary text-ellipsis',
                 selectHeader && 'font-semibold text-xl',
-                disable && 'bg-secondary'
+                disable && 'bg-secondary hover:border-transparent opacity-70',
+                withoutBorder && ' border-y-0 border-r-0 rounded-none py-0 hover:border-secondary',
+                errors && 'border-error',
+                selectHeader && 'border-none'
               )}
               placeholder={props.placeholder}
               displayValue={(item: ItemType) => item?.label || ''}
@@ -131,7 +110,7 @@ const SelectHeadless = ({
                 }
               }}
             />
-            <Combobox.Button className=" inset-y-1 right-0 flex items-center pr-[5px] cursor-pointer">
+            <Combobox.Button className="absolute inset-y-1 right-0 flex items-center pr-[5px] cursor-pointer">
               {icon}
             </Combobox.Button>
           </div>
@@ -169,7 +148,7 @@ const SelectHeadless = ({
           </Transition>
         </div>
       </Combobox>
-      {errors && <p className="text-sm text-red-500">{errors?.message?.toString()}</p>}
+      {errors && <p className="text-sm text-error">{errors?.message?.toString()}</p>}
     </div>
   );
 };

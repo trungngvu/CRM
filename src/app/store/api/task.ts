@@ -12,6 +12,7 @@ import {
   GetTasksResponse,
   GetUsersByTaskProps,
   GetUsersByTaskResponse,
+  TaskProps,
   UpdateTaskProps,
   UpdateTaskResponse,
 } from '@types';
@@ -25,9 +26,8 @@ export const TASK_API_REDUCER_KEY = 'taskApi';
 
 export const taskApi = createApi({
   reducerPath: TASK_API_REDUCER_KEY,
-
   baseQuery: baseQuery as BaseQueryFn<unknown, unknown, { status: number; data: unknown }>,
-
+  refetchOnMountOrArgChange: true,
   endpoints: builder => ({
     createTask: builder.mutation<CreateTaskResponse, CreateTaskProps>({
       query: data => ({
@@ -36,11 +36,12 @@ export const taskApi = createApi({
         data,
       }),
     }),
-    getTasks: builder.query<GetTasksResponse, GetTasksProps>({
+    getTasks: builder.query<TaskProps[], GetTasksProps>({
       query: data => ({
         url: `${TASKS}?projectId=${data.projectId}`,
         method: GET,
       }),
+      transformResponse: (response: GetTasksResponse) => response?.data,
     }),
     getTaskById: builder.query<GetTaskResponse, GetTaskProps>({
       query: data => ({

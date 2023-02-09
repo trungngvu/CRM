@@ -2,14 +2,14 @@ import { Button } from '@mui/material';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 
 import useI18n from '@hooks/use-i18n';
-import { LANGUAGES, UserProps } from '@types';
+import { UserProps } from '@types';
 
 import Table from '../../core/table';
-import { en, vi } from './i18n';
+import languages from './i18n';
 
 type PopupAddMemberProps = {
   handleClose: () => void;
-  isOpen: boolean;
+  isOpen?: boolean;
   data?: UserProps[] | undefined;
   listUsers: DataDisplay[];
   setListUsers: Dispatch<SetStateAction<DataDisplay[]>>;
@@ -44,19 +44,7 @@ const PopupAddMember = ({ handleClose, isOpen, data, setListUsers, listUsers }: 
     }
   }, [selectUsers, isOpen]);
 
-  const translate = useI18n({
-    name: PopupAddMember.name,
-    data: [
-      {
-        key: LANGUAGES.EN,
-        value: en,
-      },
-      {
-        key: LANGUAGES.VI,
-        value: vi,
-      },
-    ],
-  });
+  const translate = useI18n(languages);
 
   const columns = [
     { value: 'id', label: translate('ID') },
@@ -69,8 +57,15 @@ const PopupAddMember = ({ handleClose, isOpen, data, setListUsers, listUsers }: 
     handleClose();
   };
 
+  const tableData = (data || []).map((value, index) => ({
+    id: value.id,
+    STT: index + 1,
+    name: value?.fullName,
+    email: value?.email,
+  }));
+
   return (
-    <div className="w-full p-5 bg-white">
+    <div className="w-[790px] p-5 bg-white">
       <div className="flex justify-between">
         <div className="text-[20px] font-bold mb-2">{translate('SELECT_MEMBER')}</div>
         <img
@@ -84,22 +79,16 @@ const PopupAddMember = ({ handleClose, isOpen, data, setListUsers, listUsers }: 
       {data ? (
         <Table
           columns={columns}
-          data={data.map((value, index) => ({
-            id: value.id,
-            STT: index + 1,
-            name: value?.fullName,
-            email: value?.email,
-          }))}
+          data={tableData}
           searchOptions={{
             display: true,
-            searchData: data.map(value => ({
-              name: value?.fullName,
-            })),
+            rootData: data,
+            searchByValue: 'fullName',
           }}
           selectOptions={{
             display: true,
             selectedList: selectUsers,
-            onChangeSelectedList: setSelectUsers,
+            setSelectList: setSelectUsers,
           }}
         />
       ) : (

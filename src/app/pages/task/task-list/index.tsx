@@ -1,161 +1,108 @@
 import { useEffect, useState } from 'react';
+import useDeepCompareEffect from 'use-deep-compare-effect';
 
-import { Button, Loading, Status, Table, TextLink, Time } from '@components';
-import { AddIcon } from '@components/core/icons';
+import { AddIcon, Button, Loading, Status, Table, TextLink, Time } from '@components';
 import history from '@history';
-import useI18n from '@hooks/use-i18n';
-import useParams from '@hooks/use-params';
-import useSelect from '@hooks/use-select';
-import useStatus from '@hooks/use-status';
+import { useI18n, useParams, useSelect, useStatus } from '@hooks';
 import { projectActions, useAppDispatch, useGetProjectByIdQuery, useGetTasksQuery } from '@store';
-import { LANGUAGES, PAGES, PRIORITY, PROJECT_AND_TASK_STATUS, TaskProps } from '@types';
+import { PAGES, PRIORITY, PROJECT_AND_TASK_STATUS, TaskProps } from '@types';
+import { createValueLabelData } from '@utils';
 
-import { en, vi } from './i18n';
+import languages from './i18n';
 
 const { ALL, NOT_STARTED, IN_PROGRESS, CANCELLED, COMPLETED, PAUSE } = PROJECT_AND_TASK_STATUS;
+const { HIGH, MEDIUM, LOW } = PRIORITY;
+const { setCurrentProject } = projectActions;
 
 const TaskList = (): JSX.Element => {
   const [displayData, setDisplayData] = useState<TaskProps[]>([]);
 
-  const translate = useI18n({
-    name: TaskList.name,
-    data: [
-      {
-        key: LANGUAGES.EN,
-        value: en,
-      },
-      {
-        key: LANGUAGES.VI,
-        value: vi,
-      },
-    ],
-  });
+  const translate = useI18n(languages);
   const projectId = useParams('projectId');
-  const { currentStatus, SelectStatus } = useStatus<PROJECT_AND_TASK_STATUS>({
-    defaultValue: PROJECT_AND_TASK_STATUS.ALL,
-  });
-  const { data: projectData } = useGetProjectByIdQuery(
-    { id: projectId },
-    {
-      refetchOnMountOrArgChange: true,
-    }
-  );
-  const { data: tasksData, isLoading: isLoadingTasks } = useGetTasksQuery(
-    { projectId },
-    { refetchOnMountOrArgChange: true }
-  );
-
+  const { data: { member: projectMembers = [] } = {} } = useGetProjectByIdQuery({ id: projectId });
+  const { data: tasksData = [], isLoading: isLoadingTasks } = useGetTasksQuery({ projectId });
   const dispatch = useAppDispatch();
-  const { selectedItemValue: selectedAssignee, Select: SelectAssignee } = useSelect({
-    defaultValue: undefined,
-    data: (projectData?.member || []).map(item => item?.fullName).filter(Boolean),
-  });
-  const { selectedItemValue: selectedPriority, Select: SelectPriority } = useSelect({
-    defaultValue: undefined,
-    data: [
-      { value: PRIORITY.HIGH, label: translate(PRIORITY.HIGH) },
-      { value: PRIORITY.MEDIUM, label: translate(PRIORITY.MEDIUM) },
-      { value: PRIORITY.LOW, label: translate(PRIORITY.LOW) },
-    ],
-  });
-
-  const onClickAddTask = () => history.push(`${PAGES.ADD_TASK}?projectId=${projectId}`);
+  const { currentStatus, SelectStatus } = useStatus();
+  const { selectedItemValue: selectedAssignee = '', Select: SelectAssignee } = useSelect();
+  const { selectedItemValue: selectedPriority = '', Select: SelectPriority } = useSelect();
 
   /**
    * Set current project with projectId param
    */
   useEffect(() => {
-    dispatch(projectActions.setCurrentProject({ id: projectId }));
+    dispatch(setCurrentProject({ id: projectId }));
   }, [projectId]);
 
   /**
    * Update display data and filter by status param
    */
-  useEffect(() => {
-    if (tasksData) {
-      setDisplayData(
-        (tasksData?.data || []).filter(item => {
-          if (currentStatus === ALL) {
-            return item;
-          }
+  useDeepCompareEffect(() => {
+    const filteredData = tasksData.filter(item => (currentStatus === ALL ? item : item?.status === currentStatus));
 
-          return item.status === currentStatus;
-        })
-      );
-    }
+    setDisplayData(filteredData);
   }, [currentStatus, tasksData]);
+
+  const goToAddTask = () => history.push(`${PAGES.ADD_TASK}?projectId=${projectId}`);
 
   /**
    * Select status data
    */
-  const title = translate('TITLE');
-  const statusList = [
-    {
-      value: ALL,
-      label: translate(ALL),
-    },
-    {
-      value: NOT_STARTED,
-      label: translate(NOT_STARTED),
-    },
-    {
-      value: IN_PROGRESS,
-      label: translate(IN_PROGRESS),
-    },
-    {
-      value: PAUSE,
-      label: translate(PAUSE),
-    },
-    {
-      value: COMPLETED,
-      label: translate(COMPLETED),
-    },
-    { value: CANCELLED, label: translate(CANCELLED) },
-  ];
+  const title = translate('STATUS_TITLE');
+  const statusList = createValueLabelData([ALL, NOT_STARTED, IN_PROGRESS, PAUSE, COMPLETED, CANCELLED], translate);
+
+  /**
+   * Assignee data and priority data
+   */
+  const assigneeData = projectMembers.map(member => member?.fullName).filter(Boolean);
+  const priorityData = createValueLabelData([HIGH, MEDIUM, LOW], translate);
 
   /**
    * Table data
    */
-  const tableColumns = [
-    { value: 'code', label: translate('TASK_ID') },
-    { value: 'name', label: translate('TASK_NAME') },
-    { value: 'startDate', label: translate('START_DATE') },
-    { value: 'endDate', label: translate('END_DATE') },
-    { value: 'assignee', label: translate('ASSIGNEE') },
-    { value: 'status', label: translate('STATUS') },
-    { value: 'priority', label: translate('PRIORITY_LEVEL') },
-    { value: 'estimate', label: translate('ESTIMATE') },
-  ];
-  const filteredData = displayData.filter(
-    item =>
-      (item?.assignee?.fullName ?? '').includes(selectedAssignee ? `${selectedAssignee}` : '') &&
-      item?.priority?.includes(selectedPriority ? `${selectedPriority}` : '')
+  const tableColumns = createValueLabelData(
+    ['TASK_CODE', 'TASK_NAME', 'START_DATE', 'END_DATE', 'ASSIGNEE', 'STATUS', 'PRIORITY_LEVEL', 'ESTIMATE'],
+    translate
   );
-  const tableData = filteredData.map(value => ({
-    id: value?.id,
-    code: <TextLink to={`${PAGES.TASK_DETAIL}?id=${value.id}&projectId=${projectId}`}>{value?.id}</TextLink>,
-    name: (
-      <div className="w-full text-left">
-        <TextLink to={`${PAGES.TASK_DETAIL}?id=${value.id}&projectId=${projectId}`}>{value?.name}</TextLink>
-      </div>
-    ),
-    startDate: <Time>{value?.startDate}</Time>,
-    endDate: <Time>{value?.endDate}</Time>,
-    assignee: <div className="w-full text-left">{value?.assignee?.fullName}</div>,
-    status: <Status value={value?.status} />,
-    priority: <div>{translate(value.priority)}</div>,
-    estimate: (
-      <div>
-        {value?.estimate?.value} {translate(value?.estimate?.unit)}
-      </div>
-    ),
-  }));
-  const searchData = filteredData.map(value => ({
-    name: value.name,
-  }));
+  const filteredByAssignee = (fullName: string) =>
+    selectedAssignee.toString() ? fullName === selectedAssignee.toString() : true;
+  const filteredByPriority = (priority: string) =>
+    selectedPriority.toString() ? priority === selectedPriority.toString() : true;
+  const filteredData = displayData.filter(
+    ({ assignee: { fullName = '' } = {}, priority }) => filteredByAssignee(fullName) && filteredByPriority(priority)
+  );
+  const tableData = filteredData.map(
+    ({
+      id = '',
+      name = '',
+      startDate = '',
+      endDate = '',
+      assignee: { fullName = '' } = {},
+      status = NOT_STARTED,
+      priority = '',
+      estimate: { value = '', unit = '' } = {},
+    }) => ({
+      id,
+      TASK_CODE: <TextLink to={`${PAGES.TASK_DETAIL}?id=${id}&projectId=${projectId}`}>{id}</TextLink>,
+      TASK_NAME: (
+        <TextLink to={`${PAGES.TASK_DETAIL}?id=${id}&projectId=${projectId}`} className="w-full text-left">
+          {name}
+        </TextLink>
+      ),
+      START_DATE: <Time>{startDate}</Time>,
+      END_DATE: <Time>{endDate}</Time>,
+      ASSIGNEE: <div className="w-full text-left">{fullName}</div>,
+      STATUS: <Status value={status} />,
+      PRIORITY_LEVEL: <div>{translate(priority)}</div>,
+      ESTIMATE: (
+        <div>
+          {value} {translate(unit)}
+        </div>
+      ),
+    })
+  );
 
   /**
-   * Display loading if is loading get task list
+   * Display loading if is loading task list
    */
   if (isLoadingTasks) {
     return <Loading />;
@@ -166,14 +113,7 @@ const TaskList = (): JSX.Element => {
       <div className="flex items-center justify-between">
         <div className="text-xl font-bold text-dark">{translate('TASK_LIST')}</div>
 
-        <Button
-          shape="round"
-          iconOptions={{
-            icon: AddIcon,
-            size: 20,
-          }}
-          onClick={onClickAddTask}
-        >
+        <Button shape="round" iconOptions={{ icon: AddIcon, size: 20 }} onClick={goToAddTask}>
           {translate('ADD_TASK')}
         </Button>
       </div>
@@ -182,6 +122,7 @@ const TaskList = (): JSX.Element => {
 
       <div className="flex gap-x-3">
         <SelectAssignee
+          data={assigneeData}
           labelOptions={{
             text: translate('ASSIGNEE'),
           }}
@@ -189,6 +130,7 @@ const TaskList = (): JSX.Element => {
         />
 
         <SelectPriority
+          data={priorityData}
           labelOptions={{
             text: translate('PRIORITY_LEVEL'),
           }}
@@ -201,7 +143,7 @@ const TaskList = (): JSX.Element => {
         data={tableData}
         searchOptions={{
           display: true,
-          searchData,
+          rootData: filteredData,
         }}
       />
     </div>

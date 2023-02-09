@@ -2,35 +2,29 @@ import { useEffect } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import { Button, PopupDelete, ProjectManagerNav, Table, TagsList } from '@components';
+import { Button, Loading, OptionsNav, PopupDelete, Table, TagsList } from '@components';
 import { DeleteIcon, EditIcon } from '@components/core/icons';
 import useI18n from '@hooks/use-i18n';
-import useModal from '@src/app/hooks/use-modal';
+import useModal from '@hooks/use-modal';
 import { useDeleteDepartmentByIdMutation, useGetDepartmentByIdQuery } from '@store';
-import { LANGUAGES, PAGES } from '@types';
+import { PAGES } from '@types';
 
-import { en, vi } from './i18n';
+import languages from './i18n';
 
 const UserGroupDetail = (): JSX.Element => {
   const [searchParams] = useSearchParams();
   const departmentId = searchParams.get('id');
   const navigate = useNavigate();
   const { open, close, Popup } = useModal();
-  const departmentDetail = useGetDepartmentByIdQuery({ id: departmentId }, { refetchOnMountOrArgChange: true })?.data;
+
+  const { data: departmentDetail, isLoading: isLoadingDepartment } = useGetDepartmentByIdQuery(
+    { id: departmentId },
+    { refetchOnMountOrArgChange: true }
+  );
   const [deleteDepartment, { isLoading, isSuccess, isError }] = useDeleteDepartmentByIdMutation();
-  const translate = useI18n({
-    name: UserGroupDetail.name,
-    data: [
-      {
-        key: LANGUAGES.EN,
-        value: en,
-      },
-      {
-        key: LANGUAGES.VI,
-        value: vi,
-      },
-    ],
-  });
+
+  const translate = useI18n(languages);
+
   const memberTableColumn = [
     {
       value: 'number',
@@ -56,6 +50,7 @@ const UserGroupDetail = (): JSX.Element => {
       });
     }
   }, [isSuccess]);
+
   useEffect(() => {
     if (isError) {
       toast.error(translate('DELETE_USER_GROUP_TOASTIFY_FAIL'), {
@@ -81,15 +76,14 @@ const UserGroupDetail = (): JSX.Element => {
     close();
   };
 
-  const membersTableData =
-    departmentDetail?.users?.map((user, index) => {
-      return {
-        id: user.id,
-        number: index + 1,
-        fullName: `${user.firstName || ''} ${user.lastName || ''}`,
-        email: user?.email || '',
-      };
-    }) || [];
+  const membersTableData = (departmentDetail?.users || []).map((user, index) => {
+    return {
+      id: user.id,
+      number: index + 1,
+      fullName: `${user?.fullName || ''}`,
+      email: user?.email || '',
+    };
+  });
 
   const optionElement = (
     <div className="flex items-center justify-center">
@@ -116,9 +110,15 @@ const UserGroupDetail = (): JSX.Element => {
       </Button>
     </div>
   );
+
   const handleOnClickReturn = (): void => {
-    navigate(-1);
+    navigate(PAGES.USER_GROUP_LIST);
   };
+
+  if (isLoadingDepartment) {
+    return <Loading />;
+  }
+
   return (
     <div className="flex flex-col p-4 min-h-[calc(100vh-58px)]">
       <Popup>
@@ -131,50 +131,47 @@ const UserGroupDetail = (): JSX.Element => {
         />
       </Popup>
 
-      <ProjectManagerNav
+      <OptionsNav
         className="mb-3"
         onClickReturn={handleOnClickReturn}
         title={translate('USER_GROUP_DETAIL')}
         options={departmentDetail ? optionElement : ''}
       />
-      {departmentDetail && (
-        <>
-          <div className="mb-4 w-full overflow-x-auto border border-secondary-light rounded-[5px] bg-white flex flex-col gap-y-3 p-3">
-            <div className="border-b border-secondary-light pb-2.5">
-              <span className="mr-11 text-dark">
-                {translate('GROUP_NAME')}: <span className="font-bold">{departmentDetail?.name || ''}</span>
-              </span>
-              <span className="text-dark">
-                {translate('STATUS')}: <span className="font-bold">{translate(departmentDetail?.status || '')}</span>
-              </span>
-            </div>
-            <div className="text-base" dangerouslySetInnerHTML={{ __html: departmentDetail?.description || '' }} />
-          </div>
-          {departmentDetail.roles.length > 0 && (
-            <TagsList
-              data={[
-                {
-                  title: translate('ACCESS_RIGHTS'),
-                  tags: departmentDetail.roles.map(role => {
-                    return {
-                      name: role.name,
-                      url: '',
-                    };
-                  }),
-                },
-              ]}
-              className="mb-4"
-            />
-          )}
-          <div className="mb-4">
-            <Table
-              columns={memberTableColumn}
-              data={membersTableData}
-              headerOptions={{ title: translate('MEMBER_LIST') || '' }}
-            />
-          </div>
-        </>
+
+      <div className="mb-4 w-full overflow-x-auto border border-secondary-light rounded-[5px] bg-white flex flex-col gap-y-3 p-3">
+        <div className="border-b border-secondary-light pb-2.5">
+          <span className="mr-11 text-dark">
+            {translate('GROUP_NAME')}: <span className="font-bold">{departmentDetail?.name || ''}</span>
+          </span>
+          <span className="text-dark">
+            {translate('STATUS')}: <span className="font-bold">{translate(departmentDetail?.status || '')}</span>
+          </span>
+        </div>
+        <div className="text-base" dangerouslySetInnerHTML={{ __html: departmentDetail?.description || '' }} />
+      </div>
+      {departmentDetail !== undefined && departmentDetail.roles.length > 0 && (
+        <TagsList
+          data={[
+            {
+              title: translate('ACCESS_RIGHTS'),
+              tags: departmentDetail.roles.map(role => {
+                return {
+                  name: role.name,
+                  url: '',
+                };
+              }),
+            },
+          ]}
+          className="mb-4"
+        />
       )}
+      <div className="mb-4">
+        <Table
+          columns={memberTableColumn}
+          data={membersTableData}
+          headerOptions={{ title: translate('MEMBER_LIST') || '' }}
+        />
+      </div>
       {!departmentDetail && (
         <div className="border border-secondary-light rounded-[5px] bg-white p-3">
           {translate('USER_GROUP_NOT_EXIST')}

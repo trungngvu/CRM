@@ -1,5 +1,5 @@
 const locale = {
-  UPDATE_USER_GROUP: 'Add users group',
+  UPDATE_USER_GROUP: 'Update users group',
   SAVE: 'Save',
   NAME_GROUP: 'Name group',
   ENTER_GROUP_NAME: 'Enter group name',
@@ -9,7 +9,8 @@ const locale = {
   ADD_MEMBER: 'Add member',
   DESCRIPTION: 'Description',
   ENTER_DESCRIPTION: 'Enter description',
-  DEACTIVATE: 'Deactivate',
+  DEACTIVATED: 'Deactivated',
+  GROUP_NAME: 'Group name',
   ACTIVE: 'Active',
   FULL_NAME: 'Full name',
   DELETE: 'Delete',

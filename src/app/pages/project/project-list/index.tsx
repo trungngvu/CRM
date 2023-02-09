@@ -1,138 +1,98 @@
 import { useEffect, useState } from 'react';
+import useDeepCompareEffect from 'use-deep-compare-effect';
 
-import Button from '@components/core/button';
-import AddIcon from '@components/core/icons/add';
-import Loading from '@components/core/loading';
-import Table from '@components/core/table';
-import TextLink from '@components/core/text-link';
-import Time from '@components/core/time';
-import Status from '@components/status';
+import { AddIcon, Button, Loading, Status, Table, TextLink, Time } from '@components';
 import history from '@history';
-import useI18n from '@hooks/use-i18n';
-import useRoles from '@hooks/use-roles';
-import useStatus from '@hooks/use-status';
+import { useI18n, usePermission, useStatus } from '@hooks';
 import { projectActions, useAppDispatch, useGetProjectsQuery } from '@store';
-import { LANGUAGES, PAGES, PROJECT_AND_TASK_STATUS, ProjectProps } from '@types';
+import { PAGES, PAGES_NAME, PROJECT_AND_TASK_STATUS, ProjectProps } from '@types';
+import { createValueLabelData } from '@utils';
 
-import { en, vi } from './i18n';
+import languages from './i18n';
 
 const { ALL, NOT_STARTED, IN_PROGRESS, CANCELLED, COMPLETED, PAUSE } = PROJECT_AND_TASK_STATUS;
+const { resetCurrentProject } = projectActions;
 
 const ProjectList = (): JSX.Element => {
   const [displayData, setDisplayData] = useState<ProjectProps[]>([]);
 
-  const translate = useI18n({
-    name: ProjectList.name,
-    data: [
-      {
-        key: LANGUAGES.EN,
-        value: en,
-      },
-      {
-        key: LANGUAGES.VI,
-        value: vi,
-      },
-    ],
-  });
-  const { currentStatus, SelectStatus } = useStatus<PROJECT_AND_TASK_STATUS>({
-    defaultValue: PROJECT_AND_TASK_STATUS.ALL,
-  });
-  const { data: projectData, isLoading } = useGetProjectsQuery(undefined, { refetchOnMountOrArgChange: true });
+  const translate = useI18n(languages);
+  const { data: projectsData = [], isLoading: isLoadingProjects } = useGetProjectsQuery();
   const dispatch = useAppDispatch();
-  const { isAdmin } = useRoles();
+  const isPermissionToAddProject = usePermission(PAGES_NAME.ADD_PROJECT);
+  const { currentStatus, SelectStatus } = useStatus();
 
   /**
    * Reset current project ID when in page list of project
    */
   useEffect(() => {
-    dispatch(projectActions.resetCurrentProject());
+    dispatch(resetCurrentProject());
   }, []);
 
   /**
    * Filter data by status
    */
-  useEffect(() => {
-    if (projectData) {
-      setDisplayData(
-        (projectData?.data || []).filter(item => {
-          if (currentStatus === ALL) {
-            return item;
-          }
+  useDeepCompareEffect(() => {
+    const filteredData = projectsData.filter(item => (currentStatus === ALL ? item : item?.status === currentStatus));
 
-          return item.status === currentStatus;
-        })
-      );
-    }
-  }, [currentStatus, projectData]);
+    setDisplayData(filteredData);
+  }, [currentStatus, projectsData]);
 
-  const onClickAddProject = () => history.push(PAGES.ADD_PROJECT);
+  const goToAddProject = () => history.push(PAGES.ADD_PROJECT);
 
   /**
    * Select status data
    */
-  const title = translate('TITLE');
-  const statusList = [
-    {
-      value: ALL,
-      label: translate(ALL),
-    },
-    {
-      value: NOT_STARTED,
-      label: translate(NOT_STARTED),
-    },
-    {
-      value: IN_PROGRESS,
-      label: translate(IN_PROGRESS),
-    },
-    {
-      value: PAUSE,
-      label: translate(PAUSE),
-    },
-    {
-      value: COMPLETED,
-      label: translate(COMPLETED),
-    },
-    { value: CANCELLED, label: translate(CANCELLED) },
-  ];
+  const title = translate('STATUS_TITLE');
+  const statusList = createValueLabelData([ALL, NOT_STARTED, IN_PROGRESS, PAUSE, COMPLETED, CANCELLED], translate);
 
   /**
    * Table data
    */
-  const tableColumns = [
-    { value: 'code', label: translate('PROJECT_ID') },
-    { value: 'name', label: translate('PROJECT_NAME') },
-    { value: 'startDate', label: translate('START_DATE') },
-    { value: 'endDate', label: translate('END_DATE') },
-    { value: 'projectManager', label: translate('PROJECT_MANAGER') },
-    { value: 'status', label: translate('STATUS') },
-    { value: 'totalTask', label: translate('TOTAL_TASK') },
-    { value: 'totalMember', label: translate('TOTAL_MEMBER') },
-  ];
-  const tableData = displayData.map(value => ({
-    id: value?.id,
-    code: <TextLink to={`${PAGES.PROJECT_DETAIL}?id=${value?.id}`}>{value?.id}</TextLink>,
-    name: (
-      <div className="w-full text-left">
-        <TextLink to={`${PAGES.PROJECT_DETAIL}?id=${value?.id}`}>{value?.name}</TextLink>
-      </div>
-    ),
-    startDate: <Time>{value?.startDate}</Time>,
-    endDate: <Time>{value?.endDate}</Time>,
-    projectManager: (
-      <div className="w-full text-left">{`${value?.manager?.firstName} ${value?.manager?.lastName}`}</div>
-    ),
-    status: <Status value={value?.status} />,
-    totalTask: value?.tasks?.length,
-    totalMember: value?.member?.length,
-  }));
-  const tableSearchData = displayData.map(value => ({
-    name: value?.name,
-  }));
+  const tableColumns = createValueLabelData(
+    [
+      'PROJECT_CODE',
+      'PROJECT_NAME',
+      'START_DATE',
+      'END_DATE',
+      'PROJECT_MANAGER',
+      'STATUS',
+      'TOTAL_TASK',
+      'TOTAL_MEMBER',
+    ],
+    translate
+  );
+  const tableData = displayData.map(
+    ({
+      id = '',
+      name = '',
+      startDate = '',
+      endDate = '',
+      manager: { fullName = '' } = {},
+      status = NOT_STARTED,
+      tasks = [],
+      member = [],
+    }) => ({
+      id,
+      PROJECT_CODE: <TextLink to={`${PAGES.PROJECT_DETAIL}?id=${id}`}>{id}</TextLink>,
+      PROJECT_NAME: (
+        <TextLink to={`${PAGES.PROJECT_DETAIL}?id=${id}`} className="w-full text-left">
+          {name}
+        </TextLink>
+      ),
+      START_DATE: <Time>{startDate}</Time>,
+      END_DATE: <Time>{endDate}</Time>,
+      PROJECT_MANAGER: <span className="w-full text-left">{fullName}</span>,
+      STATUS: <Status value={status} />,
+      TOTAL_TASK: <div>{tasks.length}</div>,
+      TOTAL_MEMBER: <div>{member.length}</div>,
+    })
+  );
 
   /**
-   * Display loading if is loading get project list
+   * Display loading if is loading project list
    */
-  if (isLoading) {
+  if (isLoadingProjects) {
     return <Loading />;
   }
 
@@ -141,15 +101,8 @@ const ProjectList = (): JSX.Element => {
       <div className="flex items-center justify-between">
         <div className="text-xl font-bold text-dark">{translate('PROJECT_LIST')}</div>
 
-        {isAdmin && (
-          <Button
-            shape="round"
-            iconOptions={{
-              icon: AddIcon,
-              size: 20,
-            }}
-            onClick={onClickAddProject}
-          >
+        {isPermissionToAddProject && (
+          <Button shape="round" iconOptions={{ icon: AddIcon, size: 20 }} onClick={goToAddProject}>
             {translate('ADD_PROJECT')}
           </Button>
         )}
@@ -162,7 +115,7 @@ const ProjectList = (): JSX.Element => {
         data={tableData}
         searchOptions={{
           display: true,
-          searchData: tableSearchData,
+          rootData: displayData,
         }}
       />
     </div>

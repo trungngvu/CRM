@@ -34,6 +34,7 @@
     "react/require-default-props": "off",
     "react-hooks/exhaustive-deps": "off",
     "react/jsx-props-no-spreading": "off",
+    "react/no-danger": "off",
     "import/prefer-default-export": "off",
     "class-methods-use-this": "off",
     "@typescript-eslint/no-unsafe-member-access": "off",

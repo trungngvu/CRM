@@ -1,4 +1,4 @@
-import { USER_GROUP_STATUS } from '../../user-group-status';
+import { ACTIVE_STATUS } from '../../active-status';
 import { Role } from '../role';
 import { UserProps } from '../user';
 
@@ -8,7 +8,7 @@ export type DepartmentProps = {
   id: number;
   name: string;
   description: string;
-  status: USER_GROUP_STATUS;
+  status: ACTIVE_STATUS;
   users: UserProps[];
   roles: Role[];
 };

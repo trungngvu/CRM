@@ -8,34 +8,22 @@ import { toast } from 'react-toastify';
 import * as Yup from 'yup';
 
 import { Button, Loading, MultiField, PopupAddMember, SelectMultiple, Table } from '@components';
-import { SaveIcon } from '@components/core/icons';
+import { DeleteIcon, SaveIcon } from '@components/core/icons';
 import { DataDisplay } from '@components/popups/popup-add-member';
 import history from '@history';
 import useI18n from '@hooks/use-i18n';
 import useModal from '@src/app/hooks/use-modal';
 import { useCreateDepartmentMutation, useGetRolesQuery, useGetUsersQuery } from '@store';
-import { CreateDepartmentProps, FIELD_TYPE, LANGUAGES, PAGES, SelectItem, USER_GROUP_STATUS } from '@types';
+import { ACTIVE_STATUS, CreateDepartmentProps, FIELD_TYPE, PAGES, SelectItem } from '@types';
 
 import '../../task/task-list';
-import { en, vi } from './i18n';
+import languages from './i18n';
 
 const { INPUT, SELECT } = FIELD_TYPE;
-const { ACTIVE, DEACTIVATE } = USER_GROUP_STATUS;
+const { ACTIVE, DEACTIVATED } = ACTIVE_STATUS;
 
 const AddUserGroup = (): JSX.Element => {
-  const translate = useI18n({
-    name: AddUserGroup.name,
-    data: [
-      {
-        key: LANGUAGES.EN,
-        value: en,
-      },
-      {
-        key: LANGUAGES.VI,
-        value: vi,
-      },
-    ],
-  });
+  const translate = useI18n(languages);
 
   const { isOpen, open, close, Popup } = useModal();
 
@@ -47,7 +35,6 @@ const AddUserGroup = (): JSX.Element => {
   const [listUsers, setListUsers] = useState<DataDisplay[]>([]);
   const [valueDescription, setValueDescription] = useState('');
   const [isValidateDsc, setIsValidateDsc] = useState(false);
-  const [selectListDTZ, setSelectListDTZ] = useState<any>([]);
 
   const schema = Yup.object({
     name: Yup.string().nullable().required(translate('NAME_ERROR').toString()),
@@ -62,7 +49,7 @@ const AddUserGroup = (): JSX.Element => {
     resolver: yupResolver(schema),
     defaultValues: {
       name: '',
-      status: USER_GROUP_STATUS.ACTIVE,
+      status: ACTIVE,
       description: '',
       users: null,
       roles: [],
@@ -139,7 +126,18 @@ const AddUserGroup = (): JSX.Element => {
   useEffect(() => {
     listUsers.map(user => {
       return Object.assign(user, {
-        removeMember: <Button onClick={() => handleRemoveUser(user.id)}>{translate('DELETE')}</Button>,
+        removeMember: (
+          <Button
+            color="action"
+            shape="round"
+            iconOptions={{
+              icon: DeleteIcon,
+            }}
+            onClick={() => handleRemoveUser(user.id)}
+          >
+            {translate('DELETE')}
+          </Button>
+        ),
       });
     });
   }, [listUsers]);
@@ -169,38 +167,10 @@ const AddUserGroup = (): JSX.Element => {
     { value: 'removeMember', label: translate('DELETE') },
   ];
 
-  const permissionTableColumn = [
-    {
-      value: 'permissionName',
-      label: translate('PERMISSION_NAME'),
-    },
-    {
-      value: 'permissionDescription',
-      label: translate('DESCRIPTION'),
-    },
-  ];
-
-  const permissionTableData = [
-    {
-      id: 1,
-      permissionName: 'Chức năng 1',
-      permissionDescription: 'Lorem ipsum dolor sit amet',
-    },
-    {
-      id: 2,
-      permissionName: 'Chức năng 2',
-      permissionDescription: 'Lorem ipsum dolor sit amet2',
-    },
-    {
-      id: 3,
-      permissionName: 'Chức năng 3',
-      permissionDescription: 'Lorem ipsum dolor sit amet3',
-    },
-  ];
   const config = [
     {
       type: INPUT,
-      label: translate('FULL_NAME'),
+      label: translate('GROUP_NAME'),
       name: 'name',
       isRequire: true,
       colSpan: 2,
@@ -210,7 +180,7 @@ const AddUserGroup = (): JSX.Element => {
       label: translate('STATUS'),
       data: [
         { label: translate(ACTIVE), value: ACTIVE },
-        { label: translate(DEACTIVATE), value: DEACTIVATE },
+        { label: translate(DEACTIVATED), value: DEACTIVATED },
       ],
       name: 'status',
       isRequire: true,
@@ -251,7 +221,7 @@ const AddUserGroup = (): JSX.Element => {
           <div className="flex flex-col col-span-3 gap-y-2">
             <label className="flex select-none">
               {translate('DESCRIPTION')}
-              <p className="ml-1 text-red-500">*</p>
+              <p className="ml-1 text-error">*</p>
             </label>
 
             <CKEditor
@@ -265,7 +235,7 @@ const AddUserGroup = (): JSX.Element => {
                 toolbarLocation: 'bottom',
               }}
             />
-            {isValidateDsc && <p className="text-sm text-red-500">{translate('DESCRIPTION_REQUIRE')}</p>}
+            {isValidateDsc && <p className="text-sm text-error">{translate('DESCRIPTION_REQUIRE')}</p>}
           </div>
         </div>
 
@@ -280,7 +250,7 @@ const AddUserGroup = (): JSX.Element => {
                   data={listGroupUser}
                   fieldData={{ ...field }}
                   label={translate('ROLE').toString()}
-                  placeholder="Chọn quyền truy cập"
+                  placeholder={translate('CHOOSE_PERMISSION').toString()}
                   className="w-fit"
                 />
               );
@@ -310,18 +280,6 @@ const AddUserGroup = (): JSX.Element => {
               data={getUsers.data?.data}
             />
           </Popup>
-        </div>
-        <div>
-          <Table
-            headerOptions={{ title: translate('DECENTRALIZATION') || '' }}
-            columns={permissionTableColumn}
-            data={permissionTableData}
-            selectOptions={{
-              display: true,
-              selectedList: selectListDTZ,
-              onChangeSelectedList: setSelectListDTZ,
-            }}
-          />
         </div>
       </form>
     </div>

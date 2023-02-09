@@ -12,7 +12,7 @@ const locale = {
   STATUS: 'Trạng thái',
   GROUP_USER: 'Nhóm người dùng',
   ACTIVE: 'Đang hoạt động',
-  DEACTIVATE: 'Không hoạt động',
+  DEACTIVATED: 'Không hoạt động',
   SET_PERMISSION: 'Phân quyền',
 };
 
