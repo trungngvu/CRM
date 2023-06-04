@@ -2,6 +2,7 @@ import { PAGES_NAME } from '@types';
 
 const locale = {
   [PAGES_NAME.PROJECT]: 'Dự án',
+  [PAGES_NAME.HOME]: 'Dashboard',
   [PAGES_NAME.PROJECT_LIST]: 'Danh sách dự án',
   [PAGES_NAME.ADD_PROJECT]: 'Tạo dự án mới',
 

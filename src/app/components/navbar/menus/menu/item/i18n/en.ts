@@ -2,6 +2,7 @@ import { PAGES_NAME } from '@types';
 
 const locale = {
   [PAGES_NAME.PROJECT]: 'Project',
+  [PAGES_NAME.HOME]: 'Dashboard',
   [PAGES_NAME.PROJECT_LIST]: 'Project list',
   [PAGES_NAME.ADD_PROJECT]: 'Create new project',
 
