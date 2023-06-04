@@ -62,7 +62,7 @@ export const ROUTES_CONFIG: RouteProps[] = [
     path: PAGES.HOME,
     auth: [...ALL_ROLE_EXCEPT_GUEST],
     name: PAGES_NAME.HOME,
-    element: <Navigate to={PAGES.PROJECT_LIST} />,
+    element: lazy({ path: 'pages/home' }),
   },
 
   /**
