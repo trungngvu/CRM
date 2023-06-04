@@ -52,7 +52,7 @@ const Navbar = (): JSX.Element => {
 
     const jobMenu = {
       name: PAGES_NAME.JOB,
-      icon: <Icon icon={DashboardIcon} size={20} />,
+      icon: <img src="/assets/icons/ListChecks.svg" alt="job icon" width={20} />,
       path: PAGES.JOB,
       auth: [...ALL_ROLE_EXCEPT_GUEST],
       subs: [

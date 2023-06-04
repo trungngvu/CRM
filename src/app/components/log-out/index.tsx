@@ -15,7 +15,7 @@ const LogOut = ({ onClose, onConfirm }: LogOutProps) => {
     <div className="p-2 bg-light sm:p-0">
       <form className="flex flex-col bg-white p-[30px] shadow-2 w-full overflow-hidden">
         <div className="text-center m-auto pb-[25px]">
-          <img alt="logo" src="/assets/icons/logo-1.svg" width={350} />
+          <img alt="logo" src="/assets/icons/logo-1.svg" width={150} />
         </div>
 
         <div className="text-2xl font-bold mb-[22px] text-center ">{translate('TITLE')}</div>
