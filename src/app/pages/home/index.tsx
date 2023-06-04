@@ -216,7 +216,7 @@ const Home = () => {
       end: new Date(2023, 2, 26, 4, 30, 0),
     },
   ]);
-  const currentHour = new Date(new Date().setHours(new Date().getHours() - 3));
+  const currentHour = new Date(new Date().setHours(new Date().getHours()));
   return (
     <>
       <div style={{ margin: '10px 20px' }}>
