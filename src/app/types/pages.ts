@@ -21,6 +21,18 @@ export enum PAGES {
   ADD_TASK = '/task/add',
   UPDATE_TASK = '/task/update',
 
+  PLAN = '/plan',
+  PLAN_LIST = '/plan/list',
+  PLAN_DETAIL = '/plan/detail',
+  ADD_PLAN = '/plan/add',
+  UPDATE_PLAN = '/plan/update',
+
+  JOB = '/job',
+  JOB_LIST = '/job/list',
+  JOB_DETAIL = '/job/detail',
+  ADD_JOB = '/job/add',
+  UPDATE_JOB = '/job/update',
+
   PERSONNEL_MANAGEMENT = '/personnel-management',
   CANDIDATE_LIST = '/personnel-management/candidate-list',
   ADD_CANDIDATE = '/personnel-management/add-candidate',

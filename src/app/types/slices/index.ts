@@ -7,3 +7,5 @@ export * from './user';
 export * from './project';
 
 export * from './department';
+
+export * from './plan';

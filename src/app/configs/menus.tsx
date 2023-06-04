@@ -33,6 +33,24 @@ export const MENUS: MENU[] = [
     ],
   },
   {
+    name: PAGES_NAME.PLAN,
+    icon: <Icon icon={ReaderIcon} size={20} />,
+    path: PAGES.PLAN,
+    auth: [...ALL_ROLE_EXCEPT_GUEST],
+    subs: [
+      {
+        name: PAGES_NAME.PLAN_LIST,
+        path: PAGES.PLAN_LIST,
+        auth: [...ALL_ROLE_EXCEPT_GUEST],
+      },
+      {
+        name: PAGES_NAME.ADD_PLAN,
+        path: PAGES.ADD_PLAN,
+        auth: [...ALL_ROLE_EXCEPT_GUEST],
+      },
+    ],
+  },
+  {
     name: PAGES_NAME.PERSONNEL_MANAGEMENT,
     icon: <Icon icon={PeopleIcon} size={20} />,
     path: PAGES.PERSONNEL_MANAGEMENT,

@@ -50,6 +50,25 @@ const Navbar = (): JSX.Element => {
       ],
     };
 
+    const jobMenu = {
+      name: PAGES_NAME.JOB,
+      icon: <Icon icon={DashboardIcon} size={20} />,
+      path: PAGES.JOB,
+      auth: [...ALL_ROLE_EXCEPT_GUEST],
+      subs: [
+        {
+          name: PAGES_NAME.JOB_LIST,
+          path: `${PAGES.JOB_LIST}?projectId=${currentProject}`,
+          auth: [...ALL_ROLE_EXCEPT_GUEST],
+        },
+        {
+          name: PAGES_NAME.ADD_JOB,
+          path: `${PAGES.ADD_JOB}?projectId=${currentProject}`,
+          auth: [...ALL_ROLE_EXCEPT_GUEST],
+        },
+      ],
+    };
+
     /**
      * Add task menu into menus
      */
@@ -57,6 +76,7 @@ const Navbar = (): JSX.Element => {
 
     if (currentProject) {
       menus.splice(1, 0, taskMenu);
+      menus.splice(3, 0, jobMenu);
     }
 
     /**

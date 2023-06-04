@@ -5,9 +5,17 @@ const locale = {
   [PAGES_NAME.PROJECT_LIST]: 'Danh sách dự án',
   [PAGES_NAME.ADD_PROJECT]: 'Tạo dự án mới',
 
+  [PAGES_NAME.PLAN]: 'Kế hoạch cá nhân',
+  [PAGES_NAME.PLAN_LIST]: 'Danh sách kế hoạch',
+  [PAGES_NAME.ADD_PLAN]: 'Tạo kế hoạch mới',
+
   [PAGES_NAME.TASK]: 'Công việc',
   [PAGES_NAME.TASK_LIST]: 'Danh sách công việc',
   [PAGES_NAME.ADD_TASK]: 'Tạo công việc mới',
+
+  [PAGES_NAME.JOB]: 'Công việc cá nhân',
+  [PAGES_NAME.JOB_LIST]: 'Danh sách công việc',
+  [PAGES_NAME.ADD_JOB]: 'Tạo công việc mới',
 
   [PAGES_NAME.PERSONNEL_MANAGEMENT]: 'Quản lý nhân sự',
   [PAGES_NAME.CANDIDATE_LIST]: 'Danh sách ứng viên',
