@@ -216,11 +216,24 @@ const Home = () => {
       end: new Date(2023, 2, 26, 4, 30, 0),
     },
   ]);
-  const currentHour = new Date(new Date().setHours(new Date().getHours() - 3));
+  const currentHour = new Date();
   return (
     <>
-      <div style={{ margin: '10px 20px' }}>
-        <h1 style={{ textAlign: 'center', fontSize: '25px' }}>{currentHour.toLocaleTimeString('vn-VN')}</h1>
+      <div className="mx-[10px] my-[20px]">
+        <div className="flex items-center justify-center relative text-xl">
+          <h1>{currentHour.toLocaleTimeString('vn-VN')}</h1>
+          <Button
+            type="submit"
+            iconOptions={{
+              icon: AddIcon,
+              size: 18,
+            }}
+            shape="round"
+            className="absolute right-0"
+          >
+            {translate('ADD_TASK')}
+          </Button>
+        </div>
         <h2 className="text-xl font-bold text-dark">To do</h2>
         <div>
           <div className="grid grid-rows-1 grid-flow-col gap-4">
@@ -230,7 +243,7 @@ const Home = () => {
                   event.start.toDateString() === currentHour.toDateString() ? (
                     <div key={event.id}>
                       <input type="checkbox" value={event.id} name={event.title}></input>
-                      <label className="font-bold">{event.title}</label>
+                      <label className="font-bold mx-10">{event.title}</label>
                     </div>
                   ) : (
                     ''
@@ -238,18 +251,7 @@ const Home = () => {
                 )}
               </form>
             </div>
-            <div className="flex items-center gap-x-2">
-              <Button
-                type="submit"
-                iconOptions={{
-                  icon: AddIcon,
-                  size: 18,
-                }}
-                shape="round"
-              >
-                {translate('ADD_TASK')}
-              </Button>
-            </div>
+            <div className="flex items-center gap-x-2"></div>
           </div>
         </div>
       </div>
