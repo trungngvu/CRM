@@ -132,6 +132,61 @@ export const ROUTES_CONFIG: RouteProps[] = [
   },
 
   /**
+   * Plan
+   */
+  {
+    path: PAGES.PLAN_LIST,
+    auth: [...ALL_ROLE_EXCEPT_GUEST],
+    name: PAGES_NAME.PLAN_LIST,
+    element: lazy({ path: 'pages/plan/project-list' }),
+  },
+  {
+    path: PAGES.PLAN_DETAIL,
+    auth: [...ALL_ROLE_EXCEPT_GUEST],
+    name: PAGES_NAME.PLAN_DETAIL,
+    element: lazy({ path: 'pages/plan/project-detail' }),
+  },
+  {
+    path: PAGES.ADD_PLAN,
+    auth: [...ALL_ROLE_EXCEPT_GUEST],
+    name: PAGES_NAME.ADD_PLAN,
+    element: lazy({ path: 'pages/plan/add-project' }),
+  },
+  {
+    path: PAGES.UPDATE_PLAN,
+    auth: [...ALL_ROLE_EXCEPT_GUEST],
+    name: PAGES_NAME.UPDATE_PLAN,
+    element: lazy({ path: 'pages/plan/update-project' }),
+  },
+
+  /**
+   * Task
+   */
+  {
+    path: PAGES.JOB_LIST,
+    auth: [...ALL_ROLE_EXCEPT_GUEST],
+    name: PAGES_NAME.JOB_LIST,
+    element: lazy({ path: 'pages/job/task-list' }),
+  },
+  {
+    path: PAGES.JOB_DETAIL,
+    auth: [...ALL_ROLE_EXCEPT_GUEST],
+    name: PAGES_NAME.JOB_DETAIL,
+    element: lazy({ path: 'pages/job/task-detail' }),
+  },
+  {
+    path: PAGES.ADD_JOB,
+    auth: [...ALL_ROLE_EXCEPT_GUEST],
+    name: PAGES_NAME.ADD_JOB,
+    element: lazy({ path: 'pages/job/add-task' }),
+  },
+  {
+    path: PAGES.UPDATE_JOB,
+    auth: [...ALL_ROLE_EXCEPT_GUEST],
+    name: PAGES_NAME.UPDATE_JOB,
+    element: lazy({ path: 'pages/job/update-task' }),
+  },
+  /**
    * Candidate
    */
   {
