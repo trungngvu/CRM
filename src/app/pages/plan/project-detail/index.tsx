@@ -10,7 +10,7 @@ import useI18n from '@hooks/use-i18n';
 import useRoles from '@hooks/use-roles';
 import useModal from '@src/app/hooks/use-modal';
 import {
-  projectActions,
+  planActions,
   useAppDispatch,
   useDeleteProjectByIdMutation,
   useGetProjectByIdQuery,
@@ -102,7 +102,7 @@ const ProjectDetail = (): JSX.Element => {
   }
 
   useEffect(() => {
-    dispatch(projectActions.setCurrentProject({ id }));
+    dispatch(planActions.setCurrentPlan({ id }));
   }, [id]);
 
   const optionNav = (

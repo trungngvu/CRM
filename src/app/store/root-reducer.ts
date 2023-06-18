@@ -20,6 +20,8 @@ import {
 import {
   i18nReducer,
   i18nSlice,
+  planReducer,
+  planSlice,
   projectReducer,
   projectSlice,
   settingsReducer,
@@ -35,6 +37,7 @@ const rootStore = {
   [userSlice.name]: userReducer,
   [userAPI.reducerPath]: userAPIReducer,
   [projectSlice.name]: projectReducer,
+  [planSlice.name]: planReducer,
   [projectApi.reducerPath]: projectApiReducer,
   [taskApi.reducerPath]: taskApiReducer,
   [resumeApi.reducerPath]: resumeApiReducer,

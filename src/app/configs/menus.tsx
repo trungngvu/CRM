@@ -16,7 +16,7 @@ export type MENU = {
 export const MENUS: MENU[] = [
   {
     name: PAGES_NAME.HOME,
-    icon: <Icon icon={ReaderIcon} size={20} />,
+    icon: <img src="/assets/icons/home.svg" alt="home icon" width={20} />,
     path: PAGES.HOME,
     auth: [...ALL_ROLE_EXCEPT_GUEST],
   },

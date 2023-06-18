@@ -5,6 +5,7 @@ import useDeepCompareEffect from 'use-deep-compare-effect';
 import { DashboardIcon, Icon } from '@components/core/icons';
 import { MENU, MENUS, SETTINGS_CONFIG } from '@configs';
 import {
+  selectCurrentPlan,
   selectCurrentProject,
   selectDisplaySetting,
   selectUserPermissions,
@@ -24,6 +25,8 @@ const Navbar = (): JSX.Element => {
 
   const { expandNavbar } = useAppSelector(selectDisplaySetting);
   const currentProject = useAppSelector(selectCurrentProject);
+  const currentPlan = useAppSelector(selectCurrentPlan);
+
   const userRoles = useAppSelector(selectUserRoles);
   const userPermissions = useAppSelector(selectUserPermissions);
 
@@ -58,12 +61,12 @@ const Navbar = (): JSX.Element => {
       subs: [
         {
           name: PAGES_NAME.JOB_LIST,
-          path: `${PAGES.JOB_LIST}?projectId=${currentProject}`,
+          path: `${PAGES.JOB_LIST}?planId=${currentProject}`,
           auth: [...ALL_ROLE_EXCEPT_GUEST],
         },
         {
           name: PAGES_NAME.ADD_JOB,
-          path: `${PAGES.ADD_JOB}?projectId=${currentProject}`,
+          path: `${PAGES.ADD_JOB}?planId=${currentProject}`,
           auth: [...ALL_ROLE_EXCEPT_GUEST],
         },
       ],
@@ -74,9 +77,12 @@ const Navbar = (): JSX.Element => {
      */
     const menus = [...MENUS];
 
+    if (currentPlan) {
+      menus.splice(2, 0, jobMenu);
+    }
+
     if (currentProject) {
       menus.splice(1, 0, taskMenu);
-      menus.splice(3, 0, jobMenu);
     }
 
     /**
@@ -108,7 +114,7 @@ const Navbar = (): JSX.Element => {
           });
 
     setDisplayMenus(permissionMenus);
-  }, [userRoles, currentProject]);
+  }, [userRoles, currentProject, currentPlan]);
 
   return (
     <motion.div

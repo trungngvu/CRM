@@ -4,14 +4,14 @@ import useDeepCompareEffect from 'use-deep-compare-effect';
 import { AddIcon, Button, Loading, Status, Table, TextLink, Time } from '@components';
 import history from '@history';
 import { useI18n, usePermission, useStatus } from '@hooks';
-import { projectActions, useAppDispatch, useGetProjectsQuery } from '@store';
+import { planActions, useAppDispatch, useGetProjectsQuery } from '@store';
 import { PAGES, PAGES_NAME, PROJECT_AND_TASK_STATUS, ProjectProps } from '@types';
 import { createValueLabelData } from '@utils';
 
 import languages from './i18n';
 
 const { ALL, NOT_STARTED, IN_PROGRESS, CANCELLED, COMPLETED, PAUSE } = PROJECT_AND_TASK_STATUS;
-const { resetCurrentProject } = projectActions;
+const { resetCurrentPlan } = planActions;
 
 const ProjectList = (): JSX.Element => {
   const [displayData, setDisplayData] = useState<ProjectProps[]>([]);
@@ -26,7 +26,7 @@ const ProjectList = (): JSX.Element => {
    * Reset current project ID when in page list of project
    */
   useEffect(() => {
-    dispatch(resetCurrentProject());
+    dispatch(resetCurrentPlan());
   }, []);
 
   /**
