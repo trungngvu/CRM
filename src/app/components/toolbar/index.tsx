@@ -1,6 +1,8 @@
+import Autocomplete from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
 import clsx from 'clsx';
 import { useEffect, useState } from 'react';
-import { useLocation, useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 
 import { MENUS, SETTINGS_CONFIG } from '@configs';
 import history from '@history';
@@ -24,6 +26,8 @@ const { DARK } = COLORS;
 
 const Toolbar = (): JSX.Element => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
   const currentLayoutSettings = useAppSelector(selectLayoutSetting);
   const { expandNavbar } = useAppSelector(selectDisplaySetting);
 
@@ -76,9 +80,21 @@ const Toolbar = (): JSX.Element => {
     }
   }, [displayData, id, projectId]);
 
+  const [searchValue, setSearchValue] = useState<{ label: string; link: string } | null>(null);
+
   useEffect(() => {
     refetch();
+    console.log(searchValue?.link !== pathname);
+    console.log(searchValue?.link, pathname);
+    if (searchValue?.link !== pathname) setSearchValue(null);
   }, [pathname]);
+
+  const top100Films = [
+    { label: 'Danh sách dự án', link: '/project/list' },
+    { label: 'Tạo dự án', link: '/project/add' },
+    { label: 'Danh sách kế hoạch cá nhân', link: '/plan/list' },
+    { label: 'Tạo kế hoạch cá nhân', link: '/plan/add' },
+  ];
 
   const handleSelect = (item: SelectItem) => {
     if (item.value && displayData.includes(item)) {
@@ -118,7 +134,20 @@ const Toolbar = (): JSX.Element => {
         )}
       </div>
 
-      <div className="flex ml-auto">
+      <div className="flex items-center ml-auto gap-x-3">
+        <Autocomplete
+          disablePortal
+          id="combo-box-demo"
+          options={top100Films}
+          sx={{ width: 300, '& .MuiAutocomplete-popupIndicator': { transform: 'none' } }}
+          value={searchValue}
+          renderInput={(params: any) => <TextField {...params} label="Tìm kiếm" size="small" />}
+          popupIcon={<img src="/assets/icons/search.svg" alt="logo" />}
+          onChange={(_e, value) => {
+            setSearchValue(value);
+            if (value) navigate(value.link);
+          }}
+        />
         <UserMenu />
       </div>
     </div>
