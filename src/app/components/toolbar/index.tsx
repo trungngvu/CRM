@@ -89,9 +89,9 @@ const Toolbar = (): JSX.Element => {
 
   const top100Films = [
     { label: 'Danh sách dự án', link: '/project/list' },
-    { label: 'Tạo dự án', link: '/project/add' },
+    { label: 'Thêm dự án', link: '/project/add' },
     { label: 'Danh sách kế hoạch cá nhân', link: '/plan/list' },
-    { label: 'Tạo kế hoạch cá nhân', link: '/plan/add' },
+    { label: 'Thêm kế hoạch cá nhân', link: '/plan/add' },
   ];
 
   const handleSelect = (item: SelectItem) => {

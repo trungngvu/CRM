@@ -1,6 +1,6 @@
 const locale = {
   PLACEHOLDER_EDITOR: 'Nhập mô tả công việc!',
-  ADD_TASK: 'Tạo công việc mới',
+  ADD_TASK: 'Thêm công việc mới',
   TASK_NAME: 'Tên công việc',
   START_DATE: 'Ngày bắt đầu',
   END_DATE: 'Ngày kết thúc',
