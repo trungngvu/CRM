@@ -139,7 +139,7 @@ const Toolbar = (): JSX.Element => {
           options={top100Films}
           sx={{ width: 300, '& .MuiAutocomplete-popupIndicator': { transform: 'none' } }}
           value={searchValue}
-          renderInput={(params: any) => <TextField {...params} label="Tìm kiếm" size="small" />}
+          renderInput={(params: any) => <TextField {...params} label="Tìm kiếm chức năng" size="small" />}
           popupIcon={<img src="/assets/icons/search.svg" alt="logo" />}
           onChange={(_e, value) => {
             setSearchValue(value);
