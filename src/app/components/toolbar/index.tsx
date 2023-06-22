@@ -84,8 +84,6 @@ const Toolbar = (): JSX.Element => {
 
   useEffect(() => {
     refetch();
-    console.log(searchValue?.link !== pathname);
-    console.log(searchValue?.link, pathname);
     if (searchValue?.link !== pathname) setSearchValue(null);
   }, [pathname]);
 
