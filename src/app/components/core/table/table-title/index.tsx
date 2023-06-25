@@ -19,7 +19,7 @@ const TableTitle = ({ title, buttonContent, buttonAction }: TableTitleProps): JS
       'flex items-center'
     )}
   >
-    {title && <div className="font-bold text-dark">{title}</div>}
+    {title && <div className="font-bold">{title}</div>}
 
     {buttonContent && (
       <Button

@@ -1,6 +1,7 @@
+import Rating from '@mui/material/Rating';
 import copy from 'copy-to-clipboard';
 import dayjs from 'dayjs';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
@@ -22,17 +23,12 @@ import Comment from '@components/comment';
 import CommentInput from '@components/comment-input';
 import { EditIcon } from '@components/core/icons';
 import ExecTime from '@components/execution-time';
-import JobHistory, { PropTypes } from '@components/job-history';
 import useI18n from '@hooks/use-i18n';
 import useModal from '@hooks/use-modal';
 import { projectActions, useAppDispatch, useDeleteTaskByIdMutation, useGetTaskByIdQuery } from '@store';
-import { COMMENT, PAGES, PROJECT_AND_TASK_STATUS } from '@types';
+import { COMMENT, COMMENT_TYPE, PAGES, PROJECT_AND_TASK_STATUS } from '@types';
 
 import languages from './i18n';
-
-const jobHistoryData: PropTypes[] = [];
-
-const commentData: COMMENT[] = [];
 
 const { ALL } = PROJECT_AND_TASK_STATUS;
 
@@ -41,6 +37,8 @@ const TaskDetail = (): JSX.Element => {
   const dispatch = useAppDispatch();
   const [deleteTask, { isLoading }] = useDeleteTaskByIdMutation();
   const navigate = useNavigate();
+  const [star, setStar] = useState<number | null>(2);
+  const [comment, setComment] = useState<COMMENT[]>([]);
 
   const [searchParams] = useSearchParams();
   const projectId = searchParams.get('projectId');
@@ -199,6 +197,16 @@ const TaskDetail = (): JSX.Element => {
             taskPriority: translate(taskDetail?.priority || ''),
           }}
         />
+        <div className="flex flex-col w-full gap-3 px-4 py-2 bg-white border rounded border-secondary">
+          <div className="font-bold">Đánh giá chất lượng công việc</div>
+          <Rating
+            name="simple-controlled"
+            value={star}
+            onChange={(_event, newValue) => {
+              setStar(newValue);
+            }}
+          />
+        </div>
         <Table
           columns={columns}
           data={childTasks}
@@ -222,11 +230,25 @@ const TaskDetail = (): JSX.Element => {
         )}
 
         <ExecTime />
-        <JobHistory data={jobHistoryData} />
-        <Comment data={commentData} />
+        {/* <JobHistory data={jobHistoryData} /> */}
+        <Comment data={comment} />
       </div>
 
-      <CommentInput />
+      <CommentInput
+        onSubmit={(val: string) => {
+          setComment(prev => [
+            ...prev,
+            {
+              id: Math.floor(Math.random() * 101),
+              name: 'admin',
+              userID: 1,
+              time: new Date().toLocaleString(),
+              detail: val,
+              type: COMMENT_TYPE.COMMENT,
+            },
+          ]);
+        }}
+      />
     </div>
   );
 };

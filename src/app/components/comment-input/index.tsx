@@ -8,7 +8,7 @@ import useI18n from '@hooks/use-i18n';
 import Input from '../core/input';
 import languages from './i18n';
 
-const CommentInput = () => {
+const CommentInput = ({ onSubmit }: { onSubmit: (val: string) => void }) => {
   const [inputValue, setInputValue] = useState<string>('');
 
   const handleOnChangeValue = (e: ChangeEvent<HTMLInputElement>): void => {
@@ -20,14 +20,21 @@ const CommentInput = () => {
   return (
     <div className="sticky bottom-0 w-full px-2 py-2 bg-white">
       <Input value={inputValue} onChange={handleOnChangeValue} placeholder={`${translate('CONTENT')}`} />
-      <SendIcon
-        className={twMerge(
-          clsx('absolute -translate-y-8 cursor-pointer right-5 opacity-40', {
-            'hover:text-blue-600 hover:opacity-100': inputValue === '',
-            'opacity-100 text-blue-600': inputValue !== '',
-          })
-        )}
-      />
+      <div
+        onClick={() => {
+          if (inputValue !== '') onSubmit(inputValue);
+          setInputValue('');
+        }}
+      >
+        <SendIcon
+          className={twMerge(
+            clsx('absolute -translate-y-8 cursor-pointer right-5 opacity-40', {
+              'hover:text-blue-600 hover:opacity-100': inputValue === '',
+              'opacity-100 text-blue-600': inputValue !== '',
+            })
+          )}
+        />
+      </div>
     </div>
   );
 };
