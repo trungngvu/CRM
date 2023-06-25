@@ -231,6 +231,13 @@ const events = [
     end: new Date(2023, 2, 26, 4, 30, 0),
     finished: false,
   },
+  {
+    id: 28,
+    title: 'Fix my UI-UX project',
+    start: new Date(new Date().setHours(new Date().getHours())),
+    end: new Date(new Date().setHours(new Date().getHours() + 3)),
+    finished: false,
+  },
 ];
 
 export default events;

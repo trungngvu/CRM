@@ -1,3 +1,5 @@
+import Autocomplete from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
 import clsx from 'clsx';
 import { useEffect, useState } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
@@ -21,6 +23,14 @@ import UserMenu from '../user-menu';
 
 const { NAVBAR_SIZE, EXPAND_NAVBAR_SIZE, TOOLBAR_HEIGHT } = SETTINGS_CONFIG;
 const { DARK } = COLORS;
+
+const top100Films = [
+  { label: 'The Shawshank Redemption', year: 1994 },
+  { label: 'The Godfather', year: 1972 },
+  { label: 'The Godfather: Part II', year: 1974 },
+  { label: 'The Dark Knight', year: 2008 },
+  { label: '12 Angry Men', year: 1957 },
+];
 
 const Toolbar = (): JSX.Element => {
   const dispatch = useAppDispatch();
@@ -119,6 +129,13 @@ const Toolbar = (): JSX.Element => {
       </div>
 
       <div className="flex ml-auto">
+        <Autocomplete
+          disablePortal
+          id="combo-box-demo"
+          options={top100Films}
+          sx={{ width: 300 }}
+          renderInput={(params: any) => <TextField {...params} label="Movie" variant="outlined" />}
+        />
         <UserMenu />
       </div>
     </div>

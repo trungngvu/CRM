@@ -60,7 +60,11 @@ const ProjectList = (): JSX.Element => {
       PROJECT_CODE: <TextLink to={`${PAGES.PLAN_DETAIL}?id=${id}`}>{id}</TextLink>,
       PROJECT_NAME: (
         <TextLink to={`${PAGES.PLAN_DETAIL}?id=${id}`} className="w-full text-left">
-          {name === 'App quản lý cv' ? 'Đỗ JLPT N2' : 'Kế hoạch lớn'}
+          {name === 'App quản lý cv'
+            ? 'Đỗ JLPT N2'
+            : name === 'Website E commerce for MAYBELINE'
+            ? 'Đỗ naitei công ty Rakuten'
+            : 'Kế hoạch lớn'}
         </TextLink>
       ),
       START_DATE: <Time>{startDate}</Time>,

@@ -305,4 +305,11 @@ export const ROUTES_CONFIG: RouteProps[] = [
     name: PAGES_NAME.ALL,
     element: <Navigate to={PAGES.ERROR_404} />,
   },
+  // for dashboard only
+  {
+    path: PAGES.DAY_TASK,
+    auth: [...ALL_ROLE_EXCEPT_GUEST],
+    name: PAGES_NAME.DAY_TASK,
+    element: lazy({ path: 'pages/job/add-task' }),
+  },
 ];
