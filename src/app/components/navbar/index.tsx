@@ -61,12 +61,12 @@ const Navbar = (): JSX.Element => {
       subs: [
         {
           name: PAGES_NAME.JOB_LIST,
-          path: `${PAGES.JOB_LIST}?planId=${currentProject}`,
+          path: `${PAGES.JOB_LIST}?planId=${currentPlan}`,
           auth: [...ALL_ROLE_EXCEPT_GUEST],
         },
         {
           name: PAGES_NAME.ADD_JOB,
-          path: `${PAGES.ADD_JOB}?planId=${currentProject}`,
+          path: `${PAGES.ADD_JOB}?planId=${currentPlan}`,
           auth: [...ALL_ROLE_EXCEPT_GUEST],
         },
       ],

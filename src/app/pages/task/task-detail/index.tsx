@@ -39,7 +39,6 @@ const TaskDetail = (): JSX.Element => {
   const navigate = useNavigate();
   const [star, setStar] = useState<number | null>(2);
   const [comment, setComment] = useState<COMMENT[]>([]);
-  console.log(comment);
 
   const [searchParams] = useSearchParams();
   const projectId = searchParams.get('projectId');

@@ -18,7 +18,7 @@ const TaskList = (): JSX.Element => {
   const [displayData, setDisplayData] = useState<TaskProps[]>([]);
 
   const translate = useI18n(languages);
-  const projectId = useParams('projectId');
+  const projectId = useParams('planId');
   const { data: { member: projectMembers = [] } = {} } = useGetProjectByIdQuery({ id: projectId });
   const { data: tasksData = [], isLoading: isLoadingTasks } = useGetTasksQuery({ projectId });
   const dispatch = useAppDispatch();
