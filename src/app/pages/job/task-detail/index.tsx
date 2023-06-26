@@ -220,7 +220,21 @@ const TaskDetail = (): JSX.Element => {
 
         <ExecTime />
         {/* <JobHistory data={jobHistoryData} /> */}
-        <Comment data={comment} />
+        <Comment
+          data={comment}
+          onDelete={(ids: number) => {
+            setComment(prev => {
+              prev.splice(prev.findIndex(item => item.id === ids));
+              return prev;
+            });
+          }}
+          onUpdate={(ids, content) => {
+            setComment(prev => {
+              prev[prev.findIndex(item => item.id === ids)].detail = content;
+              return prev;
+            });
+          }}
+        />
       </div>
 
       <CommentInput

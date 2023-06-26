@@ -39,6 +39,7 @@ const TaskDetail = (): JSX.Element => {
   const navigate = useNavigate();
   const [star, setStar] = useState<number | null>(2);
   const [comment, setComment] = useState<COMMENT[]>([]);
+  console.log(comment);
 
   const [searchParams] = useSearchParams();
   const projectId = searchParams.get('projectId');
@@ -231,7 +232,25 @@ const TaskDetail = (): JSX.Element => {
 
         <ExecTime />
         {/* <JobHistory data={jobHistoryData} /> */}
-        <Comment data={comment} />
+        <Comment
+          data={comment}
+          onDelete={(ids: number) => {
+            setComment(prev => {
+              prev.splice(
+                prev.findIndex(item => item.id === ids),
+                1
+              );
+              return prev;
+            });
+          }}
+          onUpdate={(ids, content) => {
+            setComment(prev => {
+              const newComment = prev;
+              newComment[newComment.findIndex(item => item.id === ids)].detail = content;
+              return newComment;
+            });
+          }}
+        />
       </div>
 
       <CommentInput
@@ -239,7 +258,7 @@ const TaskDetail = (): JSX.Element => {
           setComment(prev => [
             ...prev,
             {
-              id: Math.floor(Math.random() * 101),
+              id: Math.floor(Math.random() * 10000),
               name: 'admin',
               userID: 1,
               time: new Date().toLocaleString(),

@@ -1,10 +1,7 @@
-import moment from 'moment';
+// import moment from 'moment';
 import { useState } from 'react';
-import { toast } from 'react-toastify';
 
-import { PopupDelete } from '@components';
 import useI18n from '@hooks/use-i18n';
-import useModal from '@src/app/hooks/use-modal';
 import { selectUserData, useAppSelector } from '@store';
 import { COMMENT, COMMENT_TYPE } from '@types';
 
@@ -13,10 +10,16 @@ import CommentItem from './item';
 
 const COMMENT_NUMBER = 5;
 
-const Comment = ({ data }: { data: COMMENT[] }) => {
+const Comment = ({
+  data,
+  onUpdate,
+  onDelete,
+}: {
+  data: COMMENT[];
+  onUpdate: (id: number, content: string) => void;
+  onDelete: (id: number) => void;
+}) => {
   const translate = useI18n(languages);
-
-  const { open, close, Popup } = useModal();
 
   const user = useAppSelector(selectUserData);
 
@@ -25,26 +28,16 @@ const Comment = ({ data }: { data: COMMENT[] }) => {
   const [sort, setSort] = useState(true);
   const [modify, setModify] = useState<number | null>(null);
 
-  const handleDeleteComment = () => {
-    close();
-    toast.success(translate('DELETE_TASK_TOASTIFY'), {
-      autoClose: 4000,
-
-      pauseOnHover: false,
-    });
-  };
-
-  const filteredData = data
-    .filter((type: COMMENT) => {
-      if (page === COMMENT_TYPE.ALL) return true;
-      return type.type === page;
-    })
-    .sort((a, b) => {
-      return (
-        moment(a.time, 'hh:mm DD/MM/YYYY').toDate().getTime() - moment(b.time, 'hh:mm DD/MM/YYYY').toDate().getTime()
-      );
-    })
-    .reverse();
+  const filteredData = data.filter((type: COMMENT) => {
+    if (page === COMMENT_TYPE.ALL) return true;
+    return type.type === page;
+  });
+  // .sort((a, b) => {
+  //   return (
+  //     moment(a.time, 'hh:mm DD/MM/YYYY').toDate().getTime() - moment(b.time, 'hh:mm DD/MM/YYYY').toDate().getTime()
+  //   );
+  // })
+  // .reverse();
 
   let displayData = filteredData.slice(0, length);
   if (!sort) displayData = displayData.reverse();
@@ -63,15 +56,6 @@ const Comment = ({ data }: { data: COMMENT[] }) => {
 
   return (
     <div>
-      <Popup>
-        <PopupDelete
-          onSubmit={handleDeleteComment}
-          onCancel={close}
-          header={translate('DELETE_COMMENT_CONFIRM')}
-          content={translate('DELETE_COMMENT_CONFIRM_QUESTION')}
-        />
-      </Popup>
-
       <div className="flex justify-between pb-2">
         <div>
           {translate('COMMENT')} ({filteredData.length})
@@ -109,13 +93,15 @@ const Comment = ({ data }: { data: COMMENT[] }) => {
         {displayData.length > 0 ? (
           displayData.map((item, index) => (
             <CommentItem
+              key={item.id}
               item={item}
               index={index}
               displayData={displayData}
               user={user}
               modify={modify}
               setModify={setModify}
-              setHiddenPopup={open}
+              onUpdate={onUpdate}
+              onDelete={onDelete}
             />
           ))
         ) : (

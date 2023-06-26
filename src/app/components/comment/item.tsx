@@ -1,7 +1,10 @@
 import { Avatar } from '@mui/material';
-import { SetStateAction } from 'react';
+import { SetStateAction, useState } from 'react';
+import { toast } from 'react-toastify';
 
+import { PopupDelete } from '@components';
 import useI18n from '@hooks/use-i18n';
+import useModal from '@src/app/hooks/use-modal';
 import { COMMENT, COMMENT_TYPE, UserProps } from '@types';
 
 import Input from '../core/input';
@@ -14,11 +17,24 @@ interface PropsType {
   user: UserProps | undefined;
   modify: number | null;
   setModify: React.Dispatch<SetStateAction<number | null>>;
-  setHiddenPopup: React.Dispatch<SetStateAction<boolean>>;
+  onUpdate: (id: number, content: string) => void;
+  onDelete: (id: number) => void;
 }
 
-const CommentItem = ({ item, index, displayData, user, modify, setModify, setHiddenPopup }: PropsType) => {
+const CommentItem = ({ item, index, displayData, user, modify, setModify, onUpdate, onDelete }: PropsType) => {
   const translate = useI18n(languages);
+  const [value, setValue] = useState(item.detail);
+  const { open, close, Popup } = useModal();
+
+  const handleDeleteComment = () => {
+    close();
+    onDelete(item.id);
+    toast.success(translate('DELETE_TASK_TOASTIFY'), {
+      autoClose: 4000,
+
+      pauseOnHover: false,
+    });
+  };
 
   const content = (el: COMMENT) => {
     if (typeof el.detail === 'string')
@@ -26,15 +42,23 @@ const CommentItem = ({ item, index, displayData, user, modify, setModify, setHid
         return (
           <div className="flex els-center">
             <div className="grow">
-              <Input size="small" defaultValue={el.detail} />
+              <Input size="small" value={value} onChange={e => setValue(e.target.value)} />
             </div>
             <div className="flex gap-2 ml-2">
-              <span className="px-4 py-1 text-sm cursor-pointer bg-primary text-light rounded-3xl">
+              <span
+                className="px-4 py-1 text-sm cursor-pointer bg-primary text-light rounded-3xl"
+                onClick={() => {
+                  onUpdate(el.id, value.toString());
+                  setModify(null);
+                }}
+              >
                 {translate('UPDATE')}
               </span>
               <span
                 className="px-4 py-1 text-sm cursor-pointer bg-dark text-light rounded-3xl"
-                onClick={() => setModify(null)}
+                onClick={() => {
+                  setModify(null);
+                }}
               >
                 {translate('CANCEL')}
               </span>
@@ -55,6 +79,14 @@ const CommentItem = ({ item, index, displayData, user, modify, setModify, setHid
       key={item.id}
       className={`py-4 flex ${index !== displayData.length - 1 && 'border-b border-b-secondary-dark'}`}
     >
+      <Popup>
+        <PopupDelete
+          onSubmit={handleDeleteComment}
+          onCancel={close}
+          header={translate('DELETE_COMMENT_CONFIRM')}
+          content={translate('DELETE_COMMENT_CONFIRM_QUESTION')}
+        />
+      </Popup>
       <div className="pr-3">
         <Avatar
           src=""
@@ -76,10 +108,7 @@ const CommentItem = ({ item, index, displayData, user, modify, setModify, setHid
               >
                 {translate('MODIFY')}
               </span>
-              <span
-                className="px-3 py-1 text-sm cursor-pointer text-light bg-dark rounded-3xl"
-                onClick={() => setHiddenPopup(false)}
-              >
+              <span className="px-3 py-1 text-sm cursor-pointer text-light bg-dark rounded-3xl" onClick={() => open()}>
                 {translate('DELETE')}
               </span>
             </div>
