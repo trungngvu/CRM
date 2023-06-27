@@ -66,6 +66,16 @@ export const ROUTES_CONFIG: RouteProps[] = [
   },
 
   /**
+   * Notification
+   */
+  {
+    path: PAGES.NOTIFICATION,
+    auth: [...ALL_ROLE_EXCEPT_GUEST],
+    name: PAGES_NAME.NOTIFICATION,
+    element: lazy({ path: 'pages/notification' }),
+  },
+
+  /**
    * Profile
    */
   {

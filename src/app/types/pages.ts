@@ -2,6 +2,8 @@ export enum PAGES {
   BASE_URL = '/',
   HOME = '/',
 
+  NOTIFICATION = '/notification',
+
   LOADING = '/loading',
   SIGN_IN = '/sign-in',
   SIGN_UP = '/sign-up',

@@ -1,4 +1,7 @@
+import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
 import Autocomplete from '@mui/material/Autocomplete';
+import Badge from '@mui/material/Badge';
+import IconButton from '@mui/material/IconButton';
 import TextField from '@mui/material/TextField';
 import clsx from 'clsx';
 import { useEffect, useState } from 'react';
@@ -146,6 +149,11 @@ const Toolbar = (): JSX.Element => {
             if (value) navigate(value.link);
           }}
         />
+        <IconButton aria-label="cart" onClick={() => navigate('/notification')}>
+          <Badge badgeContent={5} color="error">
+            <NotificationsNoneOutlinedIcon />
+          </Badge>
+        </IconButton>
         <UserMenu />
       </div>
     </div>
