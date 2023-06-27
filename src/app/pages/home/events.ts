@@ -240,4 +240,28 @@ const events = [
   },
 ];
 
+const labels = ['Đúng hạn', 'Sắp đến hạn', 'Quá hạn'];
+
+export const chartData = {
+  labels,
+  datasets: [
+    {
+      label: 'Đúng hạn',
+      data: [194, 22, 108],
+      backgroundColor: ['#07bc0c', '#f1c40f', '#e74c3c'],
+      barThickness: 10,
+      barPercentage: 0.5,
+    },
+    {
+      label: 'Sắp đến hẹn',
+      data: [],
+      backgroundColor: ['#f1c40f'],
+    },
+    {
+      label: 'Quá hạn',
+      data: [],
+      backgroundColor: ['#e74c3c'],
+    },
+  ],
+};
 export default events;
