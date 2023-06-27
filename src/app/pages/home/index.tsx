@@ -32,7 +32,6 @@ const Home = (): JSX.Element => {
   const handleCheck = (e: any) => {
     const id = e.target.value;
     const foundItem = unfinish.find(event => event.id == id);
-    console.log(foundItem);
     if (foundItem) {
       setUnfinish(prevUnFinish => prevUnFinish.filter(event => event.id !== foundItem?.id));
       foundItem.finished = true;
@@ -42,7 +41,7 @@ const Home = (): JSX.Element => {
   return (
     <>
       <div className="mx-[10px] my-[20px]">
-        <div className="flex items-center justify-center relative text-xl">
+        <div className="relative flex items-center justify-center text-xl">
           {/* <h1>{currentHour.toLocaleTimeString('vn-VN')}</h1> */}
           <Button
             type="submit"
@@ -58,14 +57,14 @@ const Home = (): JSX.Element => {
         </div>
         <div>
           <div>
-            <div className="grid grid-rows-1 grid-flow-col gap-4">
+            <div className="grid grid-flow-col grid-rows-1 gap-4">
               <div className="row-span-3">
                 <h2 className="text-xl font-bold text-dark">To do</h2>
                 <form>
                   {unfinish?.map(event => (
                     <div key={event.id}>
                       <input type="checkbox" value={event.id} name={event.title} onClick={e => handleCheck(e)}></input>
-                      <label className="font-bold mx-10">{event.title}</label>
+                      <label className="mx-10 font-bold">{event.title}</label>
                     </div>
                   ))}
                 </form>
@@ -73,7 +72,7 @@ const Home = (): JSX.Element => {
               <div className="row-span-3">
                 <h2 className="text-xl font-bold text-dark">Finished</h2>
                 {/* <div> */}
-                <div className="grid grid-rows-1 grid-flow-col gap-4">
+                <div className="grid grid-flow-col grid-rows-1 gap-4">
                   <div>
                     {finish?.map(event => (
                       <div key={event.id}>
