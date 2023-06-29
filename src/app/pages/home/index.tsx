@@ -108,7 +108,7 @@ const Home = (): JSX.Element => {
   return (
     <>
       <div className="flex flex-row mt-[3px]">
-        <div className="flex flex-col w-[70%] justify-center ">
+        <div className="flex flex-col w-[75%] justify-center ">
           <div className="flex flex-col mx-[20px]">
             {/*Progress bar */}
             <div className="[&>canvas]:!w-full " style={{ height: '23vh', margin: '1px', borderRadius: '3px' }}>
@@ -130,13 +130,11 @@ const Home = (): JSX.Element => {
             </div>
           </div>
         </div>
-        <div className="flex flex-col w-[30%] border border-black px-[10px] py-[5px] bg-white rounded-[3px] relative">
+        <div className="flex flex-col w-[25%] border border-black px-[10px] py-[5px] bg-white rounded-[3px]  h-[100vh] overflow-auto">
           <div>
-            <h1 className="text-xl font-bold text-dark text-center fixed top-0 left-0 right-0">
-              Danh sách công việc cần làm
-            </h1>
-            <div className=" p-3 gap-3 border border-black flex flex-col rounded-[3px]">
-              <h2 className="text-lg font-bold text-dark text-left">Dự án</h2>
+            <h1 className="text-xl font-bold text-dark text-center">Danh sách công việc cần làm</h1>
+            <div className=" p-3 gap-3 border border-black flex flex-col rounded-[3px] ">
+              <h2 className="text-lg font-bold text-dark text-left top-20">Dự án</h2>
               <div className="p-3 border border-black rounded-[3px] border-4 border-red-600	">
                 <div>
                   <div className="text-md font-bold text-dark">Maybeline</div>
@@ -170,6 +168,7 @@ const Home = (): JSX.Element => {
                 </div>
               </div>
             </div>
+
             <div className=" p-3 gap-3 border border-black flex flex-col rounded-[3px]">
               <h2 className="text-lg font-bold text-dark text-left">Công việc cá nhân</h2>
               <div className="p-3 border border-black rounded-[3px] border-4 border-red-600	">
