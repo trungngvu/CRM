@@ -57,4 +57,7 @@ export enum PAGES_NAME {
   ERROR_404 = 'ERROR_404',
 
   ALL = 'ALL',
+
+  // for dashboard only
+  DAY_TASK = 'DAY_TASK',
 }

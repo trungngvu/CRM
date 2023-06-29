@@ -55,4 +55,6 @@ export enum PAGES {
 
   ERROR_404 = '/error/404',
   ALL = '*',
+  // For dashboard only
+  DAY_TASK = '/daytask/add',
 }
