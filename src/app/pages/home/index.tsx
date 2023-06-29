@@ -151,10 +151,10 @@ const Home = (): JSX.Element => {
                   </div>
                 </div>
               </div>
-              <div className="p-3 border border-black rounded-[3px] border-4 border-lime-600	">
+              <div className="p-3 border border-black rounded-[3px] border-4 border-amber-400		">
                 <div>
                   <div className="text-md font-bold text-dark">Maybeline</div>
-                  <div className="text-lime-600 text-xl font-bold">Design Wireframe</div>
+                  <div className="text-amber-400	 text-xl font-bold">Design Wireframe</div>
                 </div>
                 <div>
                   <div>
@@ -186,10 +186,10 @@ const Home = (): JSX.Element => {
                   </div>
                 </div>
               </div>
-              <div className="p-3 border border-black rounded-[3px] border-4 border-lime-600	">
+              <div className="p-3 border border-black rounded-[3px] border-4 border-amber-400		">
                 <div>
                   <div className="text-md font-bold text-dark">CodeLoverVietnam</div>
-                  <div className="text-lime-600 text-xl font-bold">Họp với team marketing</div>
+                  <div className="text-amber-400	 text-xl font-bold">Họp với team marketing</div>
                 </div>
                 <div>
                   <div>
@@ -202,10 +202,10 @@ const Home = (): JSX.Element => {
                   </div>
                 </div>
               </div>
-              <div className="p-3 border border-black rounded-[3px] border-4 border-lime-600	">
+              <div className="p-3 border border-black rounded-[3px] border-4 border-amber-400		">
                 <div>
                   <div className="text-md font-bold text-dark">CodeLoverVietnam</div>
-                  <div className="text-lime-600 text-xl font-bold">Phỏng vấn Intern</div>
+                  <div className="text-amber-400	 text-xl font-bold">Phỏng vấn Intern</div>
                 </div>
                 <div>
                   <div>
@@ -218,10 +218,10 @@ const Home = (): JSX.Element => {
                   </div>
                 </div>
               </div>
-              <div className="p-3 border border-black rounded-[3px] border-4 border-lime-600	">
+              <div className="p-3 border border-black rounded-[3px] border-4 border-amber-400	">
                 <div>
                   <div className="text-md font-bold text-dark">Sinh nhật vợ</div>
-                  <div className="text-lime-600 text-xl font-bold">Mua quà tại PNJ</div>
+                  <div className="text-amber-400	 text-xl font-bold">Mua quà tại PNJ</div>
                 </div>
                 <div>
                   <div>
