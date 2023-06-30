@@ -123,6 +123,7 @@ const AddProject = (): JSX.Element => {
 
       setValue('managerId', manager ? { label: manager.fullName, value: manager.id } : null);
       setValue('status', { value: status, label: translate(status) });
+      setValue('Company', { label: 'TokioUni', value: IN_PROGRESS });
       setValue(
         'member',
         listMember.map(item => item.id)
@@ -193,6 +194,17 @@ const AddProject = (): JSX.Element => {
       label: translate('END_DATE'),
       name: 'endDate',
       placeholder: 'DD/MM/YYYY',
+    },
+    {
+      type: SELECT,
+      label: 'Công ty',
+      data: [
+        { label: 'Code lover Vietnam', value: NOT_STARTED },
+        { label: 'TokioUni', value: IN_PROGRESS },
+        { label: 'HUST', value: PAUSE },
+      ],
+      placeholder: 'Chọn công ty',
+      name: 'Company',
     },
     {
       type: SELECT,

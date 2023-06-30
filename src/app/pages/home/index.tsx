@@ -137,7 +137,7 @@ const Home = (): JSX.Element => {
               <h2 className="text-lg font-bold text-left text-dark top-20">Dự án</h2>
               <div className="p-3 rounded-[3px] border-4 border-red-600	">
                 <div>
-                  <div className="font-bold text-md text-dark">Maybeline</div>
+                  <div className="font-bold text-md text-dark">TokioUni</div>
                   <div className="text-xl font-bold text-red-600">Design Wireframe</div>
                 </div>
                 <div>
@@ -153,7 +153,7 @@ const Home = (): JSX.Element => {
               </div>
               <div className="p-3 rounded-[3px] border-4 border-amber-400		">
                 <div>
-                  <div className="font-bold text-md text-dark">Maybeline</div>
+                  <div className="font-bold text-md text-dark">CodeloverVietnam</div>
                   <div className="text-xl font-bold text-amber-400">Design Wireframe</div>
                 </div>
                 <div>

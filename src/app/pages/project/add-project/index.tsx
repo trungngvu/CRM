@@ -173,6 +173,17 @@ const AddProject = (): JSX.Element => {
     },
     {
       type: SELECT,
+      label: 'Công ty',
+      data: [
+        { label: 'Code lover Vietnam', value: NOT_STARTED },
+        { label: 'TokioUni', value: IN_PROGRESS },
+        { label: 'HUST', value: PAUSE },
+      ],
+      placeholder: 'Chọn công ty',
+      name: 'Company',
+    },
+    {
+      type: SELECT,
       label: translate('STATUS'),
       data: [
         { label: translate('NOT_STARTED'), value: NOT_STARTED },
