@@ -87,10 +87,10 @@ const Home = (): JSX.Element => {
       customCanvasBackgroundColor: {
         color: 'white',
       },
-      title: {
-        display: true,
-        text: 'ĐÁNH GIÁ MỨC ĐỘ HOÀN THÀNH CÔNG VIỆC',
-      },
+      // title: {
+      //   display: true,
+      //   text: 'ĐÁNH GIÁ MỨC ĐỘ HOÀN THÀNH CÔNG VIỆC',
+      // },
     },
     responsive: true,
     scales: {
@@ -107,16 +107,16 @@ const Home = (): JSX.Element => {
   ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ChartDataLabels);
   return (
     <>
-      <div className="flex flex-row mt-[3px]">
-        <div className="flex flex-col w-[75%] justify-center ">
-          <div className="flex flex-col mx-[20px]">
+      <div className="flex flex-row">
+        <div className="flex flex-col w-[75%] mx-5 justify-center items-center">
+          <div className="flex flex-col w-full rounded">
             {/*Progress bar */}
-            <div className="[&>canvas]:!w-full " style={{ height: '23vh', margin: '1px', borderRadius: '3px' }}>
+            <div className="[&>canvas]:!w-full " style={{ height: '20vh', margin: '1px', borderRadius: '3px' }}>
               <Bar options={options} plugins={plugin} data={chartData}></Bar>
             </div>
           </div>
 
-          <div>
+          <div className="w-full mt-3 bg-white rounded">
             <div>
               <Calendar
                 startAccessor="start"
@@ -130,106 +130,106 @@ const Home = (): JSX.Element => {
             </div>
           </div>
         </div>
-        <div className="flex flex-col w-[25%] border border-black px-[10px] py-[5px] bg-white rounded-[3px]  h-[100vh] overflow-auto">
+        <div className="flex flex-col w-[25%] px-[10px] py-[5px] rounded-[3px]  h-[100vh] overflow-auto">
           <div>
-            <h1 className="text-xl font-bold text-dark text-center">Danh sách công việc cần làm</h1>
-            <div className=" p-3 gap-3 border border-black flex flex-col rounded-[3px] ">
-              <h2 className="text-lg font-bold text-dark text-left top-20">Dự án</h2>
-              <div className="p-3 border border-black rounded-[3px] border-4 border-red-600	">
+            <h1 className="text-xl font-bold text-center text-gray-600">Công việc cần làm</h1>
+            <div className="bg-white mt-5 p-3 gap-3 flex flex-col rounded-[3px] ">
+              <h2 className="text-lg font-bold text-left text-dark top-20">Dự án</h2>
+              <div className="p-3 rounded-[3px] border-4 border-red-600	">
                 <div>
-                  <div className="text-md font-bold text-dark">Maybeline</div>
-                  <div className="text-red-600 text-xl font-bold">Design Wireframe</div>
+                  <div className="font-bold text-md text-dark">Maybeline</div>
+                  <div className="text-xl font-bold text-red-600">Design Wireframe</div>
                 </div>
                 <div>
                   <div>
-                    <strong>Ngay bat dau:</strong>
+                    <strong>Ngày bắt đầu: </strong>
                     <span>{day.concat('/').concat(month).concat('/').concat(year)}</span>
                   </div>
                   <div>
-                    <strong>Ngay kết thúc:</strong>
+                    <strong>Ngày kết thúc: </strong>
                     <span>{threeDay.concat('/').concat(month).concat('/').concat(year)}</span>
                   </div>
                 </div>
               </div>
-              <div className="p-3 border border-black rounded-[3px] border-4 border-amber-400		">
+              <div className="p-3 rounded-[3px] border-4 border-amber-400		">
                 <div>
-                  <div className="text-md font-bold text-dark">Maybeline</div>
-                  <div className="text-amber-400	 text-xl font-bold">Design Wireframe</div>
+                  <div className="font-bold text-md text-dark">Maybeline</div>
+                  <div className="text-xl font-bold text-amber-400">Design Wireframe</div>
                 </div>
                 <div>
                   <div>
-                    <strong>Ngay bat dau:</strong>
+                    <strong>Ngày bắt đầu: </strong>
                     <span>{day.concat('/').concat(month).concat('/').concat(year)}</span>
                   </div>
                   <div>
-                    <strong>Ngay kết thúc:</strong>
+                    <strong>Ngày kết thúc: </strong>
                     <span>{threeDay.concat('/').concat(month).concat('/').concat(year)}</span>
                   </div>
                 </div>
               </div>
             </div>
-            <div className=" p-3 gap-3 border border-black flex flex-col rounded-[3px]">
-              <h2 className="text-lg font-bold text-dark text-left">Công việc cá nhân</h2>
-              <div className="p-3 border border-black rounded-[3px] border-4 border-red-600	">
+            <div className=" p-3 gap-3 bg-white mt-5 flex flex-col rounded-[3px]">
+              <h2 className="text-lg font-bold text-left text-dark">Công việc cá nhân</h2>
+              <div className="p-3 rounded-[3px] border-4 border-red-600	">
                 <div>
-                  <div className="text-md font-bold text-dark">KTPM</div>
-                  <div className="text-red-600 text-xl font-bold">Họp với team dev</div>
+                  <div className="font-bold text-md text-dark">KTPM</div>
+                  <div className="text-xl font-bold text-red-600">Họp với team dev</div>
                 </div>
                 <div>
                   <div>
-                    <strong>Thời gian:</strong>
+                    <strong>Thời gian: </strong>
                     <span>14:00</span>
                   </div>
                   <div>
-                    <strong>Ngày:</strong>
+                    <strong>Ngày: </strong>
                     <span>30/6/2023</span>
                   </div>
                 </div>
               </div>
               <div className="p-3 border border-black rounded-[3px] border-4 border-amber-400		">
                 <div>
-                  <div className="text-md font-bold text-dark">CodeLoverVietnam</div>
-                  <div className="text-amber-400	 text-xl font-bold">Họp với team marketing</div>
+                  <div className="font-bold text-md text-dark">CodeLoverVietnam</div>
+                  <div className="text-xl font-bold text-amber-400">Họp với team marketing</div>
                 </div>
                 <div>
                   <div>
-                    <strong>Thời gian:</strong>
+                    <strong>Thời gian: </strong>
                     <span>14:00</span>
                   </div>
                   <div>
-                    <strong>Ngày:</strong>
+                    <strong>Ngày: </strong>
                     <span>30/6/2023</span>
                   </div>
                 </div>
               </div>
               <div className="p-3 border border-black rounded-[3px] border-4 border-amber-400		">
                 <div>
-                  <div className="text-md font-bold text-dark">CodeLoverVietnam</div>
-                  <div className="text-amber-400	 text-xl font-bold">Phỏng vấn Intern</div>
+                  <div className="font-bold text-md text-dark">CodeLoverVietnam</div>
+                  <div className="text-xl font-bold text-amber-400">Phỏng vấn Intern</div>
                 </div>
                 <div>
                   <div>
-                    <strong>Thời gian:</strong>
+                    <strong>Thời gian: </strong>
                     <span>14:00</span>
                   </div>
                   <div>
-                    <strong>Ngày:</strong>
+                    <strong>Ngày: </strong>
                     <span>30/6/2023</span>
                   </div>
                 </div>
               </div>
               <div className="p-3 border border-black rounded-[3px] border-4 border-amber-400	">
                 <div>
-                  <div className="text-md font-bold text-dark">Sinh nhật vợ</div>
-                  <div className="text-amber-400	 text-xl font-bold">Mua quà tại PNJ</div>
+                  <div className="font-bold text-md text-dark">Sinh nhật vợ</div>
+                  <div className="text-xl font-bold text-amber-400">Mua quà tại PNJ</div>
                 </div>
                 <div>
                   <div>
-                    <strong>Thời gian:</strong>
+                    <strong>Thời gian: </strong>
                     <span>14:00</span>
                   </div>
                   <div>
-                    <strong>Ngày:</strong>
+                    <strong>Ngày: </strong>
                     <span>30/6/2023</span>
                   </div>
                 </div>
