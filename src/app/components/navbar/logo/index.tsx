@@ -1,11 +1,14 @@
 import { Link } from 'react-router-dom';
 
 import { SETTINGS_CONFIG } from '@configs';
+import { selectDisplaySetting, useAppSelector } from '@store';
 import { PAGES } from '@types';
 
 const { LOGO_SIZE, TOOLBAR_HEIGHT } = SETTINGS_CONFIG;
 
 const Logo = (): JSX.Element => {
+  const { expandNavbar } = useAppSelector(selectDisplaySetting);
+
   return (
     <div
       style={{
@@ -30,6 +33,19 @@ const Logo = (): JSX.Element => {
             }}
           />
         </div>
+        {expandNavbar && (
+          <div className="grid ml-2 place-items-center">
+            <img
+              src="/assets/icons/logo-text.svg"
+              alt="logo-text"
+              style={{
+                height: 30,
+                minHeight: 30,
+                maxHeight: 30,
+              }}
+            />
+          </div>
+        )}
       </Link>
     </div>
   );
