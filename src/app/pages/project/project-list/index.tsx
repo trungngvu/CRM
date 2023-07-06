@@ -53,6 +53,7 @@ const ProjectList = (): JSX.Element => {
     [
       'PROJECT_CODE',
       'PROJECT_NAME',
+      'COMPANY',
       'START_DATE',
       'END_DATE',
       'PROJECT_MANAGER',
@@ -62,9 +63,10 @@ const ProjectList = (): JSX.Element => {
     ],
     translate
   );
+  console.log(displayData);
   const tableData = displayData.map(
     ({
-      id = '',
+      id = 0,
       name = '',
       startDate = '',
       endDate = '',
@@ -75,6 +77,7 @@ const ProjectList = (): JSX.Element => {
     }) => ({
       id,
       PROJECT_CODE: <TextLink to={`${PAGES.PROJECT_DETAIL}?id=${id}`}>{id}</TextLink>,
+      COMPANY: <div>{id === 27 || id === 26 || id === 25 ? 'Code Lover Vietnam' : 'HUST'}</div>,
       PROJECT_NAME: (
         <TextLink to={`${PAGES.PROJECT_DETAIL}?id=${id}`} className="w-full text-left">
           {name}

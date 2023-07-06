@@ -102,6 +102,10 @@ const CardDetail = ({
             {translate('TASK_PROCESS')}: <span className="font-bold">{projectProcess}</span>
           </div>
         )}
+
+        <div className="mr-14">
+          Cơ quan/Đơn vị: <span className="font-bold">TokyoUni</span>
+        </div>
       </div>
     </div>
   );
