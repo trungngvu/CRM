@@ -48,7 +48,7 @@ const Home = (): JSX.Element => {
   const year = date.getFullYear().toString();
   const month = date.getMonth().toString();
   const day = date.getDate().toString();
-  const threeDay = (date.getDate() + 3).toString();
+  // const threeDay = (date.getDate() + 3).toString();
   const plugin = [
     {
       id: 'customCanvasBackgroundColor',
@@ -147,7 +147,7 @@ const Home = (): JSX.Element => {
                   </div>
                   <div>
                     <strong>Ngày kết thúc: </strong>
-                    <span>{threeDay.concat('/').concat(month).concat('/').concat(year)}</span>
+                    <span>6/7/2023</span>
                   </div>
                 </div>
               </div>
@@ -163,7 +163,7 @@ const Home = (): JSX.Element => {
                   </div>
                   <div>
                     <strong>Ngày kết thúc: </strong>
-                    <span>{threeDay.concat('/').concat(month).concat('/').concat(year)}</span>
+                    <span>8/7/2023</span>
                   </div>
                 </div>
               </div>
@@ -182,7 +182,7 @@ const Home = (): JSX.Element => {
                   </div>
                   <div>
                     <strong>Ngày: </strong>
-                    <span>30/6/2023</span>
+                    <span>6/7/2023</span>
                   </div>
                 </div>
               </div>
@@ -198,7 +198,7 @@ const Home = (): JSX.Element => {
                   </div>
                   <div>
                     <strong>Ngày: </strong>
-                    <span>30/6/2023</span>
+                    <span>10/7/2023</span>
                   </div>
                 </div>
               </div>
@@ -214,7 +214,7 @@ const Home = (): JSX.Element => {
                   </div>
                   <div>
                     <strong>Ngày: </strong>
-                    <span>30/6/2023</span>
+                    <span>10/7/2023</span>
                   </div>
                 </div>
               </div>
@@ -230,7 +230,7 @@ const Home = (): JSX.Element => {
                   </div>
                   <div>
                     <strong>Ngày: </strong>
-                    <span>30/6/2023</span>
+                    <span>10/7/2023</span>
                   </div>
                 </div>
               </div>

@@ -64,7 +64,9 @@ const ProjectList = (): JSX.Element => {
             ? 'Đỗ JLPT N1'
             : name === 'Dự án Xử lý hình ảnh X-quang (ngôn ngữ C)'
             ? 'Giảng dạy Development with ITSS tại TokyoUni'
-            : 'Kĩ thuật phần mềm'}
+            : name === 'Outsource'
+            ? 'Học Unity'
+            : 'Thi TOEIC 800'}
         </TextLink>
       ),
       START_DATE: <Time>{startDate}</Time>,
