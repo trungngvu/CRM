@@ -66,6 +66,8 @@ const ProjectList = (): JSX.Element => {
             ? 'Giảng dạy Development with ITSS tại TokyoUni'
             : name === 'Outsource'
             ? 'Học Unity'
+            : name === 'UIUX'
+            ? 'Kachabazar'
             : 'Thi TOEIC 800'}
         </TextLink>
       ),
