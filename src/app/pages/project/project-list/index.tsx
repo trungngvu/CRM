@@ -77,7 +77,9 @@ const ProjectList = (): JSX.Element => {
     }) => ({
       id,
       PROJECT_CODE: <TextLink to={`${PAGES.PROJECT_DETAIL}?id=${id}`}>{id}</TextLink>,
-      COMPANY: <div>{id === 27 || id === 26 || id === 25 ? 'Code Lover Vietnam' : 'HUST'}</div>,
+      COMPANY: (
+        <div>{id === 27 || id === 25 ? 'Code Lover Vietnam' : id === 26 || id === 30 ? 'TokioUni' : 'HUST'}</div>
+      ),
       PROJECT_NAME: (
         <TextLink to={`${PAGES.PROJECT_DETAIL}?id=${id}`} className="w-full text-left">
           {name}
