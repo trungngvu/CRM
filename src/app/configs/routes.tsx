@@ -66,6 +66,16 @@ export const ROUTES_CONFIG: RouteProps[] = [
   },
 
   /**
+   * FAQ
+   */
+  {
+    path: PAGES.FAQ,
+    auth: [...ALL_ROLE_EXCEPT_GUEST],
+    name: PAGES_NAME.FAQ,
+    element: lazy({ path: 'pages/faq' }),
+  },
+
+  /**
    * Notification
    */
   {

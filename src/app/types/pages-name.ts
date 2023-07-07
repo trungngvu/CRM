@@ -1,5 +1,6 @@
 export enum PAGES_NAME {
   HOME = 'HOME',
+  FAQ = 'FAQ',
 
   NOTIFICATION = 'NOTIFICATION',
 

@@ -7,6 +7,7 @@ const locale = {
   STATUS: 'Trạng thái',
   TOTAL_TASK: 'Tổng số công việc',
   TOTAL_MEMBER: 'Tổng thành viên',
+  COMPANY: 'Công ty/Đơn vị',
 };
 
 export default locale;

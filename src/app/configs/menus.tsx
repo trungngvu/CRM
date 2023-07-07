@@ -56,4 +56,10 @@ export const MENUS: MENU[] = [
       },
     ],
   },
+  {
+    name: PAGES_NAME.FAQ,
+    icon: <img src="/assets/icons/faq.svg" alt="faq icon" width={20} />,
+    path: PAGES.FAQ,
+    auth: [...ALL_ROLE_EXCEPT_GUEST],
+  },
 ];
